@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
-Route::view('cobranza', 'livewire.cobranza.index')
+Volt::route('cobranza', 'cobranza.index')
     ->middleware(['auth'])
     ->name('ventas.cobranza');
