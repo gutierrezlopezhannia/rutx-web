@@ -1,0 +1,3 @@
+<span>
+    {{ $getOutput() }}
+</span>
