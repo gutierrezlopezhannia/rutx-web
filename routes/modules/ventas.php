@@ -2,4 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Rutas para el módulo de Ventas
+Route::view('cobranza', 'livewire.cobranza.index')
+    ->middleware(['auth'])
+    ->name('ventas.cobranza');
