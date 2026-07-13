@@ -34,10 +34,10 @@ $logout = function (Logout $logout) {
 
         <!-- Sidebar Navigation Menu Links -->
         <nav class="flex-1 py-3 px-2 space-y-1">
-            <!-- Levantamiento (Active) -->
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold rounded transition duration-150 bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm">
+            <!-- Levantamiento -->
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
                 <!-- Icon: Document/List -->
-                <svg class="w-4 h-4 shrink-0 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <span x-show="!collapsed" x-transition>Levantamiento</span>
@@ -125,10 +125,10 @@ $logout = function (Logout $logout) {
                 <span x-show="!collapsed" x-transition>Clientes Pendientes</span>
             </a>
 
-            <!-- Reportes y Gráficas -->
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+            <!-- Reportes y Gráficas (Active) -->
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold rounded transition duration-150 bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm">
                 <!-- Icon: Presentation Chart -->
-                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 shrink-0 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 13v-1m4 1v-3m4 3V8M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
                 </svg>
                 <span x-show="!collapsed" x-transition>Reportes y Gráficas</span>
