@@ -1,5 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
-// Rutas para el módulo de Ventas
+Volt::route('cobranza', 'cobranza.index')
+    ->middleware(['auth'])
+    ->name('ventas.cobranza');

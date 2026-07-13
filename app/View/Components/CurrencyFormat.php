@@ -24,12 +24,14 @@ class CurrencyFormat extends Component
 
     public function getOutput(): string
     {
-        // Buscar la moneda en la BD de Firebird (Mapeo de tabla MONEDAS)
-        $moneda = \Illuminate\Support\Facades\DB::table('MONEDAS')
-                    ->where('MONEDA_ID', $this->monedaId)
-                    ->first();
+        // Mock de monedas (SQLite no tiene tabla MONEDAS de Firebird)
+        $monedas = [
+            1 => 'MXN',
+            2 => 'USD',
+            3 => 'EUR',
+        ];
 
-        $code = $moneda ? $moneda->CLAVE_FISCAL : 'MXN';
+        $code = $monedas[$this->monedaId] ?? 'MXN';
 
         if ($this->type === 'code') {
             return "($code)";
