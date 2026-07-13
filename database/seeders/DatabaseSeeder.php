@@ -14,7 +14,9 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin Test',
             'email' => 'admin@rutx.test',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
         ]);
+
 
         // 2. Generar 10 usuarios y 50 clientes simulados
         User::factory(10)->create();
