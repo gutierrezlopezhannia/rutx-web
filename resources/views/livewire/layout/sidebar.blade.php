@@ -18,7 +18,7 @@ $logout = function (Logout $logout) {
         <!-- Sidebar Header (Module Title & Collapse Button) -->
         <div class="flex items-center justify-between px-4 py-4 border-b border-[#002d48]">
             <span x-show="!collapsed" class="text-xs font-bold text-gray-300 tracking-widest uppercase" x-transition>
-                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : 'VENTA' }}
+                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('ruta.*') ? 'RUTA' : 'VENTA') }}
             </span>
             <button @click="collapsed = !collapsed"
                 class="text-gray-400 hover:text-white transition duration-150 p-1 rounded hover:bg-[#002d48] cursor-pointer">
@@ -53,6 +53,39 @@ $logout = function (Logout $logout) {
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     <span x-show="!collapsed" x-transition>Roles</span>
+                </a>
+            @elseif(request()->routeIs('ruta.*'))
+                <!-- Rutas -->
+                <a href="{{ route('ruta.rutas') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ruta.rutas') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Rutas</span>
+                </a>
+
+                <!-- Static Mocks per requested layout -->
+                <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                    <span x-show="!collapsed" class="pl-7" x-transition>Unidades de Reparto</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                    <span x-show="!collapsed" class="pl-7" x-transition>Agenda</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                    <span x-show="!collapsed" class="pl-7" x-transition>Agenda de Entregas</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                    <span x-show="!collapsed" class="pl-7" x-transition>Preventa Entrega</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                    <span x-show="!collapsed" class="pl-7" x-transition>Kilometraje</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                    <span x-show="!collapsed" class="pl-7" x-transition>Gastos Operativos</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                    <span x-show="!collapsed" class="pl-7" x-transition>Clientes Sincronizados</span>
                 </a>
             @else
                 <!-- Levantamiento -->
