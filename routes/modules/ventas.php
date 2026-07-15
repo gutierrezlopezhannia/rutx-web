@@ -7,6 +7,9 @@ Volt::route('cobranza', 'cobranza.index')
     ->middleware(['auth'])
     ->name('ventas.cobranza');
 
+Volt::route('utilidad', 'ventas.utilidad')
+    ->middleware(['auth'])
+    ->name('ventas.utilidad');
 
 Volt::route('levantamiento', 'ventas.levantamiento')
     ->middleware(['auth'])
