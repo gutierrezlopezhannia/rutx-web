@@ -18,8 +18,7 @@ $logout = function (Logout $logout) {
         <!-- Sidebar Header (Module Title & Collapse Button) -->
         <div class="flex items-center justify-between px-4 py-4 border-b border-[#002d48]">
             <span x-show="!collapsed" class="text-xs font-bold text-gray-300 tracking-widest uppercase" x-transition>
-                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('ruta.*') ? 'RUTA' : 'VENTA') }}
-                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('clientes.*') ? 'CLIENTE' : 'VENTA') }}
+                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('ruta.*') ? 'RUTA' : (request()->routeIs('clientes.*') ? 'CLIENTE' : 'VENTA')) }}
             </span>
             <button @click="collapsed = !collapsed"
                 class="text-gray-400 hover:text-white transition duration-150 p-1 rounded hover:bg-[#002d48] cursor-pointer">
@@ -87,6 +86,7 @@ $logout = function (Logout $logout) {
                 </a>
                 <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
                     <span x-show="!collapsed" class="pl-7" x-transition>Clientes Sincronizados</span>
+                </a>
             @elseif(request()->routeIs('clientes.*'))
                 <!-- Clientes -->
                 <a href="{{ route('clientes.index') }}" wire:navigate

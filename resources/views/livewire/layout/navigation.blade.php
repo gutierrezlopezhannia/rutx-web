@@ -55,15 +55,12 @@ $logout = function (Logout $logout) {
             <span class="text-[11px] font-medium tracking-wide">Inventario</span>
         </a>
 
-        <!-- Venta (Active) -->
-        <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('dashboard') || request()->routeIs('ventas.*') ? 'border-[#004066] text-[#004066] font-semibold' : 'border-transparent text-gray-500 hover:text-[#004066] hover:border-gray-200' }} transition-all duration-150">
         <!-- Venta -->
         <a href="{{ route('dashboard') }}" wire:navigate class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ (request()->routeIs('dashboard') || request()->routeIs('ventas.*')) ? 'border-[#004066] text-[#004066] font-semibold' : 'border-transparent text-gray-500 hover:text-[#004066] hover:border-gray-200' }} transition-all duration-150">
             <!-- Shopping Cart Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <span class="text-[11px] {{ request()->routeIs('dashboard') || request()->routeIs('ventas.*') ? '' : 'font-medium' }} tracking-wide">Venta</span>
             <span class="text-[11px] {{ (request()->routeIs('dashboard') || request()->routeIs('ventas.*')) ? '' : 'font-medium' }} tracking-wide">Venta</span>
         </a>
 
