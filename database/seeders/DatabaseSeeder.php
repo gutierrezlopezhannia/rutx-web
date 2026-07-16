@@ -17,9 +17,8 @@ class DatabaseSeeder extends Seeder
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
         ]);
 
-
-        // 2. Generar 10 usuarios y 50 clientes simulados
+        // 2. Generar 10 usuarios y ejecutar el PruebaSeeder
         User::factory(10)->create();
-        Customer::factory(50)->create();
+        $this->call(PruebaSeeder::class);
     }
 }

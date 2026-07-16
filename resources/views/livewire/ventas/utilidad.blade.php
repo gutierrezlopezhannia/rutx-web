@@ -157,50 +157,52 @@ $consultar = function () {
                 </div>
 
                 {{-- Table Section --}}
-                <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200/80 text-left">
-                        <thead>
-                            <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                                <th class="px-6 py-4">Ruta</th>
-                                <th class="px-6 py-4">Vendedor</th>
-                                <th class="px-6 py-4">Cliente</th>
-                                <th class="px-6 py-4 text-right">Cant. Artículos</th>
-                                <th class="px-6 py-4 text-right">Venta ($)</th>
-                                <th class="px-6 py-4 text-right">Costo ($)</th>
-                                <th class="px-6 py-4 text-right">Utilidad ($)</th>
-                                <th class="px-6 py-4 text-right">Margen (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-150 bg-white text-xs sm:text-sm text-gray-700">
-                            @forelse($this->registrosFiltrados as $registro)
-                            <tr class="hover:bg-gray-50/30 transition duration-150">
-                                <td class="px-6 py-4 text-[#003859] font-medium">{{ $registro['ruta'] }}</td>
-                                <td class="px-6 py-4 text-gray-900 font-medium">{{ $registro['vendedor'] ?? '—' }}</td>
-                                <td class="px-6 py-4 text-gray-900 font-medium">{{ $registro['cliente'] }}</td>
-                                <td class="px-6 py-4 text-right font-medium text-gray-700">{{ number_format($registro['ventas_totales'], 0) }}</td>
-                                <td class="px-6 py-4 text-right font-bold text-[#1f2937]">${{ number_format($registro['ventas_totales'], 2) }}</td>
-                                <td class="px-6 py-4 text-right font-bold text-[#1f2937]">${{ number_format($registro['costo_ventas'], 2) }}</td>
-                                <td class="px-6 py-4 text-right font-bold text-[#1f2937]">${{ number_format($registro['utilidad_bruta'], 2) }}</td>
-                                <td class="px-6 py-4 text-right font-bold">
-                                    @if($registro['margen'] > 0)
-                                        <span class="text-emerald-600">{{ number_format($registro['margen'], 1) }}%</span>
-                                    @elseif($registro['margen'] < 0)
-                                        <span class="text-red-500">{{ number_format($registro['margen'], 1) }}%</span>
-                                    @else
-                                        <span class="text-orange-500">{{ number_format($registro['margen'], 1) }}%</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="8" class="px-6 py-12 text-center text-gray-400 font-medium">
-                                    No se encontraron registros para el filtro seleccionado.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                @if(!empty($registrosFiltrados))
+                    <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200/80 text-left">
+                            <thead>
+                                <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-4">Ruta</th>
+                                    <th class="px-6 py-4">Vendedor</th>
+                                    <th class="px-6 py-4">Cliente</th>
+                                    <th class="px-6 py-4 text-right">Cant. Artículos</th>
+                                    <th class="px-6 py-4 text-right">Venta ($)</th>
+                                    <th class="px-6 py-4 text-right">Costo ($)</th>
+                                    <th class="px-6 py-4 text-right">Utilidad ($)</th>
+                                    <th class="px-6 py-4 text-right">Margen (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-150 bg-white text-xs sm:text-sm text-gray-700">
+                                @forelse($this->registrosFiltrados as $registro)
+                                <tr class="hover:bg-gray-50/30 transition duration-150">
+                                    <td class="px-6 py-4 text-[#003859] font-medium">{{ $registro['ruta'] }}</td>
+                                    <td class="px-6 py-4 text-gray-900 font-medium">{{ $registro['vendedor'] ?? '—' }}</td>
+                                    <td class="px-6 py-4 text-gray-900 font-medium">{{ $registro['cliente'] }}</td>
+                                    <td class="px-6 py-4 text-right font-medium text-gray-700">{{ number_format($registro['ventas_totales'], 0) }}</td>
+                                    <td class="px-6 py-4 text-right font-bold text-[#1f2937]">${{ number_format($registro['ventas_totales'], 2) }}</td>
+                                    <td class="px-6 py-4 text-right font-bold text-[#1f2937]">${{ number_format($registro['costo_ventas'], 2) }}</td>
+                                    <td class="px-6 py-4 text-right font-bold text-[#1f2937]">${{ number_format($registro['utilidad_bruta'], 2) }}</td>
+                                    <td class="px-6 py-4 text-right font-bold">
+                                        @if($registro['margen'] > 0)
+                                            <span class="text-emerald-600">{{ number_format($registro['margen'], 1) }}%</span>
+                                        @elseif($registro['margen'] < 0)
+                                            <span class="text-red-500">{{ number_format($registro['margen'], 1) }}%</span>
+                                        @else
+                                            <span class="text-orange-500">{{ number_format($registro['margen'], 1) }}%</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="8" class="px-6 py-12 text-center text-gray-400 font-medium">
+                                        No se encontraron registros para el filtro seleccionado.
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
