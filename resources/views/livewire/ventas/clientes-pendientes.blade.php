@@ -200,7 +200,7 @@ $updatedFechaFin = function () {
                                 <tr class="hover:bg-gray-50/30 transition duration-150">
                                     <td class="px-6 py-4 text-[#003859] font-medium">{{ $item['ruta'] }}</td>
                                     <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['vendedor'] }}</td>
-                                    <td class="px-6 py-4 text-[#003859] font-medium">{{ $item['cliente'] }}</td>
+                                    <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['cliente'] }}</td>
                                     <td class="px-6 py-4 text-gray-700 font-medium">{{ $item['orden'] }}</td>
                                     <td class="px-6 py-4">
                                         <span
