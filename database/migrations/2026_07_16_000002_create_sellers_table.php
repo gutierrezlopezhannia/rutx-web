@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('sellers', function (Blueprint $table) {
             $table->string('id')->primary(); // Ej: '695 - VENDEDOR'
             $table->string('name');
-            $table->string('oculto')->default('N');
+            $table->string('oculto')->nullable()->default('N');
             $table->timestamps();
         });
     }

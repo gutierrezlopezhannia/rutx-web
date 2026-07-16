@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        Schema::dropIfExists('invoices');
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('folio')->unique(); // Ej: 'ACH000058'
@@ -17,8 +18,8 @@ return new class extends Migration {
             $table->string('customer_id');
             $table->decimal('subtotal', 15, 2);
             $table->decimal('total', 15, 2);
-            $table->decimal('abono', 15, 2)->default(0.00);
-            $table->decimal('saldo', 15, 2)->default(0.00);
+            $table->decimal('abono', 15, 2)->nullable()->default(0.00);
+            $table->decimal('saldo', 15, 2)->nullable()->default(0.00);
             $table->string('comentario')->nullable();
             $table->timestamps();
 
