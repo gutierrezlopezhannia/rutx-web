@@ -189,57 +189,59 @@ $updatedFechaFin = function () {
                 </div>
 
                 {{-- Table Section --}}
-                <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200/80 text-left">
-                        <thead>
-                            <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                                <th class="px-6 py-4">Ruta</th>
-                                <th class="px-6 py-4">Vendedor</th>
-                                <th class="px-6 py-4">Cliente</th>
-                                <th class="px-6 py-4">Estado</th>
-                                <th class="px-6 py-4">Tipo de Pago</th>
-                                <th class="px-6 py-4">Fecha y Hora</th>
-                                <th class="px-6 py-4">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-150 bg-white text-xs sm:text-sm text-gray-700">
-                            @forelse($this->pedidosFiltrados as $item)
-                                <tr class="hover:bg-gray-50/30 transition duration-150">
-                                    <td class="px-6 py-4 text-[#003859] font-medium">{{ $item['ruta'] }}</td>
-                                    <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['vendedor'] }}</td>
-                                    <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['cliente'] }}</td>
-                                    <td class="px-6 py-4">
-                                        @if ($item['estado'] === 'Sincronizado')
-                                            <span
-                                                class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Sincronizado</span>
-                                        @else
-                                            <span
-                                                class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-600">Pendiente</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4 text-gray-500 font-medium">{{ $item['tipo_pago'] }}</td>
-                                    <td class="px-6 py-4 text-gray-400 font-medium">{{ $item['fecha_hora'] }}</td>
-                                    <td class="px-6 py-4">
-                                        <svg class="w-4 h-4 text-gray-400 cursor-pointer hover:text-[#003859]"
-                                            fill="none" stroke="currentColor" stroke-width="2"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </td>
+                @if(!empty($pedidosFiltrados))
+                    <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200/80 text-left">
+                            <thead>
+                                <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-4">Ruta</th>
+                                    <th class="px-6 py-4">Vendedor</th>
+                                    <th class="px-6 py-4">Cliente</th>
+                                    <th class="px-6 py-4">Estado</th>
+                                    <th class="px-6 py-4">Tipo de Pago</th>
+                                    <th class="px-6 py-4">Fecha y Hora</th>
+                                    <th class="px-6 py-4">Acciones</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-12 text-center text-gray-400 font-medium">
-                                        No se encontraron pedidos.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody class="divide-y divide-gray-150 bg-white text-xs sm:text-sm text-gray-700">
+                                @forelse($this->pedidosFiltrados as $item)
+                                    <tr class="hover:bg-gray-50/30 transition duration-150">
+                                        <td class="px-6 py-4 text-[#003859] font-medium">{{ $item['ruta'] }}</td>
+                                        <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['vendedor'] }}</td>
+                                        <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['cliente'] }}</td>
+                                        <td class="px-6 py-4">
+                                            @if ($item['estado'] === 'Sincronizado')
+                                                <span
+                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Sincronizado</span>
+                                            @else
+                                                <span
+                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-600">Pendiente</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-500 font-medium">{{ $item['tipo_pago'] }}</td>
+                                        <td class="px-6 py-4 text-gray-400 font-medium">{{ $item['fecha_hora'] }}</td>
+                                        <td class="px-6 py-4">
+                                            <svg class="w-4 h-4 text-gray-400 cursor-pointer hover:text-[#003859]"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="px-6 py-12 text-center text-gray-400 font-medium">
+                                            No se encontraron pedidos.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
