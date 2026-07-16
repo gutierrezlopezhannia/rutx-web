@@ -23,3 +23,7 @@ Volt::route('ventas-cliente', 'ventas.ventas-cliente')
     ->middleware(['auth'])
     ->name('ventas.ventas-cliente');
 
+
+Volt::route('clientes-pendientes', 'ventas.clientes-pendientes')
+    ->middleware(['auth'])
+    ->name('ventas.clientes-pendientes');
