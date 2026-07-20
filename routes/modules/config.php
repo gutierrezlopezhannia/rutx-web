@@ -9,4 +9,6 @@ Route::prefix('config')->name('config.')->middleware(['auth'])->group(function (
     Volt::route('roles', 'config.roles')->name('roles');
     Volt::route('zonas', 'config.zonas')->name('zonas');
     Volt::route('campos-adicionales', 'config.campos-adicionales')->name('campos-adicionales');
+    Volt::route('ajustes', 'config.ajustes')->name('ajustes');
+    Volt::route('ticket', 'config.ticket')->name('ticket');
 });

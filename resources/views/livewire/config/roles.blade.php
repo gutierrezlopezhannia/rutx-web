@@ -38,19 +38,19 @@ $filteredRoles = function () {
 
 ?>
 
-<div class="h-full bg-[#f4f6f9] p-6 font-sans">
-    <div class="max-w-[1400px] mx-auto bg-white rounded shadow-sm">
+<div class="h-full bg-transparent p-6 font-sans">
+    <div class="max-w-[1400px] mx-auto bg-white dark:bg-gray-800 rounded shadow-sm">
         
         {{-- Header Title --}}
         <div class="px-6 py-5">
-            <h1 class="text-2xl font-semibold text-gray-800">Roles</h1>
+            <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Roles</h1>
         </div>
 
         {{-- Toolbar --}}
         <div class="px-6 py-2 flex flex-col md:flex-row md:items-center justify-between border-b border-gray-100 gap-4">
             {{-- Left: Status Dropdown --}}
             <div class="w-full md:w-48 relative">
-                <select wire:model.live="filtro_estado" class="appearance-none w-full bg-transparent border-0 border-b border-gray-300 px-0 py-2 text-sm text-gray-700 focus:outline-none focus:ring-0 focus:border-gray-500 cursor-pointer">
+                <select wire:model.live="filtro_estado" class="appearance-none w-full bg-transparent border-0 border-b border-gray-300 dark:border-gray-600 px-0 py-2 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-0 focus:border-gray-500 cursor-pointer">
                     <option value="Activos">Activos</option>
                     <option value="Inactivos">Inactivos</option>
                     <option value="Todos">Todos</option>
@@ -66,16 +66,16 @@ $filteredRoles = function () {
             <div class="flex items-center gap-4 text-gray-500">
                 
                 {{-- Search Input --}}
-                <div class="relative flex items-center w-full md:w-64 border-b border-gray-300">
+                <div class="relative flex items-center w-full md:w-64 border-b border-gray-300 dark:border-gray-600">
                     <svg class="w-5 h-5 text-gray-400 absolute left-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <input type="text" 
                            wire:model.live="search" 
                            placeholder="Buscar ..." 
-                           class="w-full bg-transparent border-none focus:ring-0 pl-7 pr-7 py-2 text-sm text-gray-600 placeholder-gray-400" />
+                           class="w-full bg-transparent border-none focus:ring-0 pl-7 pr-7 py-2 text-sm text-gray-600 dark:text-gray-300 placeholder-gray-400" />
                     @if($search)
-                    <button wire:click="$set('search', '')" class="absolute right-0 p-1 hover:bg-gray-100 rounded-full cursor-pointer">
+                    <button wire:click="$set('search', '')" class="absolute right-0 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full cursor-pointer">
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -85,22 +85,22 @@ $filteredRoles = function () {
 
                 {{-- Action Icons --}}
                 <div class="flex items-center gap-3 shrink-0">
-                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition" title="Columnas">
+                    <button class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-600 dark:text-gray-400 transition" title="Columnas">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M5 4h3v16H5V4zm6 0h3v16h-3V4zm6 0h3v16h-3V4z" />
                         </svg>
                     </button>
-                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition" title="Exportar">
+                    <button class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-600 dark:text-gray-400 transition" title="Exportar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                     </button>
-                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition" title="Refrescar">
+                    <button class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-600 dark:text-gray-400 transition" title="Refrescar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
                     </button>
-                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition" title="Agregar">
+                    <button class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-600 dark:text-gray-400 transition" title="Agregar">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
@@ -111,17 +111,17 @@ $filteredRoles = function () {
 
         {{-- Table --}}
         <div class="overflow-x-auto">
-            <table class="min-w-full text-left bg-white">
-                <thead class="bg-gray-50 border-b border-gray-100">
+            <table class="min-w-full text-left bg-white dark:bg-gray-800">
+                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-700">
                     <tr>
-                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide w-48">Acciones</th>
-                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide">Rol</th>
-                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide">Fecha</th>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 dark:text-gray-200 tracking-wide w-48">Acciones</th>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 dark:text-gray-200 tracking-wide">Rol</th>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 dark:text-gray-200 tracking-wide">Fecha</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                     @forelse($this->filteredRoles() as $rol)
-                    <tr class="hover:bg-gray-50 transition duration-150 group">
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-150 group">
                         {{-- Acciones --}}
                         <td class="px-6 py-3 whitespace-nowrap">
                             <div class="flex items-center gap-3">
@@ -159,8 +159,8 @@ $filteredRoles = function () {
                         </td>
                         
                         {{-- Data --}}
-                        <td class="px-6 py-3 text-[13px] text-gray-800 whitespace-nowrap">{{ $rol['rol'] }}</td>
-                        <td class="px-6 py-3 text-[13px] text-gray-600 whitespace-nowrap">{{ $rol['fecha'] }}</td>
+                        <td class="px-6 py-3 text-[13px] text-gray-800 dark:text-gray-300 whitespace-nowrap">{{ $rol['rol'] }}</td>
+                        <td class="px-6 py-3 text-[13px] text-gray-600 dark:text-gray-400 whitespace-nowrap">{{ $rol['fecha'] }}</td>
                     </tr>
                     @empty
                     <tr>
@@ -174,7 +174,7 @@ $filteredRoles = function () {
         </div>
 
         {{-- Footer / Pagination --}}
-        <div class="px-6 py-3 flex items-center justify-end text-sm text-gray-600 border-t border-gray-100 gap-6">
+        <div class="px-6 py-3 flex items-center justify-end text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 gap-6">
             <div class="flex items-center gap-2">
                 <span>100 Filas por Página</span>
                 <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">

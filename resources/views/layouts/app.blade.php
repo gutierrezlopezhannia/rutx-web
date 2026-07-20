@@ -14,8 +14,21 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Theme Check -->
+        <script>
+            function applyTheme() {
+                if (localStorage.getItem('tema_rutx') === 'Dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+            applyTheme();
+            document.addEventListener('livewire:navigated', applyTheme);
+        </script>
     </head>
-    <body class="font-sans antialiased bg-[#f4f6f8] text-[#1f2937] h-screen overflow-hidden">
+    <body class="font-sans antialiased bg-[#f4f6f8] dark:bg-gray-900 text-[#1f2937] dark:text-gray-200 h-screen overflow-hidden transition-colors duration-300">
         <div class="h-screen flex flex-col">
             <!-- Topbar (contains Header, Tabs, User Info & Logout) -->
             <livewire:layout.navigation />
@@ -29,7 +42,7 @@
                 <!-- Main Content Area -->
                 <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
                     @if (isset($header))
-                        <header class="bg-white border-b border-gray-200 py-3 px-6">
+                        <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-3 px-6 transition-colors duration-300">
                             <div class="max-w-7xl mx-auto">
                                 {{ $header }}
                             </div>
