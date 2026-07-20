@@ -1,16 +1,16 @@
 <?php
 
 use function Livewire\Volt\{state, layout};
-use Database\Factories\LevantamientoFactory;
+use Database\Factories\ClientesPendientesFactory;
 
 layout('layouts.app');
 
-$factory = new LevantamientoFactory();
-$mockLevantamientos = $factory->make(15);
+$factory = new ClientesPendientesFactory();
+$mockClientesPendientes = $factory->make(15);
 
 state([
-    'levantamientos' => $mockLevantamientos,
-    'levantamientosFiltrados' => $mockLevantamientos,
+    'clientesPendientes' => $mockClientesPendientes,
+    'clientesFiltrados' => $mockClientesPendientes,
     'filtro_ruta' => 'todos',
     'filtro_vendedor' => 'todos',
     'search' => '',
@@ -19,28 +19,25 @@ state([
 ]);
 
 $aplicarFiltros = function () {
-    $filtradas = collect($this->levantamientos);
+    $filtrados = collect($this->clientesPendientes);
 
     if ($this->filtro_ruta !== 'todos') {
-        $filtradas = $filtradas->where('ruta', $this->filtro_ruta);
+        $filtrados = $filtrados->where('ruta', $this->filtro_ruta);
     }
 
     if ($this->filtro_vendedor !== 'todos') {
-        $filtradas = $filtradas->where('vendedor', $this->filtro_vendedor);
+        $filtrados = $filtrados->where('vendedor', $this->filtro_vendedor);
     }
 
     if (!empty($this->search)) {
-        $searchQuery = strtolower(trim($this->search));
-        $filtradas = $filtradas->filter(function ($item) use ($searchQuery) {
-            return str_contains(strtolower($item['cliente']), $searchQuery) || str_contains(strtolower($item['vendedor']), $searchQuery);
-        });
+        $q = strtolower(trim($this->search));
+        $filtrados = $filtrados->filter(fn($item) => str_contains(strtolower($item['cliente']), $q) || str_contains(strtolower($item['vendedor']), $q));
     }
+
     if (!empty($this->fecha_inicio)) {
         try {
             $inicio = \Carbon\Carbon::parse($this->fecha_inicio)->startOfDay();
-            $filtradas = $filtradas->filter(function ($item) use ($inicio) {
-                return \Carbon\Carbon::parse($item['fecha_hora']) >= $inicio;
-            });
+            $filtrados = $filtrados->filter(fn($item) => \Carbon\Carbon::parse($item['fecha']) >= $inicio);
         } catch (\Exception $e) {
         }
     }
@@ -48,32 +45,26 @@ $aplicarFiltros = function () {
     if (!empty($this->fecha_fin)) {
         try {
             $fin = \Carbon\Carbon::parse($this->fecha_fin)->endOfDay();
-            $filtradas = $filtradas->filter(function ($item) use ($fin) {
-                return \Carbon\Carbon::parse($item['fecha_hora']) <= $fin;
-            });
+            $filtrados = $filtrados->filter(fn($item) => \Carbon\Carbon::parse($item['fecha']) <= $fin);
         } catch (\Exception $e) {
         }
     }
 
-    $this->levantamientosFiltrados = $filtradas->values()->toArray();
+    $this->clientesFiltrados = $filtrados->values()->toArray();
 };
 
 $updatedFiltroRuta = function () {
     $this->aplicarFiltros();
 };
-
 $updatedFiltroVendedor = function () {
     $this->aplicarFiltros();
 };
-
 $updatedSearch = function () {
     $this->aplicarFiltros();
 };
-
 $updatedFechaInicio = function () {
     $this->aplicarFiltros();
 };
-
 $updatedFechaFin = function () {
     $this->aplicarFiltros();
 };
@@ -89,21 +80,21 @@ $updatedFechaFin = function () {
                 <span class="mx-2 text-gray-400">/</span>
                 <span>Venta</span>
                 <span class="mx-2 text-gray-400">/</span>
-                <span class="text-[#003859] font-bold">Levantamiento</span>
+                <span class="text-[#003859] font-bold">Clientes Pendientes</span>
             </div>
 
-            {{-- Main Container Card --}}
+            {{-- Main Container --}}
             <div class="bg-white rounded-lg shadow-sm border border-gray-200/80 p-5">
 
-                {{-- Filter Section --}}
+                {{-- Filtros --}}
                 <div class="flex flex-col lg:flex-row lg:items-center gap-3 mb-5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center gap-3 flex-1">
-                        {{-- Date Group --}}
+
+                        {{-- Fechas --}}
                         <div class="flex items-center gap-2 w-full sm:col-span-2 lg:w-auto">
                             <label
                                 class="flex items-center border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-700 flex-1 lg:w-32 cursor-pointer"
                                 @click.prevent="$el.querySelector('input').showPicker()">
-
                                 <svg class="w-4 h-4 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor"
                                     stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -111,8 +102,6 @@ $updatedFechaFin = function () {
                                 </svg>
                                 <input type="date" wire:model.live="fecha_inicio"
                                     class="border-none outline-none p-0 w-full focus:ring-0 bg-transparent text-gray-700 font-semibold text-xs sm:text-sm [&::-webkit-calendar-picker-indicator]:hidden" />
-
-
                             </label>
 
                             <span class="text-gray-400 font-bold shrink-0">-</span>
@@ -120,7 +109,6 @@ $updatedFechaFin = function () {
                             <label
                                 class="flex items-center border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-700 flex-1 lg:w-32 cursor-pointer"
                                 @click.prevent="$el.querySelector('input').showPicker()">
-
                                 <svg class="w-4 h-4 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor"
                                     stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -128,12 +116,10 @@ $updatedFechaFin = function () {
                                 </svg>
                                 <input type="date" wire:model.live="fecha_fin"
                                     class="border-none outline-none p-0 w-full focus:ring-0 bg-transparent text-gray-400 font-semibold text-xs sm:text-sm [&::-webkit-calendar-picker-indicator]:hidden" />
-
-
                             </label>
                         </div>
 
-                        {{-- Ruta Dropdown --}}
+                        {{-- Ruta --}}
                         <div class="relative w-full lg:w-32">
                             <select wire:model.live="filtro_ruta"
                                 class="appearance-none border border-gray-200 rounded-lg pl-4 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#003859] bg-white text-gray-700 font-semibold cursor-pointer w-full">
@@ -151,7 +137,7 @@ $updatedFechaFin = function () {
                             </div>
                         </div>
 
-                        {{-- Vendedor Dropdown --}}
+                        {{-- Vendedor --}}
                         <div class="relative w-full lg:w-40">
                             <select wire:model.live="filtro_vendedor"
                                 class="appearance-none border border-gray-200 rounded-lg pl-4 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#003859] bg-white text-gray-700 font-semibold cursor-pointer w-full">
@@ -169,7 +155,7 @@ $updatedFechaFin = function () {
                             </div>
                         </div>
 
-                        {{-- Search Input --}}
+                        {{-- Buscar --}}
                         <div class="relative w-full sm:col-span-2 lg:flex-1 lg:min-w-[200px]">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
@@ -183,7 +169,7 @@ $updatedFechaFin = function () {
                         </div>
                     </div>
 
-                    {{-- Right: Actions (Exportar) --}}
+                    {{-- Exportar --}}
                     <div class="w-full lg:w-auto shrink-0 flex">
                         <button
                             class="w-full lg:w-auto px-4 py-2 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 flex items-center justify-center gap-2 cursor-pointer transition duration-150 bg-white">
@@ -197,58 +183,42 @@ $updatedFechaFin = function () {
                     </div>
                 </div>
 
-                {{-- Table Section --}}
-                @if(!empty($levantamientosFiltrados))
-                    <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200/80 text-left">
-                            <thead>
-                                <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                                    <th class="px-6 py-4">Ruta</th>
-                                    <th class="px-6 py-4">Vendedor</th>
-                                    <th class="px-6 py-4">Cliente</th>
-                                    <th class="px-6 py-4">Tipo</th>
-                                    <th class="px-6 py-4">Fecha y Hora</th>
-                                    <th class="px-6 py-4">Ubicación</th>
+                {{-- Tabla --}}
+                <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200/80 text-left">
+                        <thead>
+                            <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-4">Ruta</th>
+                                <th class="px-6 py-4">Vendedor</th>
+                                <th class="px-6 py-4">Cliente</th>
+                                <th class="px-6 py-4">Orden</th>
+                                <th class="px-6 py-4">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-150 bg-white text-xs sm:text-sm text-gray-700">
+                            @forelse($this->clientesFiltrados as $item)
+                                <tr class="hover:bg-gray-50/30 transition duration-150">
+                                    <td class="px-6 py-4 text-[#003859] font-medium">{{ $item['ruta'] }}</td>
+                                    <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['vendedor'] }}</td>
+                                    <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['cliente'] }}</td>
+                                    <td class="px-6 py-4 text-gray-700 font-medium">{{ $item['orden'] }}</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500 border border-gray-200">
+                                            {{ $item['estado'] }}
+                                        </span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-150 bg-white text-xs sm:text-sm text-gray-700">
-                                @forelse($this->levantamientosFiltrados as $item)
-                                    <tr class="hover:bg-gray-50/30 transition duration-150">
-                                        <td class="px-6 py-4 text-[#003859] font-medium">{{ $item['ruta'] }}</td>
-                                        <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['vendedor'] }}</td>
-                                        <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['cliente'] }}</td>
-                                        <td class="px-6 py-4">
-                                            @if ($item['tipo'] === 'Venta')
-                                                <span
-                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Venta</span>
-                                            @else
-                                                <span
-                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">Visita
-                                                    sin venta</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-400 font-medium">{{ $item['fecha_hora'] }}</td>
-                                        <td class="px-6 py-4">
-                                            <svg class="w-4 h-4 text-[#003859]" fill="none" stroke="currentColor"
-                                                stroke-width="2" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="px-6 py-12 text-center text-gray-400 font-medium">
-                                            No se encontraron registros de levantamiento.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-12 text-center text-gray-400 font-medium">
+                                        No se encontraron clientes pendientes.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,222 @@
+<?php
+
+use function Livewire\Volt\{state, layout};
+
+layout('layouts.app');
+
+$mockCampos = [
+    // Empty array to show "No hay Registros para mostrar" as seen in mockup
+];
+
+state([
+    'campos' => $mockCampos,
+    'search' => '',
+    'filtro_estado' => 'Activos',
+    'filtro_clientes' => 'Clientes',
+]);
+
+$filteredCampos = function () {
+    $filtered = collect($this->campos);
+
+    if ($this->filtro_estado === 'Activos') {
+        $filtered = $filtered->where('estatus', 'Activo');
+    } elseif ($this->filtro_estado === 'Inactivos') {
+        $filtered = $filtered->where('estatus', 'Inactivo');
+    }
+
+    // Add filtering logic for Clientes dropdown if needed in the future
+
+    if (!empty($this->search)) {
+        $searchQuery = strtolower(trim($this->search));
+        $filtered = $filtered->filter(function ($campo) use ($searchQuery) {
+            return str_contains(strtolower($campo['campo']), $searchQuery) ||
+                   str_contains(strtolower($campo['tipo_valor']), $searchQuery);
+        });
+    }
+
+    return $filtered->toArray();
+};
+
+?>
+
+<div class="h-full bg-[#f4f6f9] p-6 font-sans">
+    <div class="max-w-[1400px] mx-auto bg-white rounded shadow-sm">
+        
+        {{-- Header Title --}}
+        <div class="px-6 py-5 border-b border-gray-100">
+            <h1 class="text-2xl font-semibold text-gray-800">Campos adicionales</h1>
+        </div>
+
+        {{-- Toolbar --}}
+        <div class="px-6 py-3 flex flex-col md:flex-row md:items-center justify-between border-b border-gray-100 gap-4">
+            {{-- Left: Dropdowns --}}
+            <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                <div class="w-full md:w-48 relative">
+                    <select wire:model.live="filtro_estado" class="appearance-none w-full bg-transparent border-0 border-b border-gray-300 px-0 py-2 text-sm text-gray-700 focus:outline-none focus:ring-0 focus:border-gray-500 cursor-pointer">
+                        <option value="Activos">Activos</option>
+                        <option value="Inactivos">Inactivos</option>
+                        <option value="Todos">Todos</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-48 relative">
+                    <select wire:model.live="filtro_clientes" class="appearance-none w-full bg-transparent border-0 border-b border-gray-300 px-0 py-2 text-sm text-gray-700 focus:outline-none focus:ring-0 focus:border-gray-500 cursor-pointer">
+                        <option value="Clientes">Clientes</option>
+                        <option value="Proveedores">Proveedores</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Right: Actions & Search --}}
+            <div class="flex items-center gap-4 text-gray-500">
+                
+                {{-- Search Input --}}
+                <div class="relative flex items-center w-full md:w-64 border-b border-gray-300">
+                    <svg class="w-5 h-5 text-gray-400 absolute left-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" 
+                           wire:model.live="search" 
+                           placeholder="Buscar ..." 
+                           class="w-full bg-transparent border-none focus:ring-0 pl-7 pr-7 py-2 text-sm text-gray-600 placeholder-gray-400" />
+                    @if($search)
+                    <button wire:click="$set('search', '')" class="absolute right-0 p-1 hover:bg-gray-100 rounded-full cursor-pointer">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    @endif
+                </div>
+
+                {{-- Action Icons --}}
+                <div class="flex items-center gap-3 shrink-0">
+                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition" title="Columnas">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 4h3v16H5V4zm6 0h3v16h-3V4zm6 0h3v16h-3V4z" />
+                        </svg>
+                    </button>
+                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition cursor-not-allowed" title="Exportar">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                    </button>
+                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition" title="Refrescar">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </button>
+                    <button class="p-1.5 hover:bg-gray-100 rounded text-gray-600 transition" title="Agregar">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- Table --}}
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-left bg-white">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide w-32">Acciones</th>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide">Campo</th>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide">Requerido</th>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide">Tipo Valor</th>
+                        <th class="px-6 py-4 text-[13px] font-bold text-gray-700 tracking-wide">Estatus</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($this->filteredCampos() as $campo)
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        {{-- Acciones --}}
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            <div class="flex items-center gap-3">
+                                {{-- Edit icon --}}
+                                <button class="text-blue-600 hover:text-blue-800 transition" title="Editar">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 000-1.41l-2.34-2.34a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                                    </svg>
+                                </button>
+                                {{-- Delete icon --}}
+                                <button class="text-red-500 hover:text-red-700 transition" title="Eliminar">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                        
+                        {{-- Data --}}
+                        <td class="px-6 py-3 text-[13px] text-gray-800 whitespace-nowrap">{{ $campo['campo'] }}</td>
+                        <td class="px-6 py-3 text-[13px] text-gray-800 whitespace-nowrap">{{ $campo['requerido'] ? 'Sí' : 'No' }}</td>
+                        <td class="px-6 py-3 text-[13px] text-gray-800 whitespace-nowrap">{{ $campo['tipo_valor'] }}</td>
+                        <td class="px-6 py-3 text-[13px] text-gray-800 whitespace-nowrap">{{ $campo['estatus'] }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-2 text-center text-gray-700 text-sm font-medium">
+                            No hay Registros para mostrar
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Footer / Pagination --}}
+        <div class="px-6 py-3 flex items-center justify-end text-sm text-gray-600 border-t border-gray-100 gap-6">
+            <div class="flex items-center gap-2">
+                <span>100 Filas por Página</span>
+                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                {{-- First Page --}}
+                <button class="text-gray-300 cursor-not-allowed">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
+                    </svg>
+                </button>
+                {{-- Prev Page --}}
+                <button class="text-gray-300 cursor-not-allowed">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+                    </svg>
+                </button>
+                
+                @if(count($this->filteredCampos()) > 0)
+                    <span class="text-[13px] mx-1">1-{{ count($this->filteredCampos()) }} of {{ count($this->filteredCampos()) }}</span>
+                @else
+                    <span class="text-[13px] mx-1">0-0 of 0</span>
+                @endif
+                
+                {{-- Next Page --}}
+                <button class="text-gray-400 hover:text-gray-700 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                    </svg>
+                </button>
+                {{-- Last Page --}}
+                <button class="text-gray-400 hover:text-gray-700 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
