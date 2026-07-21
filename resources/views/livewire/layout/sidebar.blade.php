@@ -18,7 +18,7 @@ $logout = function (Logout $logout) {
         <!-- Sidebar Header (Module Title & Collapse Button) -->
         <div class="flex items-center justify-between px-4 py-4 border-b border-[#002d48]">
             <span x-show="!collapsed" class="text-xs font-bold text-gray-300 tracking-widest uppercase" x-transition>
-                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('ruta.*') ? 'RUTA' : (request()->routeIs('clientes.*') ? 'CLIENTE' : 'VENTA')) }}
+                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('ruta.*') ? 'RUTA' : (request()->routeIs('clientes.*') ? 'CLIENTE' : (request()->routeIs('productos.*') ? 'PRODUCTO' : 'VENTA'))) }}
             </span>
             <button @click="collapsed = !collapsed"
                 class="text-gray-400 hover:text-white transition duration-150 p-1 rounded hover:bg-[#002d48] cursor-pointer">
@@ -172,14 +172,14 @@ $logout = function (Logout $logout) {
                 <!-- Crédito -->
                 <a href="{{ route('clientes.credito') }}" wire:navigate
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('clientes.credito') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
-                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('clientes.credito') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('clientes.credito') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
                     <span x-show="!collapsed" x-transition>Crédito</span>
                 </a>
-                 <!-- Pedidos Crédito -->
+                <!-- Pedidos Crédito -->
                 <a href="#"
                     class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
@@ -193,12 +193,23 @@ $logout = function (Logout $logout) {
                 <!-- Traspaso de Cliente -->
                 <a href="{{ route('clientes.traspaso') }}" wire:navigate
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('clientes.traspaso') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
-                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('clientes.traspaso') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('clientes.traspaso') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                     <span x-show="!collapsed" x-transition>Traspaso de Cliente</span>
+                </a>
+            @elseif(request()->routeIs('productos.*'))
+                <!-- Reporte de Productos -->
+                <a href="{{ route('productos.reporte') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('productos.reporte') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('productos.reporte') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Reporte de Productos</span>
                 </a>
             @else
                 <!-- Levantamiento -->
