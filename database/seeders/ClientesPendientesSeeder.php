@@ -16,14 +16,25 @@ class ClientesPendientesSeeder extends Seeder
         $this->command->newLine();
 
         $this->command->table(
-            ['Ruta', 'Vendedor', 'Cliente', 'Orden', 'Estado', 'Fecha'],
+            [
+                'Zona',
+                'Ruta',
+                'Cliente',
+                'Dirección',
+                'Tipo Agenda',
+                'Estatus',
+                'Borrado'
+            ],
             array_map(fn($d) => [
+
+                $d['zona'],
                 $d['ruta'],
-                $d['vendedor'],
                 $d['cliente'],
-                $d['orden'],
-                $d['estado'],
-                $d['fecha'],
+                $d['direccion'],
+                $d['tipo_agenda'],
+                $d['estatus'],
+                $d['borrado'],
+
             ], $datos)
         );
     }
