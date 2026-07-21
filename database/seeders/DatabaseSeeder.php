@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         // 2. Generar 10 usuarios y ejecutar el PruebaSeeder
         User::factory(10)->create();
         $this->call(PruebaSeeder::class);
+        $this->call(RouteProfitabilitySeeder::class);
     }
 }
