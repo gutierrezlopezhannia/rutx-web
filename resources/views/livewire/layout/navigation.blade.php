@@ -65,13 +65,13 @@ $logout = function (Logout $logout) {
         </a>
 
         <!-- Ruta -->
-        <a href="#" class="flex flex-col items-center justify-center h-full px-5 border-b-2 border-transparent text-gray-500 hover:text-[#004066] hover:border-gray-200 transition-all duration-150">
+        <a href="{{ route('ruta.rutas') }}" wire:navigate class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('ruta.*') ? 'border-[#004066] text-[#004066] font-semibold' : 'border-transparent text-gray-500 hover:text-[#004066] hover:border-gray-200' }} transition-all duration-150">
             <!-- Map Pin Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span class="text-[11px] font-medium tracking-wide">Ruta</span>
+            <span class="text-[11px] {{ request()->routeIs('ruta.*') ? '' : 'font-medium' }} tracking-wide">Ruta</span>
         </a>
 
         <!-- Configuración -->

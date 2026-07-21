@@ -1,16 +1,16 @@
 <?php
 
 use function Livewire\Volt\{state, layout};
-use Database\Factories\LevantamientoFactory;
+use Database\Factories\PedidoFactory;
 
 layout('layouts.app');
 
-$factory = new LevantamientoFactory();
-$mockLevantamientos = $factory->make(15);
+$factory = new PedidoFactory();
+$mockPedidos = $factory->make(20);
 
 state([
-    'levantamientos' => $mockLevantamientos,
-    'levantamientosFiltrados' => $mockLevantamientos,
+    'pedidos' => $mockPedidos,
+    'pedidosFiltrados' => $mockPedidos,
     'filtro_ruta' => 'todos',
     'filtro_vendedor' => 'todos',
     'search' => '',
@@ -19,7 +19,7 @@ state([
 ]);
 
 $aplicarFiltros = function () {
-    $filtradas = collect($this->levantamientos);
+    $filtradas = collect($this->pedidos);
 
     if ($this->filtro_ruta !== 'todos') {
         $filtradas = $filtradas->where('ruta', $this->filtro_ruta);
@@ -35,6 +35,7 @@ $aplicarFiltros = function () {
             return str_contains(strtolower($item['cliente']), $searchQuery) || str_contains(strtolower($item['vendedor']), $searchQuery);
         });
     }
+
     if (!empty($this->fecha_inicio)) {
         try {
             $inicio = \Carbon\Carbon::parse($this->fecha_inicio)->startOfDay();
@@ -55,25 +56,21 @@ $aplicarFiltros = function () {
         }
     }
 
-    $this->levantamientosFiltrados = $filtradas->values()->toArray();
+    $this->pedidosFiltrados = $filtradas->values()->toArray();
 };
 
 $updatedFiltroRuta = function () {
     $this->aplicarFiltros();
 };
-
 $updatedFiltroVendedor = function () {
     $this->aplicarFiltros();
 };
-
 $updatedSearch = function () {
     $this->aplicarFiltros();
 };
-
 $updatedFechaInicio = function () {
     $this->aplicarFiltros();
 };
-
 $updatedFechaFin = function () {
     $this->aplicarFiltros();
 };
@@ -89,7 +86,7 @@ $updatedFechaFin = function () {
                 <span class="mx-2 text-gray-400">/</span>
                 <span>Venta</span>
                 <span class="mx-2 text-gray-400">/</span>
-                <span class="text-[#003859] font-bold">Levantamiento</span>
+                <span class="text-[#003859] font-bold">Pedidos</span>
             </div>
 
             {{-- Main Container Card --}}
@@ -103,7 +100,6 @@ $updatedFechaFin = function () {
                             <label
                                 class="flex items-center border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-700 flex-1 lg:w-32 cursor-pointer"
                                 @click.prevent="$el.querySelector('input').showPicker()">
-
                                 <svg class="w-4 h-4 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor"
                                     stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -111,8 +107,6 @@ $updatedFechaFin = function () {
                                 </svg>
                                 <input type="date" wire:model.live="fecha_inicio"
                                     class="border-none outline-none p-0 w-full focus:ring-0 bg-transparent text-gray-700 font-semibold text-xs sm:text-sm [&::-webkit-calendar-picker-indicator]:hidden" />
-
-
                             </label>
 
                             <span class="text-gray-400 font-bold shrink-0">-</span>
@@ -120,7 +114,6 @@ $updatedFechaFin = function () {
                             <label
                                 class="flex items-center border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-700 flex-1 lg:w-32 cursor-pointer"
                                 @click.prevent="$el.querySelector('input').showPicker()">
-
                                 <svg class="w-4 h-4 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor"
                                     stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -128,8 +121,6 @@ $updatedFechaFin = function () {
                                 </svg>
                                 <input type="date" wire:model.live="fecha_fin"
                                     class="border-none outline-none p-0 w-full focus:ring-0 bg-transparent text-gray-400 font-semibold text-xs sm:text-sm [&::-webkit-calendar-picker-indicator]:hidden" />
-
-
                             </label>
                         </div>
 
@@ -198,7 +189,7 @@ $updatedFechaFin = function () {
                 </div>
 
                 {{-- Table Section --}}
-                @if(!empty($levantamientosFiltrados))
+                @if(!empty($pedidosFiltrados))
                     <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200/80 text-left">
                             <thead>
@@ -206,42 +197,44 @@ $updatedFechaFin = function () {
                                     <th class="px-6 py-4">Ruta</th>
                                     <th class="px-6 py-4">Vendedor</th>
                                     <th class="px-6 py-4">Cliente</th>
-                                    <th class="px-6 py-4">Tipo</th>
+                                    <th class="px-6 py-4">Estado</th>
+                                    <th class="px-6 py-4">Tipo de Pago</th>
                                     <th class="px-6 py-4">Fecha y Hora</th>
-                                    <th class="px-6 py-4">Ubicación</th>
+                                    <th class="px-6 py-4">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-150 bg-white text-xs sm:text-sm text-gray-700">
-                                @forelse($this->levantamientosFiltrados as $item)
+                                @forelse($this->pedidosFiltrados as $item)
                                     <tr class="hover:bg-gray-50/30 transition duration-150">
                                         <td class="px-6 py-4 text-[#003859] font-medium">{{ $item['ruta'] }}</td>
                                         <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['vendedor'] }}</td>
                                         <td class="px-6 py-4 text-gray-900 font-medium">{{ $item['cliente'] }}</td>
                                         <td class="px-6 py-4">
-                                            @if ($item['tipo'] === 'Venta')
+                                            @if ($item['estado'] === 'Sincronizado')
                                                 <span
-                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Venta</span>
+                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Sincronizado</span>
                                             @else
                                                 <span
-                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">Visita
-                                                    sin venta</span>
+                                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-600">Pendiente</span>
                                             @endif
                                         </td>
+                                        <td class="px-6 py-4 text-gray-500 font-medium">{{ $item['tipo_pago'] }}</td>
                                         <td class="px-6 py-4 text-gray-400 font-medium">{{ $item['fecha_hora'] }}</td>
                                         <td class="px-6 py-4">
-                                            <svg class="w-4 h-4 text-[#003859]" fill="none" stroke="currentColor"
-                                                stroke-width="2" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4 text-gray-400 cursor-pointer hover:text-[#003859]"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-12 text-center text-gray-400 font-medium">
-                                            No se encontraron registros de levantamiento.
+                                        <td colspan="7" class="px-6 py-12 text-center text-gray-400 font-medium">
+                                            No se encontraron pedidos.
                                         </td>
                                     </tr>
                                 @endforelse
