@@ -25,16 +25,25 @@ class LevantamientoFactory
 
     public function makeOne(): array
     {
-        $tipo = $this->faker->randomElement(['Venta', 'Visita sin venta']);
+        $zonas = ['1Z - Zona 1', '2Z - Zona 2', '3Z - Zona 3'];
+        $vendedores = ['4686 - RUTA06', '3201 - RUTA01', '4102 - RUTA02', '5210 - RUTA03', '6100 - RUTA07'];
+        $movimientos = ['Venta', 'Preventa'];
+        $tipos_venta = ['Contado', 'Crédito'];
+
+        $subtotal = $this->faker->randomFloat(2, 100, 5000);
+        $impuesto = round($subtotal * 0.00, 2);
+        $total    = $subtotal + $impuesto;
 
         return [
-            'ruta' => $this->faker->randomElement(['Ruta 1', 'Ruta 2', 'Ruta 3']),
-            'vendedor' => $this->faker->randomElement(['Ana María', 'Carlos Díaz', 'Jorge Pérez']),
-            'cliente' => $this->faker->company(),
-            'tipo' => $tipo,
-            'fecha_hora' => $this->faker->dateTimeBetween('-7 days', 'now')->format('Y-m-d h:i A'),
-            'latitud' => $this->faker->latitude(19.0, 20.0),
-            'longitud' => $this->faker->longitude(-99.5, -99.0),
+            'zona'       => $this->faker->randomElement($zonas),
+            'vendedor'   => $this->faker->randomElement($vendedores),
+            'cliente'    => strtoupper($this->faker->company()),
+            'movimiento' => $this->faker->randomElement($movimientos),
+            'tipo_venta' => $this->faker->randomElement($tipos_venta),
+            'subtotal'   => $subtotal,
+            'impuesto'   => $impuesto,
+            'total'      => $total,
+            'fecha'      => $this->faker->dateTimeBetween('-7 days', 'now')->format('Y-m-d'),
         ];
     }
 }

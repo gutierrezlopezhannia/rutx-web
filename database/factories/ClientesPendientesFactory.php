@@ -26,12 +26,34 @@ class ClientesPendientesFactory
     public function makeOne(): array
     {
         return [
-            'ruta'     => $this->faker->randomElement(['Ruta 1', 'Ruta 2', 'Ruta 3']),
-            'vendedor' => $this->faker->randomElement(['Ana María', 'Carlos Díaz', 'Jorge Pérez']),
-            'cliente'  => $this->faker->company(),
-            'orden'    => $this->faker->numberBetween(1, 30),
-            'estado'   => 'Pendiente',
-            'fecha'    => $this->faker->dateTimeBetween('-7 days', 'now')->format('Y-m-d'),
+            'zona' => '1Z - Zona 1',
+
+            'ruta' => $this->faker->randomElement([
+                '3983 - RUTA01',
+                '3984 - RUTA02',
+                '3985 - RUTA03',
+            ]),
+
+            'cliente' => $this->faker->company(),
+
+            'direccion' => $this->faker->streetAddress(),
+
+            'estatus' => $this->faker->randomElement([
+                'Activo',
+                'Inactivo'
+            ]),
+
+            'borrado' => $this->faker->randomElement([
+                'Sí',
+                'No'
+            ]),
+
+            'tipo_agenda' => $this->faker->randomElement([
+                'Agenda General',
+                'Agenda de Entrega'
+            ]),
+
+            'fecha' => now()->format('Y-m-d'),
         ];
     }
 }
