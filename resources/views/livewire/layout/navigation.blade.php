@@ -11,12 +11,11 @@ $logout = function (Logout $logout) {
 ?>
 
 <nav
-    class="bg-white dark:bg-[#1a202c] border-b border-gray-200 dark:border-gray-700 h-16 flex items-center justify-between px-6 z-30 select-none w-full transition-colors duration-300">
+    class="bg-[#FF6A13] border-b border-gray-200 dark:border-gray-700 h-16 flex items-center justify-between px-6 z-30 select-none w-full transition-colors duration-300">
     <!-- Left: Logo & Status -->
     <div class="flex items-center gap-4">
         <!-- Logo -->
-        <a href="{{ route('dashboard') }}" wire:navigate
-            class="text-2xl font-extrabold text-[#004066] dark:text-gray-100 tracking-wider">
+        <a href="{{ route('dashboard') }}" wire:navigate class="text-2xl font-extrabold text-[#003B5C] tracking-wider">
             RUTX
         </a>
 
@@ -33,7 +32,7 @@ $logout = function (Logout $logout) {
     <div class="flex items-center h-full gap-2">
         <!-- Cliente -->
         <a href="{{ route('clientes.index') }}" wire:navigate
-            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('clientes.*') ? 'border-[#004066] dark:border-blue-400 text-[#004066] dark:text-blue-400 font-semibold' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-[#004066] dark:hover:text-blue-300 hover:border-gray-200 dark:hover:border-gray-600' }} transition-all duration-150">
+            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('clientes.*') ? 'border-[#003B5C] text-[#003B5C] font-semibold' : 'border-transparent text-[#003B5C]/80 hover:text-[#003B5C] hover:border-[#003B5C]/50' }} transition-all duration-150">
             <!-- User Group Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -44,8 +43,8 @@ $logout = function (Logout $logout) {
         </a>
 
         <!-- Producto -->
-        <a href="{{ route('productos.reporte') }}" wire:navigate
-            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('productos.*') ? 'border-[#004066] dark:border-blue-400 text-[#004066] dark:text-blue-400 font-semibold' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-[#004066] dark:hover:text-blue-300 hover:border-gray-200 dark:hover:border-gray-600' }} transition-all duration-150">
+        <a href="{{ route('productos.index') }}" wire:navigate
+            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('productos.*') ? 'border-[#003B5C] text-[#003B5C] font-semibold' : 'border-transparent text-[#003B5C]/80 hover:text-[#003B5C] hover:border-[#003B5C]/50' }} transition-all duration-150">
             <!-- Box Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -57,7 +56,7 @@ $logout = function (Logout $logout) {
 
         <!-- Inventario -->
         <a href="#"
-            class="flex flex-col items-center justify-center h-full px-5 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-[#004066] dark:hover:text-blue-300 hover:border-gray-200 dark:hover:border-gray-600 transition-all duration-150">
+            class="flex flex-col items-center justify-center h-full px-5 border-b-2 border-transparent text-[#003B5C]/80 hover:text-[#003B5C] hover:border-[#003B5C]/50 transition-all duration-150">
             <!-- Clipboard Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -68,7 +67,7 @@ $logout = function (Logout $logout) {
 
         <!-- Venta -->
         <a href="{{ route('dashboard') }}" wire:navigate
-            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('dashboard') || request()->routeIs('ventas.*') ? 'border-[#004066] dark:border-blue-400 text-[#004066] dark:text-blue-400 font-semibold' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-[#004066] dark:hover:text-blue-300 hover:border-gray-200 dark:hover:border-gray-600' }} transition-all duration-150">
+            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('dashboard') || request()->routeIs('ventas.*') ? 'border-[#003B5C] text-[#003B5C] font-semibold' : 'border-transparent text-[#003B5C]/80 hover:text-[#003B5C] hover:border-[#003B5C]/50' }} transition-all duration-150">
             <!-- Shopping Cart Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,7 +79,7 @@ $logout = function (Logout $logout) {
 
         <!-- Ruta -->
         <a href="{{ route('ruta.rutas') }}" wire:navigate
-            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('ruta.*') ? 'border-[#004066] dark:border-blue-400 text-[#004066] dark:text-blue-400 font-semibold' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-[#004066] dark:hover:text-blue-300 hover:border-gray-200 dark:hover:border-gray-600' }} transition-all duration-150">
+            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('ruta.*') ? 'border-[#003B5C] text-[#003B5C] font-semibold' : 'border-transparent text-[#003B5C]/80 hover:text-[#003B5C] hover:border-[#003B5C]/50' }} transition-all duration-150">
             <!-- Map Pin Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -92,7 +91,7 @@ $logout = function (Logout $logout) {
 
         <!-- Configuración -->
         <a href="{{ route('config.users') }}"
-            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('config.*') ? 'border-[#004066] dark:border-blue-400 text-[#004066] dark:text-blue-400 font-semibold' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-[#004066] dark:hover:text-blue-300 hover:border-gray-200 dark:hover:border-gray-600' }} transition-all duration-150">
+            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('config.*') ? 'border-[#003B5C] text-[#003B5C] font-semibold' : 'border-transparent text-[#003B5C]/80 hover:text-[#003B5C] hover:border-[#003B5C]/50' }} transition-all duration-150">
             <!-- Cog Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
