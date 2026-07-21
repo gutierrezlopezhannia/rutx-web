@@ -2,61 +2,48 @@
 
 namespace App\View\Components;
 
+use App\Services\CurrencyService;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
+/**
+ * Componente Blade <x-currency-format>
+ *
+ * Delega toda la lógica al CurrencyService.
+ *
+ * Tipos disponibles:
+ *   type="amount"     → símbolo + monto formateado  ("USD$ 15,420.00")
+ *   type="conversion" → línea equivalente en MXN    ("Equivale a $ 285,270.00 MXN") | vacío si ya es MXN
+ *   type="code"       → código entre paréntesis     ("(USD)")
+ *
+ * Uso:
+ *   <x-currency-format :amount="$precio" :moneda-id="$monedaId" type="amount" />
+ *   <x-currency-format :amount="$precio" :moneda-id="$monedaId" type="conversion" />
+ *   <x-currency-format :moneda-id="$monedaId" type="code" />
+ */
 class CurrencyFormat extends Component
 {
-    public float $amount;
-    public int $monedaId;
-    public string $type;
+    public CurrencyService $currency;
 
-    /**
-     * Create a new component instance.
-     */
-    public function __construct(float $amount = 0, int $monedaId = 1, string $type = 'amount')
-    {
-        $this->amount = $amount;
-        $this->monedaId = $monedaId;
-        $this->type = $type;
+    public function __construct(
+        public float  $amount   = 0,
+        public int    $monedaId = 1,
+        public string $type     = 'amount'
+    ) {
+        $this->currency = CurrencyService::make($monedaId);
     }
 
+    /** Devuelve el texto final según el tipo solicitado. */
     public function getOutput(): string
     {
-        // Mock de monedas (SQLite no tiene tabla MONEDAS de Firebird)
-        $monedas = [
-            1 => 'MXN',
-            2 => 'USD',
-            3 => 'EUR',
-        ];
-
-        $code = $monedas[$this->monedaId] ?? 'MXN';
-
-        if ($this->type === 'code') {
-            return "($code)";
-        }
-
-        // Mock de tipo de cambio (para la fase actual)
-        $tipoCambio = 18.50; 
-
-        if ($this->type === 'conversion') {
-            if ($code === 'USD') {
-                $converted = $this->amount * $tipoCambio;
-                return "Equivale a $ " . number_format($converted, 2) . " MXN";
-            } else {
-                $converted = $this->amount / $tipoCambio;
-                return "Equivale a USD$ " . number_format($converted, 2);
-            }
-        }
-
-        // Si es amount, ya no mostramos USD$ o Pesos, solo el formato numérico con $
-        return '$' . number_format($this->amount, 2);
+        return match ($this->type) {
+            'code'       => $this->currency->label(),
+            'conversion' => $this->currency->conversion($this->amount),
+            default      => $this->currency->format($this->amount),
+        };
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
         return view('components.currency-format');
