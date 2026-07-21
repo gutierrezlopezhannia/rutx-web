@@ -323,6 +323,17 @@ $logout = function (Logout $logout) {
                     </svg>
                     <span x-show="!collapsed" x-transition>Reportes y Gráficas</span>
                 </a>
+
+                <!-- Reportes Globales -->
+                <a href="{{ route('ventas.reportes-globales') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ventas.reportes-globales') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.reportes-globales') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 13h2.243a2 2 0 011.956 1.566l1.206 5.433a2 2 0 003.905-.333l1.83-11.895a2 2 0 013.918-.112l1.378 4.606A2 2 0 0019.345 14H21" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Reportes Globales</span>
+                </a>
             @endif
         </nav>
     </div>
