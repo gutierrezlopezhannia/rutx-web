@@ -32,6 +32,10 @@ Volt::route('reporte-rentabilidad-ruta', 'ventas.rentabilidad-ruta')
     ->middleware(['auth'])
     ->name('ventas.rentabilidad-ruta');
 
+Volt::route('visor', 'ventas.visor')
+    ->middleware(['auth'])
+    ->name('ventas.visor');
+
 Volt::route('reportes-globales', 'ventas.reportes-globales')
     ->middleware(['auth'])
     ->name('ventas.reportes-globales');

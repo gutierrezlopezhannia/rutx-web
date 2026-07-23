@@ -17,20 +17,20 @@ return new class extends Migration
             $table->string('ruta_id');
             $table->date('fecha');
             $table->string('vendedor');
-            $table->decimal('ventas_netas', 12, 2)->default(0);
-            $table->decimal('ventas_contado', 12, 2)->default(0);
-            $table->decimal('ventas_credito', 12, 2)->default(0);
-            $table->decimal('preventas', 12, 2)->default(0);
-            $table->decimal('costo_compra_preventa', 12, 2)->default(0);
+            $table->decimal('ventas_netas', 12, 2);
+            $table->decimal('ventas_contado', 12, 2);
+            $table->decimal('ventas_credito', 12, 2);
+            $table->decimal('preventas', 12, 2);
+            $table->decimal('costo_compra_preventa', 12, 2);
             $table->integer('clientes_preventa')->nullable();
-            $table->decimal('entregas', 12, 2)->default(0);
-            $table->decimal('costo_producto', 12, 2)->default(0);
-            $table->decimal('devolucion_contado', 12, 2)->default(0);
-            $table->integer('dias')->default(0);
-            $table->decimal('gastos_operativos', 12, 2)->default(0);
-            $table->decimal('costo_venta', 12, 2)->default(0);
-            $table->decimal('utilidad_ruta', 12, 2)->default(0);
-            $table->decimal('porcentaje', 5, 2)->default(0); // e.g. 99.99%
+            $table->decimal('entregas', 12, 2);
+            $table->decimal('costo_producto', 12, 2);
+            $table->decimal('devolucion_contado', 12, 2);
+            $table->integer('dias');
+            $table->decimal('gastos_operativos', 12, 2);
+            $table->decimal('costo_venta', 12, 2);
+            $table->decimal('utilidad_ruta', 12, 2);
+            $table->decimal('porcentaje', 5, 2); // e.g. 99.99%
             $table->timestamps();
         });
     }

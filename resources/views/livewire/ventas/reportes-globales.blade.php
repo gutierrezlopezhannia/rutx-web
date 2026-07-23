@@ -432,7 +432,19 @@ document.addEventListener('alpine:init', () => {
                 succeed(() => {
                     this.$nextTick(() => {
                         const data = this.getChartData();
-                        // Si no existían los gráficos (porque no había canvas), construirlos
+                        const canvasT = document.getElementById('chartTotales');
+                        
+                        // Si el canvas en el DOM es diferente al que tiene la gráfica (Livewire lo recreó), destruimos la instancia
+                        if (this.chartT && this.chartT.canvas !== canvasT) {
+                            this.chartT.destroy();
+                            this.chartT = null;
+                        }
+                        if (this.chartP && this.chartP.canvas !== document.getElementById('chartPiezas')) {
+                            this.chartP.destroy();
+                            this.chartP = null;
+                        }
+
+                        // Si no existían los gráficos (porque no había canvas o se recrearon), construirlos
                         if (!this.chartT || !this.chartP) {
                             this.buildCharts(data);
                         } else {
