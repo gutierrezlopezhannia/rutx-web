@@ -5,5 +5,6 @@ use Livewire\Volt\Volt;
 
 // Rutas para el módulo de Rutas
 Route::middleware(['auth', 'verified'])->group(function () {
-    Volt::route('/ruta/rutas', 'rutas.simulacion')->name('ruta.rutas');
+    Volt::route('/ruta/rutas', 'rutas.rutas')->name('ruta.rutas');
+    Volt::route('/ruta/mapa-clientes', 'rutas.mapa-clientes')->name('ruta.mapa-clientes');
 });
