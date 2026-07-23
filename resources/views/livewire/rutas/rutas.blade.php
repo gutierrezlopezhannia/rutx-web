@@ -366,14 +366,14 @@ $cerrarKm = function () {
                                         </td>
                                     @endif
                                     @if ($col_clave)
-                                        <td class="px-6 py-4 whitespace-nowrap font-semibold text-[#004066]">
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                                             {{ $ruta['clave'] }}</td>
                                     @endif
                                     @if ($col_nombre)
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $ruta['nombre'] }}</td>
                                     @endif
                                     @if ($col_contrasena)
-                                        <td class="px-6 py-4 whitespace-nowrap font-mono text-xs text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                                             {{ $ruta['contrasena'] }}</td>
                                     @endif
                                     @if ($col_sincronizado)
@@ -400,7 +400,7 @@ $cerrarKm = function () {
                                         </td>
                                     @endif
                                     @if ($col_tipo_ruta)
-                                        <td class="px-6 py-4 text-gray-700 font-medium">{{ $ruta['tipo_ruta'] }}</td>
+                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $ruta['tipo_ruta'] }}</td>
                                     @endif
                                     @if ($col_estatus)
                                         <td class="px-6 py-4 whitespace-nowrap">
