@@ -242,7 +242,7 @@ $descargarCSV = function () {
                     {{-- Filtro Zona --}}
                     <div class="w-44 flex flex-col shrink-0">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Zona</label>
-                        <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#3b82f6] focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
+                        <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-blue-500 focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
                             <option value="todos">Todas las Zonas</option>
                             @foreach(\App\Models\Zone::pluck('id')->sort() as $z)
                                 <option value="{{ $z }}">{{ $z }}</option>
@@ -284,7 +284,7 @@ $descargarCSV = function () {
                             @foreach(\App\Models\Seller::pluck('id')->sort() as $sellerId)
                                 <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
                                     <input type="checkbox" value="{{ $sellerId }}" x-model="selected"
-                                        class="text-[#3b82f6] rounded border-gray-300 focus:ring-[#3b82f6] w-4 h-4" />
+                                        class="text-blue-500 rounded border-gray-300 focus:ring-blue-500 w-4 h-4" />
                                     <span class="text-sm text-gray-700 font-semibold">{{ $sellerId }}</span>
                                 </label>
                             @endforeach
@@ -309,7 +309,7 @@ $descargarCSV = function () {
 
                     {{-- Botón Consultar --}}
                     <div class="w-28 flex flex-col shrink-0">
-                        <button wire:click="consultar" class="w-full py-1.5 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer text-center">
+                        <button wire:click="consultar" class="w-full py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer text-center">
                             Consultar
                         </button>
                     </div>
@@ -356,7 +356,7 @@ $descargarCSV = function () {
                                     ] as $key => $label)
                                         <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
                                             <input type="checkbox" wire:model.live="visibleColumns.{{ $key }}"
-                                                class="text-[#3b82f6] rounded border-gray-300 focus:ring-[#3b82f6] w-4 h-4" />
+                                                class="text-blue-500 rounded border-gray-300 focus:ring-blue-500 w-4 h-4" />
                                             <span class="text-xs text-gray-700 font-semibold">{{ $label }}</span>
                                         </label>
                                     @endforeach
