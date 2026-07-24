@@ -18,7 +18,7 @@ $logout = function (Logout $logout) {
         <!-- Sidebar Header (Module Title & Collapse Button) -->
         <div class="flex items-center justify-between px-4 py-4 border-b border-[#002d48]">
             <span x-show="!collapsed" class="text-xs font-bold text-gray-300 tracking-widest uppercase" x-transition>
-                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('ruta.*') ? 'RUTA' : (request()->routeIs('clientes.*') ? 'CLIENTE' : (request()->routeIs('productos.*') ? 'PRODUCTO' : 'VENTA'))) }}
+                {{ request()->routeIs('config.*') ? 'CONFIGURACIÓN' : (request()->routeIs('ruta.*') ? 'RUTA' : (request()->routeIs('clientes.*') ? 'CLIENTE' : (request()->routeIs('productos.*') ? 'PRODUCTO' : (request()->routeIs('inventario.*') ? 'INVENTARIO' : 'VENTA')))) }}
             </span>
             <button @click="collapsed = !collapsed"
                 class="text-gray-400 hover:text-white transition duration-150 p-1 rounded hover:bg-[#002d48] cursor-pointer">
@@ -108,6 +108,16 @@ $logout = function (Logout $logout) {
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <span x-show="!collapsed" x-transition>Rutas</span>
+                </a>
+
+                <!-- Mapa de Clientes (Neyser) -->
+                <a href="{{ route('ruta.mapa-clientes') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ruta.mapa-clientes') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ruta.mapa-clientes') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Mapa de Clientes</span>
                 </a>
 
                 <!-- Static Mocks per requested layout -->
@@ -242,6 +252,43 @@ $logout = function (Logout $logout) {
                     </svg>
                     <span x-show="!collapsed" x-transition>Reporte de Productos</span>
                 </a>
+            @elseif(request()->routeIs('inventario.*'))
+                <!-- Plan de Carga -->
+                <a href="{{ route('inventario.index') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.index') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.index') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Plan de Carga</span>
+                </a>
+
+                <!-- Cierre de Ruta -->
+                <a href="{{ route('inventario.cierre') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.cierre') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.cierre') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Cierre de Ruta</span>
+                </a>
+
+                <!-- Mermas y Devoluciones -->
+                <a href="{{ route('inventario.mermas') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.mermas') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.mermas') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Mermas y Devoluciones</span>
+                </a>
+
+                <!-- Inventario por Ruta -->
+                <a href="{{ route('inventario.ruta') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.ruta') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.ruta') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1-1v10a1 1 0 001 1h1m8-1a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0H3m6 0h6m6 0a2 2 0 104 0m-4 0H5" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Inventario por Ruta</span>
+                </a>
             @else
                 <!-- Levantamiento -->
                 <a href="{{ route('ventas.levantamiento') }}" wire:navigate
@@ -286,8 +333,8 @@ $logout = function (Logout $logout) {
                 </a>
 
                 <!-- Depósito Venta -->
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                <a href="{{ route('ventas.deposito-venta') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium {{ request()->routeIs('ventas.deposito-venta') ? 'bg-[#004066] text-white' : 'text-gray-300 hover:text-white hover:bg-[#002d48]' }} rounded transition duration-150">
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -357,6 +404,16 @@ $logout = function (Logout $logout) {
                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                     <span x-show="!collapsed" x-transition>Clientes Pendientes</span>
+                </a>
+
+                <!-- Visor -->
+                <a href="{{ route('ventas.visor') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ventas.visor') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.visor') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Visor</span>
                 </a>
 
                 <!-- Reportes y Gráficas -->

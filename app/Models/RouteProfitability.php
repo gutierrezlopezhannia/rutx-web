@@ -31,4 +31,20 @@ class RouteProfitability extends Model
         'utilidad_ruta',
         'porcentaje'
     ];
+
+    protected $attributes = [
+        'ventas_netas' => 0,
+        'ventas_contado' => 0,
+        'ventas_credito' => 0,
+        'preventas' => 0,
+        'costo_compra_preventa' => 0,
+        'entregas' => 0,
+        'costo_producto' => 0,
+        'devolucion_contado' => 0,
+        'dias' => 0,
+        'gastos_operativos' => 0,
+        'costo_venta' => 0,
+        'utilidad_ruta' => 0,
+        'porcentaje' => 0,
+    ];
 }
