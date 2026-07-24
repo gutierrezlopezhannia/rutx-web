@@ -289,6 +289,15 @@ $logout = function (Logout $logout) {
                     </svg>
                     <span x-show="!collapsed" x-transition>Inventario por Ruta</span>
                 </a>
+
+                <!-- Entrada Almacén -->
+                <a href="{{ route('inventario.entrada-almacen') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.entrada-almacen') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.entrada-almacen') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Entrada Almacén</span>
+                </a>
             @else
                 <!-- Levantamiento -->
                 <a href="{{ route('ventas.levantamiento') }}" wire:navigate
