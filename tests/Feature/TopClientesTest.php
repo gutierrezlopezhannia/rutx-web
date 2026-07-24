@@ -40,10 +40,12 @@ class TopClientesTest extends TestCase
         $response
             ->assertOk()
             ->assertSeeVolt('ventas.top-clientes')
-            ->assertSee('Ranking de Clientes con Mayor Venta')
-            ->assertSee('Total Ventas (Período)')
-            ->assertSee('Pedidos / Tickets')
-            ->assertSee('Ticket Promedio General');
+            ->assertSee('Clientes con mayor Venta')
+            ->assertSee('Zona')
+            ->assertSee('Vendedor')
+            ->assertSee('Fecha inicial')
+            ->assertSee('Fecha final')
+            ->assertSee('Consultar');
     }
 
     /**
@@ -54,30 +56,40 @@ class TopClientesTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // Component has the default date range from setup matching the seeder
+        // Seeded invoices are dated '2018-09-19'
         Volt::test('ventas.top-clientes')
+            ->set('fecha_inicio', '2018-01-01')
+            ->set('fecha_fin', '2026-12-31')
+            ->call('consultar')
             ->assertSee('CLIENTE PRUEBA 01')
             ->assertSee('CLIENTE PRUEBA 02')
-            ->assertSee('99-PRUEBA');
+            // The route label combines code and name
+            ->assertSee('999001 VENDEDOR PRUEBA');
     }
 
     /**
-     * Test that the top limit successfully restricts results.
+     * Test that the multi-select vendor filter correctly limits results.
      */
-    public function test_top_limit_restricts_results(): void
+    public function test_seller_filter_applies(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // Default top_limit is 10. Let's set it to 2 and check that we only see top 2.
-        // The seeder has 4 CLIENTE PRUEBA. Let's make sure it contains CLIENTE PRUEBA 01 (highest sales) 
-        // and doesn't show others when limited to 1 (or 2).
+        // Filter by the seeded seller
         Volt::test('ventas.top-clientes')
-            ->set('top_limit', 2)
-            ->assertSee('CLIENTE PRUEBA 01') // total total: ~55100 in seeder
-            ->assertSee('CLIENTE PRUEBA 02') // total total: ~53500 in seeder
-            ->assertDontSee('CLIENTE PRUEBA 03') // total total: ~10000
-            ->assertDontSee('CLIENTE PRUEBA 04'); // total total: ~14000
+            ->set('fecha_inicio', '2018-01-01')
+            ->set('fecha_fin', '2026-12-31')
+            ->set('vendedores_seleccionados', ['999001 - VENDEDOR PRUEBA'])
+            ->call('consultar')
+            ->assertSee('CLIENTE PRUEBA 01');
+
+        // Filter by a non-existent seller, should show empty
+        Volt::test('ventas.top-clientes')
+            ->set('fecha_inicio', '2018-01-01')
+            ->set('fecha_fin', '2026-12-31')
+            ->set('vendedores_seleccionados', ['nonexistent-seller'])
+            ->call('consultar')
+            ->assertDontSee('CLIENTE PRUEBA 01');
     }
 
     /**
@@ -89,6 +101,9 @@ class TopClientesTest extends TestCase
         $this->actingAs($user);
 
         Volt::test('ventas.top-clientes')
+            ->set('fecha_inicio', '2018-01-01')
+            ->set('fecha_fin', '2026-12-31')
+            ->call('consultar')
             ->set('search', 'CLIENTE PRUEBA 01')
             ->assertSee('CLIENTE PRUEBA 01')
             ->assertDontSee('CLIENTE PRUEBA 02');
