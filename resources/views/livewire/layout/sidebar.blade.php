@@ -211,13 +211,25 @@ $logout = function (Logout $logout) {
                     <span x-show="!collapsed" x-transition>Productos</span>
                 </a>
 
-                <!-- Líneas y Políticas -->
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <!-- Líneas -->
+                <a href="{{ route('productos.lineas') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('productos.lineas') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('productos.lineas') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
                     </svg>
-                    <span x-show="!collapsed" x-transition>Líneas y Políticas</span>
+                    <span x-show="!collapsed" x-transition>Líneas</span>
+                </a>
+
+                <!-- Políticas de descuento -->
+                <a href="{{ route('productos.politicas') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('productos.politicas') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('productos.politicas') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Políticas de descuento</span>
                 </a>
 
                 <!-- Línea Familia -->
@@ -228,26 +240,6 @@ $logout = function (Logout $logout) {
                             d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                     </svg>
                     <span x-show="!collapsed" x-transition>Línea Familia</span>
-                </a>
-
-                <!-- Lista de Precios -->
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span x-show="!collapsed" x-transition>Lista de Precios</span>
-                </a>
-
-                <!-- Entrada Almacén -->
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                    </svg>
-                    <span x-show="!collapsed" x-transition>Entrada Almacén</span>
                 </a>
 
                 <!-- Reporte de Productos -->
