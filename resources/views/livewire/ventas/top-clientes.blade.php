@@ -30,7 +30,7 @@ state([
         'venta_mes' => true,
     ],
 
-    // Búsqueda en los resultados
+    // Búsqueda en los resultados (mantenida en backend para compatibilidad con tests)
     'search' => '',
 ]);
 
@@ -244,7 +244,7 @@ $descargarCSV = function () {
                         {{-- Filtro Zona --}}
                         <div class="flex flex-col w-full sm:w-[20%]">
                             <label class="text-xs text-gray-400 font-semibold mb-1">Zona</label>
-                            <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#003859] focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
+                            <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#3b82f6] focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
                                 <option value="todos">Todas las Zonas</option>
                                 @foreach(\App\Models\Zone::pluck('id')->sort() as $z)
                                     <option value="{{ $z }}">{{ $z }}</option>
@@ -256,7 +256,7 @@ $descargarCSV = function () {
                         <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" class="relative w-full sm:w-[35%] flex flex-col">
                             <label class="text-xs text-gray-400 font-semibold mb-1">Vendedor</label>
                             <div @click="open = !open" @click.away="open = false" class="flex items-center justify-between border-0 border-b border-gray-300 py-1 cursor-pointer">
-                                <span class="text-sm text-gray-750 font-semibold truncate select-none">
+                                <span class="text-sm text-gray-700 font-semibold truncate select-none">
                                     <template x-if="selected.length === 0">
                                         <span class="text-gray-400 font-medium">Vendedor</span>
                                     </template>
@@ -286,7 +286,7 @@ $descargarCSV = function () {
                                 @foreach(\App\Models\Seller::pluck('id')->sort() as $sellerId)
                                     <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
                                         <input type="checkbox" value="{{ $sellerId }}" x-model="selected"
-                                            class="text-[#003859] rounded border-gray-300 focus:ring-[#003859] w-4 h-4" />
+                                            class="text-[#3b82f6] rounded border-gray-300 focus:ring-[#3b82f6] w-4 h-4" />
                                         <span class="text-sm text-gray-700 font-semibold">{{ $sellerId }}</span>
                                     </label>
                                 @endforeach
@@ -312,7 +312,7 @@ $descargarCSV = function () {
 
                     {{-- Botón Consultar --}}
                     <div class="w-full lg:w-auto flex justify-end">
-                        <button wire:click="consultar" class="px-7 py-2 bg-[#003859] hover:bg-[#002d48] text-white rounded-lg text-sm font-semibold transition duration-150 cursor-pointer">
+                        <button wire:click="consultar" class="px-7 py-2 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer">
                             Consultar
                         </button>
                     </div>
@@ -322,78 +322,6 @@ $descargarCSV = function () {
             </div>
 
             @if($consultado)
-                {{-- Fila con Buscador a la Izquierda y Botones de Acción a la Derecha --}}
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3 no-print">
-                    {{-- Buscador reactivo --}}
-                    <div class="flex items-center border-0 border-b border-gray-300 rounded-none py-1 w-72">
-                        <svg class="w-4 h-4 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input type="text" wire:model.live="search" placeholder="Buscar por cliente..." class="border-none outline-none p-0 w-full focus:ring-0 bg-transparent text-gray-700 text-xs placeholder-gray-400 font-medium" />
-                    </div>
-
-                    {{-- Iconos de Acción --}}
-                    <div class="flex items-center space-x-2 text-gray-400">
-                        
-                        {{-- Editar Columnas --}}
-                        <div x-data="{ open: false }" class="relative">
-                            <button @click="open = !open" @click.away="open = false"
-                                class="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition duration-150 cursor-pointer" title="Editar Columnas">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2m0 10V7a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
-                            </button>
-                            <div x-show="open" style="display:none;"
-                                class="absolute right-0 mt-2 w-52 bg-white border border-gray-200 shadow-xl rounded-lg z-50 p-2">
-                                <div class="text-[11px] font-bold text-gray-400 mb-2 px-2 uppercase tracking-wider">Editar Columnas</div>
-                                @foreach([
-                                    'rank' => 'No.',
-                                    'cliente' => 'Cliente',
-                                    'ruta' => 'Ruta',
-                                    'total' => 'Total',
-                                    'contado' => 'Total de contado',
-                                    'credito' => 'Total de crédito',
-                                    'ventas' => 'Ventas',
-                                    'venta_mes' => 'Venta por mes',
-                                ] as $key => $label)
-                                    <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
-                                        <input type="checkbox" wire:model.live="visibleColumns.{{ $key }}"
-                                            class="text-[#003859] rounded border-gray-300 focus:ring-[#003859] w-4 h-4" />
-                                        <span class="text-xs text-gray-700 font-semibold">{{ $label }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        {{-- Exportar Dropdown --}}
-                        <div x-data="{ open: false }" class="relative">
-                            <button @click="open = !open" @click.away="open = false"
-                                class="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition duration-150 cursor-pointer" title="Exportar">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                </svg>
-                            </button>
-                            <div x-show="open" style="display:none;"
-                                class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 shadow-xl rounded-lg z-50 py-1 text-xs">
-                                <button wire:click="descargarCSV" class="w-full text-start px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition cursor-pointer font-medium">
-                                    Exportar a CSV
-                                </button>
-                                <button @click="window.print()" class="w-full text-start px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition cursor-pointer font-medium">
-                                    Exportar a PDF
-                                </button>
-                            </div>
-                        </div>
-
-                        {{-- Actualizar --}}
-                        <button wire:click="aplicarFiltros" class="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition duration-150 cursor-pointer" title="Actualizar">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5" />
-                            </svg>
-                        </button>
-
-                    </div>
-                </div>
-
                 {{-- Área del Reporte que se Imprime --}}
                 <div id="print-area">
                     
@@ -405,6 +333,68 @@ $descargarCSV = function () {
 
                     {{-- Card de la Tabla --}}
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200/80 p-5 mb-6">
+                        
+                        {{-- Iconos de Acción a la Derecha (dentro del card, arriba de la tabla) --}}
+                        <div class="flex justify-end items-center space-x-2 text-gray-400 mb-4 no-print">
+                            
+                            {{-- Editar Columnas --}}
+                            <div x-data="{ open: false }" class="relative">
+                                <button @click="open = !open" @click.away="open = false"
+                                    class="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition duration-150 cursor-pointer" title="Editar Columnas">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2m0 10V7a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                </button>
+                                <div x-show="open" style="display:none;"
+                                    class="absolute right-0 mt-2 w-52 bg-white border border-gray-200 shadow-xl rounded-lg z-50 p-2">
+                                    <div class="text-[11px] font-bold text-gray-400 mb-2 px-2 uppercase tracking-wider">Editar Columnas</div>
+                                    @foreach([
+                                        'rank' => 'No.',
+                                        'cliente' => 'Cliente',
+                                        'ruta' => 'Ruta',
+                                        'total' => 'Total',
+                                        'contado' => 'Total de contado',
+                                        'credito' => 'Total de crédito',
+                                        'ventas' => 'Ventas',
+                                        'venta_mes' => 'Venta por mes',
+                                    ] as $key => $label)
+                                        <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
+                                            <input type="checkbox" wire:model.live="visibleColumns.{{ $key }}"
+                                                class="text-[#3b82f6] rounded border-gray-300 focus:ring-[#3b82f6] w-4 h-4" />
+                                            <span class="text-xs text-gray-700 font-semibold">{{ $label }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            {{-- Exportar Dropdown --}}
+                            <div x-data="{ open: false }" class="relative">
+                                <button @click="open = !open" @click.away="open = false"
+                                    class="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition duration-150 cursor-pointer" title="Exportar">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                </button>
+                                <div x-show="open" style="display:none;"
+                                    class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 shadow-xl rounded-lg z-50 py-1 text-xs text-start">
+                                    <button wire:click="descargarCSV" class="w-full text-start px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition cursor-pointer font-medium">
+                                        Exportar a CSV
+                                    </button>
+                                    <button @click="window.print()" class="w-full text-start px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition cursor-pointer font-medium">
+                                        Exportar a PDF
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Actualizar --}}
+                            <button wire:click="aplicarFiltros" class="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition duration-150 cursor-pointer" title="Actualizar">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5" />
+                                </svg>
+                            </button>
+
+                        </div>
+
                         <div class="overflow-x-auto border border-gray-200/60 rounded-lg">
                             <table class="min-w-full text-xs text-left whitespace-nowrap">
                                 <thead class="bg-gray-50/70 text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
