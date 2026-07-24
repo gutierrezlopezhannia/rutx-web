@@ -238,85 +238,81 @@ $descargarCSV = function () {
                 
                 <h2 class="text-base font-bold text-gray-800 mb-6">Clientes con mayor Venta</h2>
 
-                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 w-full">
-                    
-                    <div class="flex flex-wrap items-end gap-6 flex-1">
-                        {{-- Filtro Zona --}}
-                        <div class="flex flex-col w-full sm:w-[20%]">
-                            <label class="text-xs text-gray-400 font-semibold mb-1">Zona</label>
-                            <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#3b82f6] focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
-                                <option value="todos">Todas las Zonas</option>
-                                @foreach(\App\Models\Zone::pluck('id')->sort() as $z)
-                                    <option value="{{ $z }}">{{ $z }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end w-full">
+                    {{-- Filtro Zona --}}
+                    <div class="flex flex-col w-full md:col-span-2">
+                        <label class="text-xs text-gray-400 font-semibold mb-1">Zona</label>
+                        <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#3b82f6] focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
+                            <option value="todos">Todas las Zonas</option>
+                            @foreach(\App\Models\Zone::pluck('id')->sort() as $z)
+                                <option value="{{ $z }}">{{ $z }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                        {{-- Filtro Vendedor (Multi-select dropdown con checkboxes) --}}
-                        <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" class="relative w-full sm:w-[35%] flex flex-col">
-                            <label class="text-xs text-gray-400 font-semibold mb-1">Vendedor</label>
-                            <div @click="open = !open" @click.away="open = false" class="flex items-center justify-between border-0 border-b border-gray-300 py-1 cursor-pointer">
-                                <span class="text-sm text-gray-700 font-semibold truncate select-none">
-                                    <template x-if="selected.length === 0">
-                                        <span class="text-gray-400 font-medium">Vendedor</span>
-                                    </template>
-                                    <template x-if="selected.length === 1">
-                                        <span x-text="selected[0]"></span>
-                                    </template>
-                                    <template x-if="selected.length > 1">
-                                        <span x-text="selected[0] + ', +' + (selected.length - 1)"></span>
-                                    </template>
-                                </span>
-                                <div class="flex items-center gap-1.5">
-                                    <template x-if="selected.length > 0">
-                                        <button type="button" @click.stop="selected = []" class="text-gray-400 hover:text-gray-600 focus:outline-none">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </template>
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
-                            
-                            {{-- Panel desplegable --}}
-                            <div x-show="open" style="display:none;" class="absolute left-0 mt-14 w-full bg-white border border-gray-200 shadow-xl rounded-lg z-50 p-2 max-h-60 overflow-y-auto">
-                                @foreach(\App\Models\Seller::pluck('id')->sort() as $sellerId)
-                                    <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
-                                        <input type="checkbox" value="{{ $sellerId }}" x-model="selected"
-                                            class="text-[#3b82f6] rounded border-gray-300 focus:ring-[#3b82f6] w-4 h-4" />
-                                        <span class="text-sm text-gray-700 font-semibold">{{ $sellerId }}</span>
-                                    </label>
-                                @endforeach
+                    {{-- Filtro Vendedor (Multi-select dropdown con checkboxes) --}}
+                    <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" class="relative w-full md:col-span-4 flex flex-col">
+                        <label class="text-xs text-gray-400 font-semibold mb-1">Vendedor</label>
+                        <div @click="open = !open" @click.away="open = false" class="flex items-center justify-between border-0 border-b border-gray-300 py-1 cursor-pointer">
+                            <span class="text-sm text-gray-700 font-semibold truncate select-none">
+                                <template x-if="selected.length === 0">
+                                    <span class="text-gray-400 font-medium">Vendedor</span>
+                                </template>
+                                <template x-if="selected.length === 1">
+                                    <span x-text="selected[0]"></span>
+                                </template>
+                                <template x-if="selected.length > 1">
+                                    <span x-text="selected[0] + ', +' + (selected.length - 1)"></span>
+                                </template>
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <template x-if="selected.length > 0">
+                                    <button type="button" @click.stop="selected = []" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </template>
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
                             </div>
                         </div>
-
-                        {{-- Fecha Inicial --}}
-                        <div class="flex flex-col w-full sm:w-[15%]">
-                            <label class="text-xs text-gray-400 font-semibold mb-1">Fecha inicial</label>
-                            <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
-                                <input type="date" wire:model="fecha_inicio" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
-                            </div>
+                        
+                        {{-- Panel desplegable --}}
+                        <div x-show="open" style="display:none;" class="absolute left-0 mt-14 w-full bg-white border border-gray-200 shadow-xl rounded-lg z-50 p-2 max-h-60 overflow-y-auto">
+                            @foreach(\App\Models\Seller::pluck('id')->sort() as $sellerId)
+                                <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
+                                    <input type="checkbox" value="{{ $sellerId }}" x-model="selected"
+                                        class="text-[#3b82f6] rounded border-gray-300 focus:ring-[#3b82f6] w-4 h-4" />
+                                    <span class="text-sm text-gray-700 font-semibold">{{ $sellerId }}</span>
+                                </label>
+                            @endforeach
                         </div>
+                    </div>
 
-                        {{-- Fecha Final --}}
-                        <div class="flex flex-col w-full sm:w-[15%]">
-                            <label class="text-xs text-gray-400 font-semibold mb-1">Fecha final</label>
-                            <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
-                                <input type="date" wire:model="fecha_fin" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
-                            </div>
+                    {{-- Fecha Inicial --}}
+                    <div class="flex flex-col w-full md:col-span-2">
+                        <label class="text-xs text-gray-400 font-semibold mb-1">Fecha inicial</label>
+                        <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
+                            <input type="date" wire:model="fecha_inicio" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
+                        </div>
+                    </div>
+
+                    {{-- Fecha Final --}}
+                    <div class="flex flex-col w-full md:col-span-2">
+                        <label class="text-xs text-gray-400 font-semibold mb-1">Fecha final</label>
+                        <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
+                            <input type="date" wire:model="fecha_fin" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
                         </div>
                     </div>
 
                     {{-- Botón Consultar --}}
-                    <div class="w-full lg:w-auto flex justify-end">
-                        <button wire:click="consultar" class="px-7 py-2 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer">
+                    <div class="w-full md:col-span-2 flex justify-end">
+                        <button wire:click="consultar" class="w-full py-2 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer text-center">
                             Consultar
                         </button>
                     </div>
-
                 </div>
 
             </div>
