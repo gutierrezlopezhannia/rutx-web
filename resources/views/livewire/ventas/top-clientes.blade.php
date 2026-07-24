@@ -238,9 +238,9 @@ $descargarCSV = function () {
                 
                 <h2 class="text-base font-bold text-gray-800 mb-6">Clientes con mayor Venta</h2>
 
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end w-full">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 w-full">
                     {{-- Filtro Zona --}}
-                    <div class="flex flex-col w-full md:col-span-2">
+                    <div class="w-44 flex flex-col shrink-0">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Zona</label>
                         <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#3b82f6] focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
                             <option value="todos">Todas las Zonas</option>
@@ -251,7 +251,7 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Filtro Vendedor (Multi-select dropdown con checkboxes) --}}
-                    <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" class="relative w-full md:col-span-4 flex flex-col">
+                    <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" class="relative flex-1 min-w-[200px] flex flex-col">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Vendedor</label>
                         <div @click="open = !open" @click.away="open = false" class="flex items-center justify-between border-0 border-b border-gray-300 py-1 cursor-pointer">
                             <span class="text-sm text-gray-700 font-semibold truncate select-none">
@@ -292,7 +292,7 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Fecha Inicial --}}
-                    <div class="flex flex-col w-full md:col-span-2">
+                    <div class="w-36 flex flex-col shrink-0">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Fecha inicial</label>
                         <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
                             <input type="date" wire:model="fecha_inicio" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
@@ -300,7 +300,7 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Fecha Final --}}
-                    <div class="flex flex-col w-full md:col-span-2">
+                    <div class="w-36 flex flex-col shrink-0">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Fecha final</label>
                         <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
                             <input type="date" wire:model="fecha_fin" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
@@ -308,8 +308,8 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Botón Consultar --}}
-                    <div class="w-full md:col-span-2 flex justify-end">
-                        <button wire:click="consultar" class="w-full py-2 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer text-center">
+                    <div class="w-28 flex flex-col shrink-0">
+                        <button wire:click="consultar" class="w-full py-1.5 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer text-center">
                             Consultar
                         </button>
                     </div>
