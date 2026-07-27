@@ -511,6 +511,7 @@ $descargarCSV = function () {
 
             {{-- Panel de Gráficos (Card lateral doble en no-print) --}}
             @if($consultado && !empty($registrosFiltrados))
+                <div id="chart-data-container" data-sales-data="@js($registrosFiltrados)" class="hidden"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 no-print">
                     
                     {{-- Gráfico 1: Totales --}}
@@ -545,7 +546,14 @@ $descargarCSV = function () {
 <script>
 window.topClientsReportsInit = function(comp) {
     comp.getChartData = function() {
-        const rows = comp.$wire.registrosFiltrados || [];
+        const el = document.getElementById('chart-data-container');
+        if (!el) return { labels: [], sales: [], orders: [] };
+        let rows = [];
+        try {
+            rows = JSON.parse(el.getAttribute('data-sales-data') || '[]');
+        } catch (e) {
+            console.error('Error parsing chart data:', e);
+        }
         return {
             labels: rows.map(r => r.cliente_codigo),
             sales: rows.map(r => parseFloat(r.total_sales)),
