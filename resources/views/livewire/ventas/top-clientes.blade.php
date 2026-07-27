@@ -12,8 +12,8 @@ state([
     // Filtros
     'filtro_zona' => 'todos',
     'vendedores_seleccionados' => [], // Array de vendedores seleccionados
-    'fecha_inicio' => '2026-07-20',   // Ajustado a las capturas
-    'fecha_fin' => '2026-07-24',      // Ajustado a las capturas
+    'fecha_inicio' => '',
+    'fecha_fin' => '',
 
     // Paginación y filas por página
     'filas_por_pagina' => 1000,       // Por defecto 1000 de las capturas
@@ -130,8 +130,8 @@ $consultar = function () {
 
 mount(function () {
     // Solo inicializa las fechas, NO aplica filtros (para mantener el estado inicial limpio)
-    $this->fecha_inicio = '2026-07-20';
-    $this->fecha_fin = '2026-07-24';
+    $this->fecha_inicio = date('Y-m-d');
+    $this->fecha_fin = date('Y-m-d');
 });
 
 $updatedSearch = function () {
@@ -295,7 +295,7 @@ $descargarCSV = function () {
                     <div class="w-36 flex flex-col shrink-0">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Fecha inicial</label>
                         <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
-                            <input type="date" wire:model="fecha_inicio" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
+                            <input type="date" wire:model="fecha_inicio" value="{{ $fecha_inicio }}" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
                         </div>
                     </div>
 
@@ -303,7 +303,7 @@ $descargarCSV = function () {
                     <div class="w-36 flex flex-col shrink-0">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Fecha final</label>
                         <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
-                            <input type="date" wire:model="fecha_fin" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
+                            <input type="date" wire:model="fecha_fin" value="{{ $fecha_fin }}" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
                         </div>
                     </div>
 
