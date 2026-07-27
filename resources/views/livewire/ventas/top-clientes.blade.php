@@ -281,10 +281,10 @@ $descargarCSV = function () {
                     {{-- Filtro Vendedor (Multi-select dropdown con checkboxes) --}}
                     <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" 
                          class="relative w-full sm:flex-1 sm:min-w-[200px] flex flex-col transition-opacity duration-150"
-                         :class="$wire.filtro_zona === 'todos' ? 'opacity-50 cursor-not-allowed' : ''">
+                         :class="$wire.filtro_zona === 'todos' ? 'opacity-50 cursor-not-allowed' : ''"
+                         @click.away="open = false">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Vendedor</label>
                         <div @click="if ($wire.filtro_zona !== 'todos') open = !open" 
-                             @click.away="open = false" 
                              class="flex items-center justify-between border-0 border-b border-gray-300 py-1"
                              :class="$wire.filtro_zona === 'todos' ? 'pointer-events-none' : 'cursor-pointer'">
                             <span class="text-sm text-gray-700 font-semibold truncate select-none">
