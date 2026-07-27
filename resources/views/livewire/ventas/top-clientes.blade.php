@@ -128,6 +128,22 @@ $consultar = function () {
     $this->aplicarFiltros();
 };
 
+$updatedFiltroZona = function () {
+    $this->vendedores_seleccionados = [];
+};
+
+$vendedoresDisponibles = function() {
+    if ($this->filtro_zona === 'todos') {
+        return [];
+    }
+    return \App\Models\Invoice::where('zona_id', $this->filtro_zona)
+        ->whereNotNull('vendedor_id')
+        ->distinct()
+        ->pluck('vendedor_id')
+        ->sort()
+        ->toArray();
+};
+
 mount(function () {
     // Solo inicializa las fechas, NO aplica filtros (para mantener el estado inicial limpio)
     $this->fecha_inicio = date('Y-m-d');
@@ -250,11 +266,11 @@ $descargarCSV = function () {
                 
                 <h2 class="text-base font-bold text-gray-800 mb-6">Clientes con mayor Venta</h2>
 
-                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 w-full">
+                <div class="flex flex-wrap items-end gap-4 md:gap-6 w-full">
                     {{-- Filtro Zona --}}
-                    <div class="w-44 flex flex-col shrink-0">
+                    <div class="w-full sm:w-44 flex flex-col">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Zona</label>
-                        <select wire:model="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-blue-500 focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
+                        <select wire:model.live="filtro_zona" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-blue-500 focus:ring-0 bg-transparent text-gray-700 font-semibold cursor-pointer w-full">
                             <option value="todos">Todas las Zonas</option>
                             @foreach(\App\Models\Zone::pluck('id')->sort() as $z)
                                 <option value="{{ $z }}">{{ $z }}</option>
@@ -263,22 +279,30 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Filtro Vendedor (Multi-select dropdown con checkboxes) --}}
-                    <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" class="relative flex-1 min-w-[200px] flex flex-col">
+                    <div x-data="{ open: false, selected: @entangle('vendedores_seleccionados') }" 
+                         class="relative w-full sm:flex-1 sm:min-w-[200px] flex flex-col transition-opacity duration-150"
+                         :class="$wire.filtro_zona === 'todos' ? 'opacity-50 cursor-not-allowed' : ''">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Vendedor</label>
-                        <div @click="open = !open" @click.away="open = false" class="flex items-center justify-between border-0 border-b border-gray-300 py-1 cursor-pointer">
+                        <div @click="if ($wire.filtro_zona !== 'todos') open = !open" 
+                             @click.away="open = false" 
+                             class="flex items-center justify-between border-0 border-b border-gray-300 py-1"
+                             :class="$wire.filtro_zona === 'todos' ? 'pointer-events-none' : 'cursor-pointer'">
                             <span class="text-sm text-gray-700 font-semibold truncate select-none">
-                                <template x-if="selected.length === 0">
+                                <template x-if="$wire.filtro_zona === 'todos'">
+                                    <span class="text-gray-400 font-medium">Vendedor (Seleccione Zona)</span>
+                                </template>
+                                <template x-if="$wire.filtro_zona !== 'todos' && selected.length === 0">
                                     <span class="text-gray-400 font-medium">Vendedor</span>
                                 </template>
-                                <template x-if="selected.length === 1">
+                                <template x-if="$wire.filtro_zona !== 'todos' && selected.length === 1">
                                     <span x-text="selected[0]"></span>
                                 </template>
-                                <template x-if="selected.length > 1">
+                                <template x-if="$wire.filtro_zona !== 'todos' && selected.length > 1">
                                     <span x-text="selected[0] + ', +' + (selected.length - 1)"></span>
                                 </template>
                             </span>
                             <div class="flex items-center gap-1.5">
-                                <template x-if="selected.length > 0">
+                                <template x-if="$wire.filtro_zona !== 'todos' && selected.length > 0">
                                     <button type="button" @click.stop="selected = []" class="text-gray-400 hover:text-gray-600 focus:outline-none">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -293,7 +317,7 @@ $descargarCSV = function () {
                         
                         {{-- Panel desplegable --}}
                         <div x-show="open" style="display:none;" class="absolute left-0 mt-14 w-full bg-white border border-gray-200 shadow-xl rounded-lg z-50 p-2 max-h-60 overflow-y-auto">
-                            @foreach(\App\Models\Seller::pluck('id')->sort() as $sellerId)
+                            @foreach($this->vendedoresDisponibles() as $sellerId)
                                 <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
                                     <input type="checkbox" value="{{ $sellerId }}" x-model="selected"
                                         class="text-blue-500 rounded border-gray-300 focus:ring-blue-500 w-4 h-4" />
@@ -304,7 +328,7 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Fecha Inicial --}}
-                    <div class="w-36 flex flex-col shrink-0">
+                    <div class="w-full sm:w-36 flex flex-col">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Fecha inicial</label>
                         <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
                             <input type="date" wire:model="fecha_inicio" value="{{ $fecha_inicio }}" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
@@ -312,7 +336,7 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Fecha Final --}}
-                    <div class="w-36 flex flex-col shrink-0">
+                    <div class="w-full sm:w-36 flex flex-col">
                         <label class="text-xs text-gray-400 font-semibold mb-1">Fecha final</label>
                         <div class="flex items-center justify-between border-0 border-b border-gray-300 rounded-none px-0 py-0.5 w-full">
                             <input type="date" wire:model="fecha_fin" value="{{ $fecha_fin }}" class="border-none outline-none p-0 focus:ring-0 bg-transparent text-gray-700 font-semibold text-sm w-full cursor-pointer" />
@@ -320,7 +344,7 @@ $descargarCSV = function () {
                     </div>
 
                     {{-- Botón Consultar --}}
-                    <div class="w-28 flex flex-col shrink-0">
+                    <div class="w-full sm:w-28 flex flex-col ml-auto sm:ml-0">
                         <button wire:click="consultar" class="w-full py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm font-semibold transition duration-150 shadow-sm cursor-pointer text-center">
                             Consultar
                         </button>
@@ -501,10 +525,7 @@ $descargarCSV = function () {
                         </div>
                     </div>
 
-                    {{-- Copyright en impresión --}}
-                    <div class="hidden print:block text-center text-[10px] text-gray-400 mt-12 font-medium">
-                        Copyright © JB VEMOBILE SA DE CV 2026.
-                    </div>
+
 
                 </div>
             @endif
@@ -533,10 +554,7 @@ $descargarCSV = function () {
                 </div>
             @endif
 
-            {{-- Footer Copyright visible en pantalla --}}
-            <div class="mt-12 text-center text-xs text-gray-400 font-medium no-print">
-                Copyright © JB VEMOBILE SA DE CV 2026.
-            </div>
+
 
         </div>
     </div>
