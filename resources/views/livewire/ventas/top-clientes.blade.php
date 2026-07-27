@@ -136,12 +136,7 @@ $vendedoresDisponibles = function() {
     if ($this->filtro_zona === 'todos') {
         return [];
     }
-    return \App\Models\Invoice::where('zona_id', $this->filtro_zona)
-        ->whereNotNull('vendedor_id')
-        ->distinct()
-        ->pluck('vendedor_id')
-        ->sort()
-        ->toArray();
+    return \App\Models\Seller::pluck('id')->sort()->toArray();
 };
 
 mount(function () {
