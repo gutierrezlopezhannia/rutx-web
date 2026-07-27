@@ -213,7 +213,19 @@ $descargarCSV = function () {
 </style>
 
 <div>
-    <div class="py-4" x-data="topClientsReports()" x-init="initCharts()">
+    <div class="py-4" x-data="{
+        chartBar: null,
+        chartOrders: null,
+        initCharts() {
+            if (window.topClientsReportsInit) {
+                window.topClientsReportsInit(this);
+            } else {
+                document.addEventListener('charts-script-loaded', () => {
+                    window.topClientsReportsInit(this);
+                });
+            }
+        }
+    }" x-init="initCharts()">
         <div class="max-w-[1400px] mx-auto sm:px-6 lg:px-8">
 
             {{-- Breadcrumb --}}
@@ -531,152 +543,146 @@ $descargarCSV = function () {
 
 @push('scripts')
 <script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('topClientsReports', () => ({
-        chartBar: null,
-        chartOrders: null,
+window.topClientsReportsInit = function(comp) {
+    comp.getChartData = function() {
+        const rows = comp.$wire.registrosFiltrados || [];
+        return {
+            labels: rows.map(r => r.cliente_codigo),
+            sales: rows.map(r => parseFloat(r.total_sales)),
+            orders: rows.map(r => parseInt(r.total_orders)),
+        };
+    };
 
-        getChartData() {
-            const rows = this.$wire.registrosFiltrados || [];
-            return {
-                labels: rows.map(r => r.cliente_codigo),
-                sales: rows.map(r => parseFloat(r.total_sales)),
-                orders: rows.map(r => parseInt(r.total_orders)),
-            };
-        },
+    comp.buildCharts = function(data) {
+        const barCtx = document.getElementById('chartTopSales');
+        const ordersCtx = document.getElementById('chartTopOrders');
 
-        initCharts() {
-            this.$nextTick(() => {
-                this.buildCharts(this.getChartData());
-            });
+        if (comp.chartBar) comp.chartBar.destroy();
+        if (comp.chartOrders) comp.chartOrders.destroy();
 
-            Livewire.hook('commit', ({ succeed }) => {
-                succeed(() => {
-                    this.$nextTick(() => {
-                        const data = this.getChartData();
-                        const canvasBar = document.getElementById('chartTopSales');
-                        const canvasOrders = document.getElementById('chartTopOrders');
-
-                        if (this.chartBar && this.chartBar.canvas !== canvasBar) {
-                            this.chartBar.destroy();
-                            this.chartBar = null;
-                        }
-                        if (this.chartOrders && this.chartOrders.canvas !== canvasOrders) {
-                            this.chartOrders.destroy();
-                            this.chartOrders = null;
-                        }
-
-                        if (!this.chartBar || !this.chartOrders) {
-                            this.buildCharts(data);
-                        } else {
-                            this.updateCharts(data);
-                        }
-                    });
-                });
-            });
-        },
-
-        buildCharts(data) {
-            const barCtx = document.getElementById('chartTopSales');
-            const ordersCtx = document.getElementById('chartTopOrders');
-
-            if (this.chartBar) this.chartBar.destroy();
-            if (this.chartOrders) this.chartOrders.destroy();
-
-            // Gráfico de Totales
-            if (barCtx && data.sales.length > 0) {
-                this.chartBar = new Chart(barCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.labels,
-                        datasets: [{
-                            data: data.sales,
-                            backgroundColor: '#3b82f6', // Color azul estándar de la captura
-                            borderColor: '#2563eb',
-                            borderWidth: 1,
-                            barThickness: 32
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return 'Monto: $' + context.raw.toLocaleString();
-                                    }
+        // Gráfico de Totales
+        if (barCtx && data.sales.length > 0) {
+            comp.chartBar = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.sales,
+                        backgroundColor: '#3b82f6', // Color azul estándar de la captura
+                        borderColor: '#2563eb',
+                        borderWidth: 1,
+                        barThickness: 32
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Monto: $' + context.raw.toLocaleString();
                                 }
                             }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function(value) {
-                                        return '$' + value;
-                                    }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
                                 }
                             }
                         }
                     }
-                });
-            }
-
-            // Gráfico de Ventas
-            if (ordersCtx && data.orders.length > 0) {
-                this.chartOrders = new Chart(ordersCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.labels,
-                        datasets: [{
-                            data: data.orders,
-                            backgroundColor: '#3b82f6', // Color azul estándar de la captura
-                            borderColor: '#2563eb',
-                            borderWidth: 1,
-                            barThickness: 32
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return 'Ventas: ' + context.raw;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        },
-
-        updateCharts(data) {
-            if (this.chartBar) {
-                this.chartBar.data.labels = data.labels;
-                this.chartBar.data.datasets[0].data = data.sales;
-                this.chartBar.update();
-            }
-            if (this.chartOrders) {
-                this.chartOrders.data.labels = data.labels;
-                this.chartOrders.data.datasets[0].data = data.orders;
-                this.chartOrders.update();
-            }
+                }
+            });
         }
-    }));
-});
+
+        // Gráfico de Ventas
+        if (ordersCtx && data.orders.length > 0) {
+            comp.chartOrders = new Chart(ordersCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.orders,
+                        backgroundColor: '#3b82f6', // Color azul estándar de la captura
+                        borderColor: '#2563eb',
+                        borderWidth: 1,
+                        barThickness: 32
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Ventas: ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    comp.updateCharts = function(data) {
+        if (comp.chartBar) {
+            comp.chartBar.data.labels = data.labels;
+            comp.chartBar.data.datasets[0].data = data.sales;
+            comp.chartBar.update();
+        }
+        if (comp.chartOrders) {
+            comp.chartOrders.data.labels = data.labels;
+            comp.chartOrders.data.datasets[0].data = data.orders;
+            comp.chartOrders.update();
+        }
+    };
+
+    comp.$nextTick(() => {
+        comp.buildCharts(comp.getChartData());
+    });
+
+    Livewire.hook('commit', ({ succeed }) => {
+        succeed(() => {
+            comp.$nextTick(() => {
+                const data = comp.getChartData();
+                const canvasBar = document.getElementById('chartTopSales');
+                const canvasOrders = document.getElementById('chartTopOrders');
+
+                if (comp.chartBar && comp.chartBar.canvas !== canvasBar) {
+                    comp.chartBar.destroy();
+                    comp.chartBar = null;
+                }
+                if (comp.chartOrders && comp.chartOrders.canvas !== canvasOrders) {
+                    comp.chartOrders.destroy();
+                    comp.chartOrders = null;
+                }
+
+                if (!comp.chartBar || !comp.chartOrders) {
+                    comp.buildCharts(data);
+                } else {
+                    comp.updateCharts(data);
+                }
+            });
+        });
+    });
+};
+document.dispatchEvent(new CustomEvent('charts-script-loaded'));
 </script>
 @endpush
