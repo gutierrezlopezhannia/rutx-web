@@ -133,10 +133,13 @@ $updatedFiltroZona = function () {
 };
 
 $vendedoresDisponibles = function() {
+    \Illuminate\Support\Facades\Log::info("vendedoresDisponibles called. filtro_zona: " . $this->filtro_zona);
     if ($this->filtro_zona === 'todos') {
         return [];
     }
-    return \App\Models\Seller::pluck('id')->sort()->toArray();
+    $res = \App\Models\Seller::pluck('id')->sort()->toArray();
+    \Illuminate\Support\Facades\Log::info("vendedoresDisponibles result count: " . count($res));
+    return $res;
 };
 
 mount(function () {
@@ -191,6 +194,7 @@ $descargarCSV = function () {
     @endpush
 @endonce
 
+<div>
 <style>
 /* Estilos para impresión de PDF limpios de leaks de diseño */
 @media print {
@@ -222,8 +226,6 @@ $descargarCSV = function () {
     }
 }
 </style>
-
-<div>
     <div class="py-4" x-data="{
         chartBar: null,
         chartOrders: null,
@@ -312,13 +314,17 @@ $descargarCSV = function () {
                         
                         {{-- Panel desplegable --}}
                         <div x-show="open" style="display:none;" class="absolute left-0 mt-14 w-full bg-white border border-gray-200 shadow-xl rounded-lg z-50 p-2 max-h-60 overflow-y-auto">
-                            @foreach($this->vendedoresDisponibles() as $sellerId)
-                                <label class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
+                            @forelse($this->vendedoresDisponibles() as $sellerId)
+                                <label wire:key="seller-{{ $sellerId }}" class="flex items-center space-x-3 px-2 py-1.5 hover:bg-gray-50 cursor-pointer rounded transition">
                                     <input type="checkbox" value="{{ $sellerId }}" x-model="selected"
                                         class="text-blue-500 rounded border-gray-300 focus:ring-blue-500 w-4 h-4" />
                                     <span class="text-sm text-gray-700 font-semibold">{{ $sellerId }}</span>
                                 </label>
-                            @endforeach
+                            @empty
+                                <div class="text-xs text-gray-400 text-center py-2 select-none">
+                                    No existen vendedores
+                                </div>
+                            @endforelse
                         </div>
                     </div>
 
@@ -438,7 +444,7 @@ $descargarCSV = function () {
                                 </thead>
                                 <tbody class="divide-y divide-gray-100 bg-white text-gray-700 font-medium">
                                     @forelse(array_slice($registrosFiltrados, 0, (int) $filas_por_pagina) as $row)
-                                        <tr class="hover:bg-gray-50/40 transition duration-150">
+                                        <tr wire:key="client-row-{{ $row['rank'] }}" class="hover:bg-gray-50/40 transition duration-150">
                                             @if($visibleColumns['rank'])
                                                 <td class="px-4 py-3 text-center font-bold font-mono text-gray-500">{{ $row['rank'] }}</td>
                                             @endif
@@ -527,7 +533,7 @@ $descargarCSV = function () {
 
             {{-- Panel de Gráficos (Card lateral doble en no-print) --}}
             @if($consultado && !empty($registrosFiltrados))
-                <div id="chart-data-container" data-sales-data="@js($registrosFiltrados)" class="hidden"></div>
+                <div id="chart-data-container" data-sales-data="{{ json_encode($registrosFiltrados) }}" class="hidden"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 no-print">
                     
                     {{-- Gráfico 1: Totales --}}
@@ -567,10 +573,17 @@ window.topClientsReportsInit = function(comp) {
         } catch (e) {
             console.error('Error parsing chart data:', e);
         }
+        if (!Array.isArray(rows)) {
+            rows = [];
+        }
         return {
-            labels: rows.map(r => r.cliente_codigo),
-            sales: rows.map(r => parseFloat(r.total_sales)),
-            orders: rows.map(r => parseInt(r.total_orders)),
+            labels: rows.map(r => {
+                const name = r.cliente_nombre || 'Desconocido';
+                const route = r.ruta || '';
+                return `${name} (${route})`;
+            }),
+            sales: rows.map(r => parseFloat(r.total_sales || 0)),
+            orders: rows.map(r => parseInt(r.total_orders || 0)),
         };
     };
 
@@ -578,100 +591,172 @@ window.topClientsReportsInit = function(comp) {
         const barCtx = document.getElementById('chartTopSales');
         const ordersCtx = document.getElementById('chartTopOrders');
 
-        if (comp.chartBar) comp.chartBar.destroy();
-        if (comp.chartOrders) comp.chartOrders.destroy();
-
-        // Gráfico de Totales
-        if (barCtx && data.sales.length > 0) {
-            comp.chartBar = new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        data: data.sales,
-                        backgroundColor: '#3b82f6', // Color azul estándar de la captura
-                        borderColor: '#2563eb',
-                        borderWidth: 1,
-                        barThickness: 32
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Monto: $' + context.raw.toLocaleString();
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + value;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+        if (comp.chartBar) {
+            try { comp.chartBar.destroy(); } catch(e) {}
+            comp.chartBar = null;
+        }
+        if (comp.chartOrders) {
+            try { comp.chartOrders.destroy(); } catch(e) {}
+            comp.chartOrders = null;
         }
 
-        // Gráfico de Ventas
-        if (ordersCtx && data.orders.length > 0) {
-            comp.chartOrders = new Chart(ordersCtx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        data: data.orders,
-                        backgroundColor: '#3b82f6', // Color azul estándar de la captura
-                        borderColor: '#2563eb',
-                        borderWidth: 1,
-                        barThickness: 32
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Ventas: ' + context.raw;
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js is not loaded yet.');
+            return;
+        }
+
+        // Gráfico de Totales
+        if (barCtx && data && Array.isArray(data.sales) && data.sales.length > 0) {
+            try {
+                const ctx = barCtx.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, 'rgba(59, 130, 246, 0.9)'); // blue-500
+                gradient.addColorStop(1, 'rgba(37, 99, 235, 0.2)');   // blue-600
+
+                comp.chartBar = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels || [],
+                        datasets: [{
+                            data: data.sales,
+                            backgroundColor: gradient,
+                            borderColor: '#2563eb',
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                            barThickness: 32
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        // Show full label in title on hover
+                                        return context[0].label;
+                                    },
+                                    label: function(context) {
+                                        return 'Monto: $' + context.raw.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    autoSkip: true,
+                                    callback: function(value, index, ticks) {
+                                        const label = this.getLabelForValue(value);
+                                        if (label && label.length > 20) {
+                                            return label.substring(0, 17) + '...';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
                                 }
                             }
                         }
+                    }
+                });
+            } catch (err) {
+                console.error('Error rendering chartBar:', err);
+            }
+        }
+
+        // Gráfico de Ventas (Pedidos)
+        if (ordersCtx && data && Array.isArray(data.orders) && data.orders.length > 0) {
+            try {
+                const ctx = ordersCtx.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, 'rgba(16, 185, 129, 0.9)'); // emerald-500
+                gradient.addColorStop(1, 'rgba(5, 150, 105, 0.2)');   // emerald-600
+
+                comp.chartOrders = new Chart(ordersCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels || [],
+                        datasets: [{
+                            data: data.orders,
+                            backgroundColor: gradient,
+                            borderColor: '#059669',
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                            barThickness: 32
+                        }]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        // Show full label in title on hover
+                                        return context[0].label;
+                                    },
+                                    label: function(context) {
+                                        return 'Ventas: ' + context.raw;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    autoSkip: true,
+                                    callback: function(value, index, ticks) {
+                                        const label = this.getLabelForValue(value);
+                                        if (label && label.length > 20) {
+                                            return label.substring(0, 17) + '...';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            } catch (err) {
+                console.error('Error rendering chartOrders:', err);
+            }
         }
     };
 
     comp.updateCharts = function(data) {
-        if (comp.chartBar) {
-            comp.chartBar.data.labels = data.labels;
-            comp.chartBar.data.datasets[0].data = data.sales;
-            comp.chartBar.update();
+        if (typeof Chart === 'undefined') return;
+        if (comp.chartBar && data && Array.isArray(data.sales)) {
+            try {
+                comp.chartBar.data.labels = data.labels || [];
+                comp.chartBar.data.datasets[0].data = data.sales;
+                comp.chartBar.update();
+            } catch(e) {}
         }
-        if (comp.chartOrders) {
-            comp.chartOrders.data.labels = data.labels;
-            comp.chartOrders.data.datasets[0].data = data.orders;
-            comp.chartOrders.update();
+        if (comp.chartOrders && data && Array.isArray(data.orders)) {
+            try {
+                comp.chartOrders.data.labels = data.labels || [];
+                comp.chartOrders.data.datasets[0].data = data.orders;
+                comp.chartOrders.update();
+            } catch(e) {}
         }
     };
 
@@ -679,30 +764,42 @@ window.topClientsReportsInit = function(comp) {
         comp.buildCharts(comp.getChartData());
     });
 
-    Livewire.hook('commit', ({ succeed }) => {
-        succeed(() => {
-            comp.$nextTick(() => {
-                const data = comp.getChartData();
-                const canvasBar = document.getElementById('chartTopSales');
-                const canvasOrders = document.getElementById('chartTopOrders');
+    const registerHook = () => {
+        try {
+            Livewire.hook('commit', ({ succeed }) => {
+                succeed(() => {
+                    comp.$nextTick(() => {
+                        const data = comp.getChartData();
+                        const canvasBar = document.getElementById('chartTopSales');
+                        const canvasOrders = document.getElementById('chartTopOrders');
 
-                if (comp.chartBar && comp.chartBar.canvas !== canvasBar) {
-                    comp.chartBar.destroy();
-                    comp.chartBar = null;
-                }
-                if (comp.chartOrders && comp.chartOrders.canvas !== canvasOrders) {
-                    comp.chartOrders.destroy();
-                    comp.chartOrders = null;
-                }
+                        if (comp.chartBar && comp.chartBar.canvas !== canvasBar) {
+                            try { comp.chartBar.destroy(); } catch(e) {}
+                            comp.chartBar = null;
+                        }
+                        if (comp.chartOrders && comp.chartOrders.canvas !== canvasOrders) {
+                            try { comp.chartOrders.destroy(); } catch(e) {}
+                            comp.chartOrders = null;
+                        }
 
-                if (!comp.chartBar || !comp.chartOrders) {
-                    comp.buildCharts(data);
-                } else {
-                    comp.updateCharts(data);
-                }
+                        if (!comp.chartBar || !comp.chartOrders) {
+                            comp.buildCharts(data);
+                        } else {
+                            comp.updateCharts(data);
+                        }
+                    });
+                });
             });
-        });
-    });
+        } catch (e) {
+            console.error('Error registering Livewire commit hook:', e);
+        }
+    };
+
+    if (window.Livewire) {
+        registerHook();
+    } else {
+        document.addEventListener('livewire:init', registerHook);
+    }
 };
 document.dispatchEvent(new CustomEvent('charts-script-loaded'));
 </script>
