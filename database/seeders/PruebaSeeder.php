@@ -22,6 +22,8 @@ class PruebaSeeder extends Seeder
         // 1. Zonas
         $zonas = [
             ['id' => '99-PRUEBA', 'name' => 'ZONA PRUEBA'],
+            ['id' => 'ZONA-01', 'name' => 'ZONA NORTE'],
+            ['id' => 'ZONA-02', 'name' => 'ZONA SUR'],
         ];
         foreach ($zonas as $z) {
             Zone::create($z);
@@ -30,6 +32,8 @@ class PruebaSeeder extends Seeder
         // 2. Vendedores
         $vendedores = [
             ['id' => '999001 - VENDEDOR PRUEBA', 'name' => 'VENDEDOR PRUEBA', 'oculto' => 'N'],
+            ['id' => 'RUTA-01 - VENDEDOR NORTE', 'name' => 'VENDEDOR NORTE', 'oculto' => 'N'],
+            ['id' => 'RUTA-02 - VENDEDOR SUR', 'name' => 'VENDEDOR SUR', 'oculto' => 'N'],
         ];
         foreach ($vendedores as $v) {
             Seller::create($v);
@@ -37,6 +41,7 @@ class PruebaSeeder extends Seeder
 
         // 3. Clientes
         $clientes = [
+            // Clientes Originales (para que pasen las pruebas)
             [
                 'id' => '999001 - CLIENTE PRUEBA 01',
                 'clave' => '999001',
@@ -85,6 +90,31 @@ class PruebaSeeder extends Seeder
                 'saldo' => 14000.00,
                 'zona_id' => '99-PRUEBA'
             ],
+            // Nuevos Clientes en Zonas
+            [
+                'id' => '999005 - CLIENTE NORTE 01',
+                'clave' => '999005',
+                'nombre' => 'CLIENTE NORTE 01',
+                'direccion' => 'Calle Norte 1, Col. Norte, CP 54000',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5512345678',
+                'plazo' => '15 días',
+                'limite' => 1000000.00,
+                'saldo' => 20000.00,
+                'zona_id' => 'ZONA-01'
+            ],
+            [
+                'id' => '999006 - CLIENTE SUR 01',
+                'clave' => '999006',
+                'nombre' => 'CLIENTE SUR 01',
+                'direccion' => 'Calle Sur 1, Col. Sur, CP 98000',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5512345678',
+                'plazo' => 'Contado',
+                'limite' => 1000000.00,
+                'saldo' => 30000.00,
+                'zona_id' => 'ZONA-02'
+            ]
         ];
         foreach ($clientes as $c) {
             Customer::create($c);
@@ -186,7 +216,35 @@ class PruebaSeeder extends Seeder
                 'abono' => 0.00,
                 'saldo' => 14000.00,
                 'comentario' => 'Sincronizado desde ERP Microsip'
-            ]
+            ],
+            // Cliente 999005 (Zona NORTE, Vendedor NORTE)
+            [
+                'folio' => 'PRU000008',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2018-09-19',
+                'vendedor_id' => 'RUTA-01 - VENDEDOR NORTE',
+                'zona_id' => 'ZONA-01',
+                'customer_id' => '999005 - CLIENTE NORTE 01',
+                'subtotal' => 5000.00,
+                'total' => 5800.00,
+                'abono' => 800.00,
+                'saldo' => 5000.00,
+                'comentario' => 'Sincronizado Zona Norte'
+            ],
+            // Cliente 999006 (Zona SUR, Vendedor SUR)
+            [
+                'folio' => 'PRU000009',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2018-09-19',
+                'vendedor_id' => 'RUTA-02 - VENDEDOR SUR',
+                'zona_id' => 'ZONA-02',
+                'customer_id' => '999006 - CLIENTE SUR 01',
+                'subtotal' => 15000.00,
+                'total' => 17400.00,
+                'abono' => 0.00,
+                'saldo' => 17400.00,
+                'comentario' => 'Sincronizado Zona Sur'
+            ],
         ];
         foreach ($invoicesFijos as $inf) {
             Invoice::create($inf);
@@ -204,14 +262,21 @@ class PruebaSeeder extends Seeder
             'Pago registrado contra entrega',
             'Factura enviada al cliente por correo',
             'Cliente solicita crédito de 15 días',
-            'Mercancía especial solicitada previamente',
-            'Entrega parcial de productos terminados',
+            'Mercancía especial solicitada',
             'Ninguno',
         ];
 
-        for ($i = 0; $i < 50; $i++) {
+        // Mapeo de cliente a su vendedor correspondiente por zona
+        $vendedorPorZona = [
+            '99-PRUEBA' => '999001 - VENDEDOR PRUEBA',
+            'ZONA-01' => 'RUTA-01 - VENDEDOR NORTE',
+            'ZONA-02' => 'RUTA-02 - VENDEDOR SUR',
+        ];
+
+        for ($i = 0; $i < 60; $i++) {
             $cliente = $faker->randomElement($clientes);
-            $vendedor = $faker->randomElement($vendedores);
+            $zonaId = $cliente['zona_id'];
+            $vendedorId = $vendedorPorZona[$zonaId];
             $mov = $faker->randomElement($movimientos);
             $prefijo = match ($mov) {
                 'Venta Factura' => 'FAC',
@@ -225,8 +290,8 @@ class PruebaSeeder extends Seeder
                 'folio' => $prefijo . '-' . $faker->unique()->numberBetween(10000, 99999),
                 'movimiento' => $mov,
                 'fecha' => $faker->dateTimeBetween('-10 days', 'now')->format('Y-m-d'),
-                'vendedor_id' => $vendedor['id'],
-                'zona_id' => $cliente['zona_id'],
+                'vendedor_id' => $vendedorId,
+                'zona_id' => $zonaId,
                 'customer_id' => $cliente['id'],
                 'subtotal' => $subtotal,
                 'total' => $total,

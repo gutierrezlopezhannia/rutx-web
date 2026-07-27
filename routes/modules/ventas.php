@@ -43,3 +43,7 @@ Volt::route('reportes-globales', 'ventas.reportes-globales')
 Volt::route('deposito-venta', 'ventas.deposito-venta')
     ->middleware(['auth'])
     ->name('ventas.deposito-venta');
+
+Volt::route('top-clientes', 'ventas.top-clientes')
+    ->middleware(['auth'])
+    ->name('ventas.top-clientes');
