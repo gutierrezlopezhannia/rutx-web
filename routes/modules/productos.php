@@ -18,3 +18,7 @@ Volt::route('productos/politicas', 'productos.politicas.index')
 Volt::route('productos/reporte', 'productos.reporte')
     ->middleware(['auth'])
     ->name('productos.reporte');
+
+Volt::route('productos/linea-familia', 'productos.linea-familia.index')
+    ->middleware(['auth'])
+    ->name('productos.linea-familia');
