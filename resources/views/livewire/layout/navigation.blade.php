@@ -46,8 +46,8 @@ $logout = function (Logout $logout) {
             <span class="text-[11px] text-white font-medium tracking-wide">Producto</span>
         </a>
         <!-- Inventario -->
-        <a href="#"
-            class="flex flex-col items-center justify-center h-full px-5 border-b-2 border-transparent text-white/80 hover:text-white hover:border-white/50 transition-all duration-150">
+        <a href="{{ route('inventario.index') }}" wire:navigate
+            class="flex flex-col items-center justify-center h-full px-5 border-b-2 {{ request()->routeIs('inventario.*') ? 'border-white text-white font-semibold' : 'border-transparent text-white/80 hover:text-white hover:border-white/50' }} transition-all duration-150">
             <!-- Clipboard Icon -->
             <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
