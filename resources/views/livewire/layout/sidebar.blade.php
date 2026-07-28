@@ -156,8 +156,8 @@ $logout = function (Logout $logout) {
                     class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
                     <span x-show="!collapsed" class="pl-7" x-transition>Kilometraje</span>
                 </a>
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
+                <a href="{{ route('ruta.gastos-operativos') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ruta.gastos-operativos') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
                     <span x-show="!collapsed" class="pl-7" x-transition>Gastos Operativos</span>
                 </a>
                 <a href="#"

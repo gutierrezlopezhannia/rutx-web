@@ -15,3 +15,8 @@ Volt::route('/ruta/mapa-clientes', 'rutas.mapa-clientes')
 Volt::route('/ruta/agenda', 'rutas.agenda')
     ->middleware(['auth', 'verified'])
     ->name('ruta.agenda');
+
+Volt::route('/ruta/gastos-operativos', 'rutas.gastos-operativos')
+    ->middleware(['auth', 'verified'])
+    ->name('ruta.gastos-operativos');
+
