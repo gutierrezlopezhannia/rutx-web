@@ -567,13 +567,23 @@ class PruebaSeeder extends Seeder
             'Ninguno',
         ];
 
-        $vendedoresIdsReales = array_column($vendedoresReales, 'id');
+        // Definir mapeo estricto de vendedores por zona
+        $sellerZoneMapping = [
+            '1Z - SUR' => ['695 - VENDEDOR', '3345 - VDOS'],
+            '2Z - NORTE' => ['7621 - RUTA_ALE'],
+            '3Z - ORIENTE' => ['7853 - MIGUEL ANGEL'],
+            '4Z - PONIENTE' => ['8364 - RUTA ZONA SUR', '9448 - URIEL'],
+            '1Z - Zona 1' => ['3983 - RUTA01', '4682 - RUTA02', '4683 - RUTA03', '4684 - RUTA04', '4685 - RUTA05', '4686 - RUTA06'],
+            '99-PRUEBA' => ['999001 - VENDEDOR PRUEBA'],
+        ];
 
         for ($i = 0; $i < 120; $i++) {
             $cliente = $faker->randomElement($clientesReales);
             $clienteId = $cliente['id'];
             $zonaId = $cliente['zona_id'];
-            $vendedorId = $faker->randomElement($vendedoresIdsReales);
+            
+            $sellersInZone = $sellerZoneMapping[$zonaId] ?? ['695 - VENDEDOR'];
+            $vendedorId = $faker->randomElement($sellersInZone);
 
             $mov = $faker->randomElement($movimientos);
             $prefijo = match ($mov) {
@@ -600,10 +610,9 @@ class PruebaSeeder extends Seeder
         }
 
         // Sembrar facturas con la fecha de hoy para consultas predeterminadas del reporte
-        // Asegurando que cada combinación de (Zona, Vendedor) tenga datos hoy
+        // Asegurando que cada combinación de (Zona, Vendedor) correcta tenga datos hoy
         $todayStr = date('Y-m-d');
         $allZones = Zone::all();
-        $allSellers = Seller::all();
         
         $comboIndex = 0;
         foreach ($allZones as $zone) {
@@ -612,7 +621,12 @@ class PruebaSeeder extends Seeder
                 continue;
             }
             
-            foreach ($allSellers as $seller) {
+            $sellersInZone = $sellerZoneMapping[$zone->id] ?? [];
+            foreach ($sellersInZone as $sellerId) {
+                // Asegurarse de que el vendedor existe en la base de datos
+                if (!Seller::where('id', $sellerId)->exists()) {
+                    continue;
+                }
                 for ($j = 1; $j <= 2; $j++) {
                     $customer = $customersInZone->random();
                     $subtotal = 8000.00 + ($comboIndex * 150) + ($j * 100) + rand(100, 1000);
@@ -622,14 +636,14 @@ class PruebaSeeder extends Seeder
                         'folio' => 'TOD-CB-' . $comboIndex . '-' . $j,
                         'movimiento' => 'Venta Factura',
                         'fecha' => $todayStr,
-                        'vendedor_id' => $seller->id,
+                        'vendedor_id' => $sellerId,
                         'zona_id' => $zone->id,
                         'customer_id' => $customer->id,
                         'subtotal' => $subtotal,
                         'total' => $total,
                         'abono' => 0.00,
                         'saldo' => $total,
-                        'comentario' => "Factura hoy para {$zone->id} y {$seller->id}"
+                        'comentario' => "Factura hoy para {$zone->id} y {$sellerId}"
                     ]);
                 }
                 $comboIndex++;
