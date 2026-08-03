@@ -376,7 +376,8 @@ $exportarCSV = function() {
             </div>
 
             {{-- Results Area --}}
-            @if($consultado && !empty($registrosFiltrados))
+            @if($consultado)
+                @if(!empty($registrosFiltrados))
                 {{-- KPIs --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
                     {{-- Total Unidades --}}
@@ -549,9 +550,17 @@ $exportarCSV = function() {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                @else
+                    {{-- No records found state (Matches error control request) --}}
+                    <div class="h-64 flex flex-col items-center justify-center text-gray-450 dark:text-gray-500 select-none">
+                        <svg class="w-12 h-12 mb-3 text-red-500/80 dark:text-red-400/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <p class="text-sm font-medium">No se encontraron productos rechazados para la combinación de Zona y Ruta en las fechas seleccionadas.</p>
+                    </div>
+                @endif
             @else
-                {{-- Empty State (Matches screenshot 1 style) --}}
+                {{-- Initial state placeholder --}}
                 <div class="h-64 flex flex-col items-center justify-center text-gray-450 dark:text-gray-500 select-none">
                     <svg class="w-12 h-12 mb-3 text-gray-350 dark:text-gray-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
