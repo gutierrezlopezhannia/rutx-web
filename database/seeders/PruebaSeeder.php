@@ -550,6 +550,84 @@ class PruebaSeeder extends Seeder
                 'saldo' => 120.00,
                 'comentario' => 'Contiene productos rechazados'
             ],
+            [
+                'folio' => 'PED-9091',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '695 - VENDEDOR',
+                'zona_id' => '1Z - SUR',
+                'customer_id' => '2540 - CLIENTE A CREDITO 02',
+                'subtotal' => 450.00,
+                'total' => 522.00,
+                'abono' => 0.00,
+                'saldo' => 522.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9092',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3345 - VDOS',
+                'zona_id' => '1Z - SUR',
+                'customer_id' => '2552 - CLIENTE A CREDITO 06',
+                'subtotal' => 600.00,
+                'total' => 696.00,
+                'abono' => 0.00,
+                'saldo' => 696.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9093',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '7621 - RUTA_ALE',
+                'zona_id' => '2Z - NORTE',
+                'customer_id' => '2537 - CLIENTE A CREDITO 01',
+                'subtotal' => 320.00,
+                'total' => 371.20,
+                'abono' => 0.00,
+                'saldo' => 371.20,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9094',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '7853 - MIGUEL ANGEL',
+                'zona_id' => '3Z - ORIENTE',
+                'customer_id' => '2543 - CLIENTE A CREDITO 03',
+                'subtotal' => 150.00,
+                'total' => 174.00,
+                'abono' => 0.00,
+                'saldo' => 174.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9095',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '8364 - RUTA ZONA SUR',
+                'zona_id' => '4Z - PONIENTE',
+                'customer_id' => '2546 - CLIENTE A CREDITO 04',
+                'subtotal' => 800.00,
+                'total' => 928.00,
+                'abono' => 0.00,
+                'saldo' => 928.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9096',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999001 - CLIENTE PRUEBA 01',
+                'subtotal' => 200.00,
+                'total' => 232.00,
+                'abono' => 0.00,
+                'saldo' => 232.00,
+                'comentario' => 'Contiene productos rechazados'
+            ]
         ];
         foreach ($invoicesRechazos as $ir) {
             Invoice::create($ir);
