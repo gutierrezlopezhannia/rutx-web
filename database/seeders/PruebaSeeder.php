@@ -365,6 +365,274 @@ class PruebaSeeder extends Seeder
             Invoice::create($ir);
         }
 
+        // Sembrar zona y rutas específicas para el reporte de rechazos en campo (Desarrollo)
+        Zone::create(['id' => '1Z - Zona 1', 'name' => 'ZONA 1']);
+        
+        $vendedoresRechazos = [
+            ['id' => '3983 - RUTA01', 'name' => 'RUTA01', 'oculto' => 'N'],
+            ['id' => '4682 - RUTA02', 'name' => 'RUTA02', 'oculto' => 'N'],
+            ['id' => '4683 - RUTA03', 'name' => 'RUTA03', 'oculto' => 'N'],
+            ['id' => '4684 - RUTA04', 'name' => 'RUTA04', 'oculto' => 'N'],
+            ['id' => '4685 - RUTA05', 'name' => 'RUTA05', 'oculto' => 'N'],
+            ['id' => '4686 - RUTA06', 'name' => 'RUTA06', 'oculto' => 'N'],
+        ];
+        foreach ($vendedoresRechazos as $vr) {
+            Seller::create($vr);
+        }
+
+        $clientesRechazos = [
+            [
+                'id' => 'EVEN0001 - CLIENTE EVENTUAL R1 - 1',
+                'clave' => 'EVEN0001',
+                'nombre' => 'CLIENTE EVENTUAL R1 - 1',
+                'direccion' => 'Calle Principal 123',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5511223344',
+                'plazo' => 'Contado',
+                'limite' => 50000.00,
+                'saldo' => 0.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0002 - ABARROTES LA ESPERANZA',
+                'clave' => 'EVEN0002',
+                'nombre' => 'ABARROTES LA ESPERANZA',
+                'direccion' => 'Av. Revolución 456',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5522334455',
+                'plazo' => '8 días',
+                'limite' => 100000.00,
+                'saldo' => 1500.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0003 - MINI SUPER EL SOL',
+                'clave' => 'EVEN0003',
+                'nombre' => 'MINI SUPER EL SOL',
+                'direccion' => 'Calle Sol 789',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5533445566',
+                'plazo' => '15 días',
+                'limite' => 80000.00,
+                'saldo' => 3000.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0004 - TIENDA LA PRINCIPAL',
+                'clave' => 'EVEN0004',
+                'nombre' => 'TIENDA LA PRINCIPAL',
+                'direccion' => 'Av. Central 101',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5544556677',
+                'plazo' => 'Contado',
+                'limite' => 30000.00,
+                'saldo' => 0.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0005 - FARMACIA BENAVIDES',
+                'clave' => 'EVEN0005',
+                'nombre' => 'FARMACIA BENAVIDES',
+                'direccion' => 'Calle Juárez 202',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5555667788',
+                'plazo' => '30 días',
+                'limite' => 150000.00,
+                'saldo' => 5000.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0006 - FERRETERIA CENTRAL',
+                'clave' => 'EVEN0006',
+                'nombre' => 'FERRETERIA CENTRAL',
+                'direccion' => 'Av. Hidalgo 303',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5566778899',
+                'plazo' => 'Contado',
+                'limite' => 40000.00,
+                'saldo' => 0.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+        ];
+        foreach ($clientesRechazos as $cr) {
+            Customer::create($cr);
+        }
+
+        $invoicesRechazos = [
+            [
+                'folio' => 'PED-9081',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0001 - CLIENTE EVENTUAL R1 - 1',
+                'subtotal' => 305.17,
+                'total' => 354.00,
+                'abono' => 0.00,
+                'saldo' => 354.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9082',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0002 - ABARROTES LA ESPERANZA',
+                'subtotal' => 310.34,
+                'total' => 360.00,
+                'abono' => 0.00,
+                'saldo' => 360.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9083',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '4682 - RUTA02',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0003 - MINI SUPER EL SOL',
+                'subtotal' => 79.74,
+                'total' => 92.50,
+                'abono' => 0.00,
+                'saldo' => 92.50,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9084',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '4683 - RUTA03',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0004 - TIENDA LA PRINCIPAL',
+                'subtotal' => 224.14,
+                'total' => 260.00,
+                'abono' => 0.00,
+                'saldo' => 260.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9085',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-02',
+                'vendedor_id' => '4684 - RUTA04',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0005 - FARMACIA BENAVIDES',
+                'subtotal' => 827.59,
+                'total' => 960.00,
+                'abono' => 0.00,
+                'saldo' => 960.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9086',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-02',
+                'vendedor_id' => '4685 - RUTA05',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0006 - FERRETERIA CENTRAL',
+                'subtotal' => 284.48,
+                'total' => 330.00,
+                'abono' => 0.00,
+                'saldo' => 330.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9087',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-02',
+                'vendedor_id' => '4686 - RUTA06',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0001 - CLIENTE EVENTUAL R1 - 1',
+                'subtotal' => 103.45,
+                'total' => 120.00,
+                'abono' => 0.00,
+                'saldo' => 120.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9091',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '695 - VENDEDOR',
+                'zona_id' => '1Z - SUR',
+                'customer_id' => '2540 - CLIENTE A CREDITO 02',
+                'subtotal' => 450.00,
+                'total' => 522.00,
+                'abono' => 0.00,
+                'saldo' => 522.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9092',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3345 - VDOS',
+                'zona_id' => '1Z - SUR',
+                'customer_id' => '2552 - CLIENTE A CREDITO 06',
+                'subtotal' => 600.00,
+                'total' => 696.00,
+                'abono' => 0.00,
+                'saldo' => 696.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9093',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '7621 - RUTA_ALE',
+                'zona_id' => '2Z - NORTE',
+                'customer_id' => '2537 - CLIENTE A CREDITO 01',
+                'subtotal' => 320.00,
+                'total' => 371.20,
+                'abono' => 0.00,
+                'saldo' => 371.20,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9094',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '7853 - MIGUEL ANGEL',
+                'zona_id' => '3Z - ORIENTE',
+                'customer_id' => '2543 - CLIENTE A CREDITO 03',
+                'subtotal' => 150.00,
+                'total' => 174.00,
+                'abono' => 0.00,
+                'saldo' => 174.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9095',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '8364 - RUTA ZONA SUR',
+                'zona_id' => '4Z - PONIENTE',
+                'customer_id' => '2546 - CLIENTE A CREDITO 04',
+                'subtotal' => 800.00,
+                'total' => 928.00,
+                'abono' => 0.00,
+                'saldo' => 928.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9096',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999001 - CLIENTE PRUEBA 01',
+                'subtotal' => 200.00,
+                'total' => 232.00,
+                'abono' => 0.00,
+                'saldo' => 232.00,
+                'comentario' => 'Contiene productos rechazados'
+            ]
+        ];
+        foreach ($invoicesRechazos as $ir) {
+            Invoice::create($ir);
+        }
+
         // Invoices Mock Adicionales para rellenar en desarrollo
         $faker = Faker::create();
         $movimientos = ['Venta Factura', 'Venta Remisión', 'Pedido Sincronizado'];
@@ -377,13 +645,23 @@ class PruebaSeeder extends Seeder
             'Ninguno',
         ];
 
-        $vendedoresIdsReales = array_column($vendedoresReales, 'id');
+        // Definir mapeo estricto de vendedores por zona
+        $sellerZoneMapping = [
+            '1Z - SUR' => ['695 - VENDEDOR', '3345 - VDOS'],
+            '2Z - NORTE' => ['7621 - RUTA_ALE'],
+            '3Z - ORIENTE' => ['7853 - MIGUEL ANGEL'],
+            '4Z - PONIENTE' => ['8364 - RUTA ZONA SUR', '9448 - URIEL'],
+            '1Z - Zona 1' => ['3983 - RUTA01', '4682 - RUTA02', '4683 - RUTA03', '4684 - RUTA04', '4685 - RUTA05', '4686 - RUTA06'],
+            '99-PRUEBA' => ['999001 - VENDEDOR PRUEBA'],
+        ];
 
         for ($i = 0; $i < 120; $i++) {
             $cliente = $faker->randomElement($clientesReales);
             $clienteId = $cliente['id'];
             $zonaId = $cliente['zona_id'];
-            $vendedorId = $faker->randomElement($vendedoresIdsReales);
+            
+            $sellersInZone = $sellerZoneMapping[$zonaId] ?? ['695 - VENDEDOR'];
+            $vendedorId = $faker->randomElement($sellersInZone);
 
             $mov = $faker->randomElement($movimientos);
             $prefijo = match ($mov) {
@@ -410,10 +688,9 @@ class PruebaSeeder extends Seeder
         }
 
         // Sembrar facturas con la fecha de hoy para consultas predeterminadas del reporte
-        // Asegurando que cada combinación de (Zona, Vendedor) tenga datos hoy
+        // Asegurando que cada combinación de (Zona, Vendedor) correcta tenga datos hoy
         $todayStr = date('Y-m-d');
         $allZones = Zone::all();
-        $allSellers = Seller::all();
         
         $comboIndex = 0;
         foreach ($allZones as $zone) {
@@ -422,7 +699,12 @@ class PruebaSeeder extends Seeder
                 continue;
             }
             
-            foreach ($allSellers as $seller) {
+            $sellersInZone = $sellerZoneMapping[$zone->id] ?? [];
+            foreach ($sellersInZone as $sellerId) {
+                // Asegurarse de que el vendedor existe en la base de datos
+                if (!Seller::where('id', $sellerId)->exists()) {
+                    continue;
+                }
                 for ($j = 1; $j <= 2; $j++) {
                     $customer = $customersInZone->random();
                     $subtotal = 8000.00 + ($comboIndex * 150) + ($j * 100) + rand(100, 1000);
@@ -432,14 +714,14 @@ class PruebaSeeder extends Seeder
                         'folio' => 'TOD-CB-' . $comboIndex . '-' . $j,
                         'movimiento' => 'Venta Factura',
                         'fecha' => $todayStr,
-                        'vendedor_id' => $seller->id,
+                        'vendedor_id' => $sellerId,
                         'zona_id' => $zone->id,
                         'customer_id' => $customer->id,
                         'subtotal' => $subtotal,
                         'total' => $total,
                         'abono' => 0.00,
                         'saldo' => $total,
-                        'comentario' => "Factura hoy para {$zone->id} y {$seller->id}"
+                        'comentario' => "Factura hoy para {$zone->id} y {$sellerId}"
                     ]);
                 }
                 $comboIndex++;
