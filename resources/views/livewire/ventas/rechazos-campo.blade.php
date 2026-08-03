@@ -574,11 +574,6 @@ $exportarCSV = function() {
                 </div>
             @endif
 
-            {{-- Footer (Exactly matches screenshot) --}}
-            <div class="text-center text-[10px] text-gray-400/80 dark:text-gray-650 mt-12 mb-4 select-none">
-                Copyright © JB VEMOBILE SA DE CV 2026.
-            </div>
-
         </div>
     </div>
 </div>
