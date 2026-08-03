@@ -550,7 +550,8 @@ $exportarCSV = function() {
                             </tbody>
                         </table>
                     </div>
-                @else
+                </div>
+            @else
                     {{-- No records found state (Matches error control request) --}}
                     <div class="h-64 flex flex-col items-center justify-center text-gray-450 dark:text-gray-500 select-none">
                         <svg class="w-12 h-12 mb-3 text-red-500/80 dark:text-red-400/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
