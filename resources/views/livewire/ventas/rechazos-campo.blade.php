@@ -220,6 +220,9 @@ $aplicarFiltros = function() {
 };
 
 $consultar = function() {
+    if ($this->filtro_ruta === 'todos') {
+        return;
+    }
     $this->consultado = true;
     $this->aplicarFiltros();
 };
@@ -339,7 +342,9 @@ $exportarCSV = function() {
 
                     {{-- Consultar Button --}}
                     <div>
-                        <button wire:click="consultar" class="w-full px-6 py-2 bg-[#005fa3] hover:bg-[#004e86] text-white rounded text-sm font-semibold transition duration-150 cursor-pointer shadow-sm">
+                        <button wire:click="consultar" 
+                                @disabled($filtro_ruta === 'todos')
+                                class="w-full px-6 py-2 rounded text-sm font-semibold transition duration-150 shadow-sm {{ $filtro_ruta === 'todos' ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-[#005fa3] hover:bg-[#004e86] text-white cursor-pointer' }}">
                             Consultar
                         </button>
                     </div>
