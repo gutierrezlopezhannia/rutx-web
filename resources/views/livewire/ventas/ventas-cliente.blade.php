@@ -49,6 +49,34 @@ state([
     'registroSeleccionado' => null,
 ]);
 
+$updatedFiltroZona = function() {
+    $this->filtro_vendedor = 'todos';
+    $this->filtro_cliente = 'todos';
+};
+
+$obtenerVendedores = function() {
+    if ($this->filtro_zona === 'todos') {
+        return \App\Models\Seller::where('oculto', 'N')->pluck('id')->sort()->toArray();
+    }
+    
+    $vendedorIds = \App\Models\Invoice::where('zona_id', $this->filtro_zona)
+        ->pluck('vendedor_id')
+        ->unique();
+        
+    return \App\Models\Seller::whereIn('id', $vendedorIds)
+        ->where('oculto', 'N')
+        ->pluck('id')
+        ->sort()
+        ->toArray();
+};
+
+$obtenerClientes = function() {
+    if ($this->filtro_zona === 'todos') {
+        return \App\Models\Customer::pluck('id')->sort()->toArray();
+    }
+    return \App\Models\Customer::where('zona_id', $this->filtro_zona)->pluck('id')->sort()->toArray();
+};
+
 $aplicarFiltros = function () {
     $query = \App\Models\Invoice::with(['customer', 'seller', 'zone']);
     
@@ -201,7 +229,7 @@ $cerrarModal = function () {
                         <label class="text-[11px] text-gray-400 font-medium mb-1">Vendedor</label>
                         <select wire:model.live="filtro_vendedor" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#003859] focus:ring-0 bg-transparent text-gray-700 font-medium cursor-pointer w-full">
                             <option value="todos">Todos los Vendedores</option>
-                            @foreach(\App\Models\Seller::pluck('id')->sort() as $v)
+                            @foreach($this->obtenerVendedores() as $v)
                                 <option value="{{ $v }}">{{ $v }}</option>
                             @endforeach
                         </select>
@@ -212,7 +240,7 @@ $cerrarModal = function () {
                         <label class="text-[11px] text-gray-400 font-medium mb-1">Cliente</label>
                         <select wire:model.live="filtro_cliente" class="border-0 border-b border-gray-300 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#003859] focus:ring-0 bg-transparent text-gray-700 font-medium cursor-pointer w-full">
                             <option value="todos">Todos los Clientes</option>
-                            @foreach(\App\Models\Customer::pluck('id')->sort() as $c)
+                            @foreach($this->obtenerClientes() as $c)
                                 <option value="{{ $c }}">{{ $c }}</option>
                             @endforeach
                         </select>

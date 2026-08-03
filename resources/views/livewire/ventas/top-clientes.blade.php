@@ -133,13 +133,19 @@ $updatedFiltroZona = function () {
 };
 
 $vendedoresDisponibles = function() {
-    \Illuminate\Support\Facades\Log::info("vendedoresDisponibles called. filtro_zona: " . $this->filtro_zona);
     if ($this->filtro_zona === 'todos') {
         return [];
     }
-    $res = \App\Models\Seller::pluck('id')->sort()->toArray();
-    \Illuminate\Support\Facades\Log::info("vendedoresDisponibles result count: " . count($res));
-    return $res;
+    
+    $vendedorIds = \App\Models\Invoice::where('zona_id', $this->filtro_zona)
+        ->pluck('vendedor_id')
+        ->unique();
+        
+    return \App\Models\Seller::whereIn('id', $vendedorIds)
+        ->where('oculto', 'N')
+        ->pluck('id')
+        ->sort()
+        ->toArray();
 };
 
 mount(function () {
