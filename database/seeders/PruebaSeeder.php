@@ -365,6 +365,196 @@ class PruebaSeeder extends Seeder
             Invoice::create($ir);
         }
 
+        // Sembrar zona y rutas específicas para el reporte de rechazos en campo (Desarrollo)
+        Zone::create(['id' => '1Z - Zona 1', 'name' => 'ZONA 1']);
+        
+        $vendedoresRechazos = [
+            ['id' => '3983 - RUTA01', 'name' => 'RUTA01', 'oculto' => 'N'],
+            ['id' => '4682 - RUTA02', 'name' => 'RUTA02', 'oculto' => 'N'],
+            ['id' => '4683 - RUTA03', 'name' => 'RUTA03', 'oculto' => 'N'],
+            ['id' => '4684 - RUTA04', 'name' => 'RUTA04', 'oculto' => 'N'],
+            ['id' => '4685 - RUTA05', 'name' => 'RUTA05', 'oculto' => 'N'],
+            ['id' => '4686 - RUTA06', 'name' => 'RUTA06', 'oculto' => 'N'],
+        ];
+        foreach ($vendedoresRechazos as $vr) {
+            Seller::create($vr);
+        }
+
+        $clientesRechazos = [
+            [
+                'id' => 'EVEN0001 - CLIENTE EVENTUAL R1 - 1',
+                'clave' => 'EVEN0001',
+                'nombre' => 'CLIENTE EVENTUAL R1 - 1',
+                'direccion' => 'Calle Principal 123',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5511223344',
+                'plazo' => 'Contado',
+                'limite' => 50000.00,
+                'saldo' => 0.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0002 - ABARROTES LA ESPERANZA',
+                'clave' => 'EVEN0002',
+                'nombre' => 'ABARROTES LA ESPERANZA',
+                'direccion' => 'Av. Revolución 456',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5522334455',
+                'plazo' => '8 días',
+                'limite' => 100000.00,
+                'saldo' => 1500.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0003 - MINI SUPER EL SOL',
+                'clave' => 'EVEN0003',
+                'nombre' => 'MINI SUPER EL SOL',
+                'direccion' => 'Calle Sol 789',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5533445566',
+                'plazo' => '15 días',
+                'limite' => 80000.00,
+                'saldo' => 3000.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0004 - TIENDA LA PRINCIPAL',
+                'clave' => 'EVEN0004',
+                'nombre' => 'TIENDA LA PRINCIPAL',
+                'direccion' => 'Av. Central 101',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5544556677',
+                'plazo' => 'Contado',
+                'limite' => 30000.00,
+                'saldo' => 0.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0005 - FARMACIA BENAVIDES',
+                'clave' => 'EVEN0005',
+                'nombre' => 'FARMACIA BENAVIDES',
+                'direccion' => 'Calle Juárez 202',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5555667788',
+                'plazo' => '30 días',
+                'limite' => 150000.00,
+                'saldo' => 5000.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+            [
+                'id' => 'EVEN0006 - FERRETERIA CENTRAL',
+                'clave' => 'EVEN0006',
+                'nombre' => 'FERRETERIA CENTRAL',
+                'direccion' => 'Av. Hidalgo 303',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5566778899',
+                'plazo' => 'Contado',
+                'limite' => 40000.00,
+                'saldo' => 0.00,
+                'zona_id' => '1Z - Zona 1'
+            ],
+        ];
+        foreach ($clientesRechazos as $cr) {
+            Customer::create($cr);
+        }
+
+        $invoicesRechazos = [
+            [
+                'folio' => 'PED-9081',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0001 - CLIENTE EVENTUAL R1 - 1',
+                'subtotal' => 305.17,
+                'total' => 354.00,
+                'abono' => 0.00,
+                'saldo' => 354.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9082',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0002 - ABARROTES LA ESPERANZA',
+                'subtotal' => 310.34,
+                'total' => 360.00,
+                'abono' => 0.00,
+                'saldo' => 360.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9083',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '4682 - RUTA02',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0003 - MINI SUPER EL SOL',
+                'subtotal' => 79.74,
+                'total' => 92.50,
+                'abono' => 0.00,
+                'saldo' => 92.50,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9084',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '4683 - RUTA03',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0004 - TIENDA LA PRINCIPAL',
+                'subtotal' => 224.14,
+                'total' => 260.00,
+                'abono' => 0.00,
+                'saldo' => 260.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9085',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-02',
+                'vendedor_id' => '4684 - RUTA04',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0005 - FARMACIA BENAVIDES',
+                'subtotal' => 827.59,
+                'total' => 960.00,
+                'abono' => 0.00,
+                'saldo' => 960.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9086',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-02',
+                'vendedor_id' => '4685 - RUTA05',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0006 - FERRETERIA CENTRAL',
+                'subtotal' => 284.48,
+                'total' => 330.00,
+                'abono' => 0.00,
+                'saldo' => 330.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'PED-9087',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-02',
+                'vendedor_id' => '4686 - RUTA06',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0001 - CLIENTE EVENTUAL R1 - 1',
+                'subtotal' => 103.45,
+                'total' => 120.00,
+                'abono' => 0.00,
+                'saldo' => 120.00,
+                'comentario' => 'Contiene productos rechazados'
+            ],
+        ];
+        foreach ($invoicesRechazos as $ir) {
+            Invoice::create($ir);
+        }
+
         // Invoices Mock Adicionales para rellenar en desarrollo
         $faker = Faker::create();
         $movimientos = ['Venta Factura', 'Venta Remisión', 'Pedido Sincronizado'];

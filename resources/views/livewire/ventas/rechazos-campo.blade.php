@@ -121,7 +121,9 @@ state([
         'motivo_principal' => 'N/A',
         'tasa_rechazo' => '0.0%'
     ],
-    'datosTabla' => []
+    'datosTabla' => [],
+    'zonas' => fn() => \App\Models\Zone::all()->toArray(),
+    'rutas' => fn() => \App\Models\Seller::where('oculto', 'N')->get()->toArray(),
 ]);
 
 $aplicarFiltros = function() {
@@ -322,7 +324,9 @@ $exportarCSV = function() {
                         <label class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Zona</label>
                         <select wire:model.live="filtro_zona" class="border-0 border-b border-gray-300 dark:border-gray-600 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#003859] dark:focus:border-orange-500 bg-transparent text-gray-700 dark:text-gray-200 font-semibold cursor-pointer w-full">
                             <option value="todos">Todas las Zonas</option>
-                            <option value="1Z - Zona 1">1Z - Zona 1</option>
+                            @foreach($zonas as $z)
+                                <option value="{{ $z['id'] }}">{{ $z['id'] }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -331,12 +335,9 @@ $exportarCSV = function() {
                         <label class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Ruta</label>
                         <select wire:model.live="filtro_ruta" class="border-0 border-b border-gray-300 dark:border-gray-600 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#003859] dark:focus:border-orange-500 bg-transparent text-gray-700 dark:text-gray-200 font-semibold cursor-pointer w-full">
                             <option value="todos">Ruta</option>
-                            <option value="3983 - RUTA01">3983 - RUTA01</option>
-                            <option value="4682 - RUTA02">4682 - RUTA02</option>
-                            <option value="4683 - RUTA03">4683 - RUTA03</option>
-                            <option value="4684 - RUTA04">4684 - RUTA04</option>
-                            <option value="4685 - RUTA05">4685 - RUTA05</option>
-                            <option value="4686 - RUTA06">4686 - RUTA06</option>
+                            @foreach($rutas as $r)
+                                <option value="{{ $r['id'] }}">{{ $r['id'] }}</option>
+                            @endforeach
                         </select>
                     </div>
 
