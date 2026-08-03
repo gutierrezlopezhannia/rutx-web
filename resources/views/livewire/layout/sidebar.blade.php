@@ -340,6 +340,17 @@ $logout = function (Logout $logout) {
                     </svg>
                     <span x-show="!collapsed" x-transition>Entrada Almacén</span>
                 </a>
+
+                {{-- Histórico --}}
+                <a href="{{ route('inventario.historico') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.historico') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.historico') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Histórico</span>
+                </a>
             @else
                 <!-- Levantamiento -->
                 <a href="{{ route('ventas.levantamiento') }}" wire:navigate

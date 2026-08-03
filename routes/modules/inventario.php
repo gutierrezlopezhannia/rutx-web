@@ -11,4 +11,5 @@ Route::middleware(['auth', 'verified'])->prefix('inventario')->name('inventario.
     Volt::route('/ruta', 'inventario.ruta')->name('ruta');
     Volt::route('/entrada-almacen', 'inventario.entrada-almacen')->name('entrada-almacen');
     Volt::route('/existencias-globales', 'inventario.existencias-globales')->name('existencias-globales');
+    Volt::route('/historico', 'inventario.historico')->name('historico');
 });
