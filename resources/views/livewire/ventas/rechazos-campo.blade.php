@@ -123,8 +123,26 @@ state([
     ],
     'datosTabla' => [],
     'zonas' => fn() => \App\Models\Zone::all()->toArray(),
-    'rutas' => fn() => \App\Models\Seller::where('oculto', 'N')->get()->toArray(),
 ]);
+
+$updatedFiltroZona = function() {
+    $this->filtro_ruta = 'todos';
+};
+
+$obtenerRutas = function() {
+    if ($this->filtro_zona === 'todos') {
+        return \App\Models\Seller::where('oculto', 'N')->get()->toArray();
+    }
+    
+    $vendedorIds = \App\Models\Invoice::where('zona_id', $this->filtro_zona)
+        ->pluck('vendedor_id')
+        ->unique();
+        
+    return \App\Models\Seller::whereIn('id', $vendedorIds)
+        ->where('oculto', 'N')
+        ->get()
+        ->toArray();
+};
 
 $aplicarFiltros = function() {
     $filtrados = collect($this->registros);
@@ -335,7 +353,7 @@ $exportarCSV = function() {
                         <label class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Ruta</label>
                         <select wire:model.live="filtro_ruta" class="border-0 border-b border-gray-300 dark:border-gray-600 rounded-none px-0 py-1 text-sm focus:outline-none focus:border-[#003859] dark:focus:border-orange-500 bg-transparent text-gray-700 dark:text-gray-200 font-semibold cursor-pointer w-full">
                             <option value="todos">Ruta</option>
-                            @foreach($rutas as $r)
+                            @foreach($this->obtenerRutas() as $r)
                                 <option value="{{ $r['id'] }}">{{ $r['id'] }}</option>
                             @endforeach
                         </select>
