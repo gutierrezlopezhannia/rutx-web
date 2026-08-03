@@ -47,3 +47,8 @@ Volt::route('deposito-venta', 'ventas.deposito-venta')
 Volt::route('top-clientes', 'ventas.top-clientes')
     ->middleware(['auth'])
     ->name('ventas.top-clientes');
+
+Volt::route('reporte-productos-rechazados', 'ventas.rechazos-campo')
+    ->middleware(['auth'])
+    ->name('ventas.rechazos-campo');
+
