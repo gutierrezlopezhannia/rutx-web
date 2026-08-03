@@ -79,6 +79,18 @@ $updatedFiltroZona = function() {
     $this->filtro_ruta = 'todos';
 };
 
+$updatedAgruparPor = function() {
+    if ($this->consultado) {
+        $this->aplicarFiltros();
+    }
+};
+
+$updatedBuscarFolio = function() {
+    if ($this->consultado) {
+        $this->aplicarFiltros();
+    }
+};
+
 $obtenerRutas = function() {
     if ($this->filtro_zona === 'todos') {
         return \App\Models\Seller::where('oculto', 'N')->get()->toArray();
