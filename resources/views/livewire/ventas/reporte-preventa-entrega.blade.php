@@ -597,9 +597,9 @@ $exportarCSV = function() {
 
                     {{-- Consultar Button --}}
                     <div>
-                        <button wire:click="consultar" 
+                        <button type="button" wire:click="consultar" 
                                 @disabled($filtro_ruta === 'todos')
-                                class="w-full px-6 py-2 rounded text-sm font-semibold transition duration-150 shadow-sm {{ $filtro_ruta === 'todos' ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-[#005fa3] hover:bg-[#004e86] text-white cursor-pointer' }}">
+                                class="w-full px-6 py-2 rounded text-sm font-semibold transition duration-150 shadow-sm {{ $filtro_ruta === 'todos' ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-550 cursor-not-allowed' : 'bg-[#005fa3] hover:bg-[#004e86] text-white cursor-pointer' }}">
                             Consultar
                         </button>
                     </div>
@@ -951,6 +951,7 @@ $exportarCSV = function() {
                     <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 max-w-md mx-auto">
                         Seleccione una Zona y una Ruta válida, defina el rango de fechas de interés y haga clic en <strong>Consultar</strong> para desplegar la información.
                     </p>
+                </div>
             @endif
 
         </div>

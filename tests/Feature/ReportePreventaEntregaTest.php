@@ -77,7 +77,8 @@ class ReportePreventaEntregaTest extends TestCase
             ->set('fecha_inicio', '2026-08-03')
             ->set('fecha_fin', '2026-08-05')
             ->call('consultar')
-            ->assertSet('consultado', true);
+            ->assertSet('consultado', true)
+            ->assertSee('Detalle de Comparación');
             
         $datos = $component->get('datosTabla');
         $this->assertNotEmpty($datos);
@@ -117,5 +118,30 @@ class ReportePreventaEntregaTest extends TestCase
         $datosBoth = $component->get('datosTabla');
         $this->assertArrayHasKey('pedido_folio', $datosBoth[0]);
         $this->assertArrayHasKey('producto_id', $datosBoth[0]);
+    }
+
+    /**
+     * Test rendering with the exact filters from user screenshot.
+     */
+    public function test_preventa_entrega_component_can_filter_by_multi_lines_and_family(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $component = Volt::test('ventas.reporte-preventa-entrega')
+            ->set('filtro_zona', '99-PRUEBA')
+            ->set('filtro_ruta', '999001 - VENDEDOR PRUEBA')
+            ->set('fecha_inicio', '2026-08-03')
+            ->set('fecha_fin', '2026-08-05')
+            ->set('filtro_lineas', ['ALIMENTOS', 'DULCERIA', 'FARMACIA', 'HIG Y DESECHABLE'])
+            ->set('filtro_linea_familia', 'GRANOS')
+            ->call('consultar')
+            ->assertSet('consultado', true);
+            
+        $html = $component->html();
+        $this->assertTrue(
+            str_contains($html, 'Detalle de Comparación') || str_contains($html, 'No se encontraron'),
+            "HTML did not contain results or empty state"
+        );
     }
 }
