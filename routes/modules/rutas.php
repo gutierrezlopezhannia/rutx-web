@@ -23,3 +23,7 @@ Volt::route('/ruta/gastos-operativos', 'rutas.gastos-operativos')
 Volt::route('/ruta/unidades-reparto', 'rutas.unidades-reparto')
     ->middleware(['auth', 'verified'])
     ->name('ruta.unidades-reparto');
+
+Volt::route('/ruta/log-sincronizacion', 'rutas.log-sincronizacion')
+    ->middleware(['auth', 'verified'])
+    ->name('ruta.log-sincronizacion');
