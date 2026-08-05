@@ -129,10 +129,16 @@ $logout = function (Logout $logout) {
                 </a>
 
                 <!-- Static Mocks per requested layout -->
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
-                    <span x-show="!collapsed" class="pl-7" x-transition>Unidades de Reparto</span>
+                <a href="{{ route('ruta.unidades-reparto') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ruta.unidades-reparto') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ruta.unidades-reparto') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8 17a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM3 4h2l2.5 10h9L19 7H6" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Unidades de Reparto</span>
                 </a>
+
                 <a href="{{ route('ruta.agenda') }}" wire:navigate
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ruta.agenda') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
                     <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ruta.agenda') ? 'text-orange-400' : '' }}"
@@ -340,6 +346,17 @@ $logout = function (Logout $logout) {
                     </svg>
                     <span x-show="!collapsed" x-transition>Entrada Almacén</span>
                 </a>
+
+                {{-- Histórico --}}
+                <a href="{{ route('inventario.historico') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.historico') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.historico') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Histórico</span>
+                </a>
             @else
                 <!-- Levantamiento -->
                 <a href="{{ route('ventas.levantamiento') }}" wire:navigate
@@ -443,7 +460,8 @@ $logout = function (Logout $logout) {
 
                 <a href="{{ route('ventas.rechazos-campo') }}" wire:navigate
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ventas.rechazos-campo') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
-                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.rechazos-campo') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.rechazos-campo') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
@@ -458,6 +476,15 @@ $logout = function (Logout $logout) {
                     <span x-show="!collapsed" x-transition>Reporte Preventa Entrega</span>
                 </a>
 
+                <a href="{{ route('ventas.carga-imovil-grid') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ventas.carga-imovil-grid') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.carga-imovil-grid') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Carga iMóvil Grid</span>
+                </a>
 
                 <!-- Clientes Pendientes -->
                 <!-- Clientes Pendientes -->
