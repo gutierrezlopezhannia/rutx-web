@@ -305,6 +305,17 @@ $logout = function (Logout $logout) {
                     <span x-show="!collapsed" x-transition>Plan de Carga</span>
                 </a>
 
+                <!-- Carga Entrega -->
+                <a href="{{ route('inventario.carga-entrega') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.carga-entrega') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.carga-entrega') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124l-.321-5.128a3.375 3.375 0 0 0-3.06-3.177H8.25m4.72-4.5H8.25m4.72 0a2.25 2.25 0 0 1 2.25 2.25v2.25M8.25 3.75h4.72M8.25 3.75v5.25m0-5.25H3.375a1.125 1.125 0 0 0-1.125 1.125v5.25m0-5.25h9.44" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Carga Entrega</span>
+                </a>
+
                 <!-- Cierre de Ruta -->
                 <a href="{{ route('inventario.cierre') }}" wire:navigate
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.cierre') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
