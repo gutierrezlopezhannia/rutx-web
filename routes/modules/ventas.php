@@ -52,6 +52,10 @@ Volt::route('reporte-productos-rechazados', 'ventas.rechazos-campo')
     ->middleware(['auth'])
     ->name('ventas.rechazos-campo');
 
+Volt::route('reporte-preventa-entrega', 'ventas.reporte-preventa-entrega')
+    ->middleware(['auth'])
+    ->name('ventas.preventa-entrega');
+
 Volt::route('carga-imovil-grid', 'ventas.carga-imovil-grid')
     ->middleware(['auth'])
     ->name('ventas.carga-imovil-grid');

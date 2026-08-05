@@ -72,6 +72,54 @@ class PruebaSeeder extends Seeder
                 'limite' => 1000000.00,
                 'saldo' => 14000.00,
                 'zona_id' => '99-PRUEBA'
+            ],
+            [
+                'id' => '999005 - CLIENTE PRUEBA COMPARATIVA 01',
+                'clave' => '999005',
+                'nombre' => 'CLIENTE PRUEBA COMPARATIVA 01',
+                'direccion' => 'Calle Uno 1, Col. Uno, CP 29200',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5522119988',
+                'plazo' => 'Contado',
+                'limite' => 0.00,
+                'saldo' => 1800.00,
+                'zona_id' => '99-PRUEBA'
+            ],
+            [
+                'id' => '999006 - CLIENTE PRUEBA COMPARATIVA 02',
+                'clave' => '999006',
+                'nombre' => 'CLIENTE PRUEBA COMPARATIVA 02',
+                'direccion' => 'Calle Uno 1, Col. Uno, CP 29200',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5522119988',
+                'plazo' => 'Contado',
+                'limite' => 0.00,
+                'saldo' => 3000.00,
+                'zona_id' => '99-PRUEBA'
+            ],
+            [
+                'id' => '999007 - CLIENTE PRUEBA COMPARATIVA 03',
+                'clave' => '999007',
+                'nombre' => 'CLIENTE PRUEBA COMPARATIVA 03',
+                'direccion' => 'Calle Uno 1, Col. Uno, CP 29200',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5522119988',
+                'plazo' => 'Contado',
+                'limite' => 0.00,
+                'saldo' => 500.00,
+                'zona_id' => '99-PRUEBA'
+            ],
+            [
+                'id' => '999008 - CLIENTE PRUEBA COMPARATIVA 04',
+                'clave' => '999008',
+                'nombre' => 'CLIENTE PRUEBA COMPARATIVA 04',
+                'direccion' => 'Calle Uno 1, Col. Uno, CP 29200',
+                'rfc' => 'XAXX010101000',
+                'telefono' => '5522119988',
+                'plazo' => 'Contado',
+                'limite' => 0.00,
+                'saldo' => 600.00,
+                'zona_id' => '99-PRUEBA'
             ]
         ];
         foreach ($clientesPrueba as $c) {
@@ -79,6 +127,84 @@ class PruebaSeeder extends Seeder
         }
 
         $invoicesPrueba = [
+            [
+                'folio' => 'PED-PRU-01',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999005 - CLIENTE PRUEBA COMPARATIVA 01',
+                'subtotal' => 862.07,
+                'total' => 1000.00,
+                'abono' => 0.00,
+                'saldo' => 1000.00,
+                'comentario' => 'Preventa - Surtido parcial'
+            ],
+            [
+                'folio' => 'FAC-PRU-01',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999005 - CLIENTE PRUEBA COMPARATIVA 01',
+                'subtotal' => 689.66,
+                'total' => 800.00,
+                'abono' => 0.00,
+                'saldo' => 800.00,
+                'comentario' => 'Entrega - Surtido parcial'
+            ],
+            [
+                'folio' => 'PED-PRU-02',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-04',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999006 - CLIENTE PRUEBA COMPARATIVA 02',
+                'subtotal' => 1293.10,
+                'total' => 1500.00,
+                'abono' => 0.00,
+                'saldo' => 1500.00,
+                'comentario' => 'Preventa - Surtido completo'
+            ],
+            [
+                'folio' => 'FAC-PRU-02',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-04',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999006 - CLIENTE PRUEBA COMPARATIVA 02',
+                'subtotal' => 1293.10,
+                'total' => 1500.00,
+                'abono' => 0.00,
+                'saldo' => 1500.00,
+                'comentario' => 'Entrega - Surtido completo'
+            ],
+            [
+                'folio' => 'PED-PRU-03',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-05',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999007 - CLIENTE PRUEBA COMPARATIVA 03',
+                'subtotal' => 431.03,
+                'total' => 500.00,
+                'abono' => 0.00,
+                'saldo' => 500.00,
+                'comentario' => 'Preventa - Solo preventa / Rechazo total'
+            ],
+            [
+                'folio' => 'FAC-PRU-04',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-04',
+                'vendedor_id' => '999001 - VENDEDOR PRUEBA',
+                'zona_id' => '99-PRUEBA',
+                'customer_id' => '999008 - CLIENTE PRUEBA COMPARATIVA 04',
+                'subtotal' => 517.24,
+                'total' => 600.00,
+                'abono' => 0.00,
+                'saldo' => 600.00,
+                'comentario' => 'Entrega - Solo entrega / Venta directa'
+            ],
             [
                 'folio' => 'PRU000001',
                 'movimiento' => 'Venta Factura',
@@ -367,6 +493,7 @@ class PruebaSeeder extends Seeder
 
         // Sembrar zona y rutas específicas para el reporte de rechazos en campo (Desarrollo)
         Zone::create(['id' => '1Z - Zona 1', 'name' => 'ZONA 1']);
+        Zone::create(['id' => '12 - Zona 1', 'name' => 'ZONA 12']);
         
         $vendedoresRechazos = [
             ['id' => '3983 - RUTA01', 'name' => 'RUTA01', 'oculto' => 'N'],
@@ -473,6 +600,19 @@ class PruebaSeeder extends Seeder
                 'comentario' => 'Contiene productos rechazados'
             ],
             [
+                'folio' => 'FAC-9081',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0001 - CLIENTE EVENTUAL R1 - 1',
+                'subtotal' => 200.00,
+                'total' => 232.00,
+                'abono' => 0.00,
+                'saldo' => 232.00,
+                'comentario' => 'Entregado con rechazo parcial'
+            ],
+            [
                 'folio' => 'PED-9082',
                 'movimiento' => 'Pedido Sincronizado',
                 'fecha' => '2026-08-03',
@@ -484,6 +624,97 @@ class PruebaSeeder extends Seeder
                 'abono' => 0.00,
                 'saldo' => 360.00,
                 'comentario' => 'Contiene productos rechazados'
+            ],
+            [
+                'folio' => 'FAC-9082',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-03',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0002 - ABARROTES LA ESPERANZA',
+                'subtotal' => 310.34,
+                'total' => 360.00,
+                'abono' => 0.00,
+                'saldo' => 360.00,
+                'comentario' => 'Entregado completo'
+            ],
+            [
+                'folio' => 'PED-9088',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-04',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0003 - MINI SUPER EL SOL',
+                'subtotal' => 1200.00,
+                'total' => 1392.00,
+                'abono' => 0.00,
+                'saldo' => 1392.00,
+                'comentario' => 'Pedido Preventa'
+            ],
+            [
+                'folio' => 'FAC-9088',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-04',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0003 - MINI SUPER EL SOL',
+                'subtotal' => 1000.00,
+                'total' => 1160.00,
+                'abono' => 0.00,
+                'saldo' => 1160.00,
+                'comentario' => 'Entregado parcial'
+            ],
+            [
+                'folio' => 'PED-9089',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-05',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0004 - TIENDA LA PRINCIPAL',
+                'subtotal' => 850.00,
+                'total' => 986.00,
+                'abono' => 0.00,
+                'saldo' => 986.00,
+                'comentario' => 'Pedido Preventa'
+            ],
+            [
+                'folio' => 'FAC-9089',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-05',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0004 - TIENDA LA PRINCIPAL',
+                'subtotal' => 850.00,
+                'total' => 986.00,
+                'abono' => 0.00,
+                'saldo' => 986.00,
+                'comentario' => 'Entregado completo'
+            ],
+            [
+                'folio' => 'PED-9090',
+                'movimiento' => 'Pedido Sincronizado',
+                'fecha' => '2026-08-05',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0005 - FARMACIA BENAVIDES',
+                'subtotal' => 400.00,
+                'total' => 464.00,
+                'abono' => 0.00,
+                'saldo' => 464.00,
+                'comentario' => 'Solo preventa'
+            ],
+            [
+                'folio' => 'FAC-9097',
+                'movimiento' => 'Venta Factura',
+                'fecha' => '2026-08-04',
+                'vendedor_id' => '3983 - RUTA01',
+                'zona_id' => '1Z - Zona 1',
+                'customer_id' => 'EVEN0006 - FERRETERIA CENTRAL',
+                'subtotal' => 600.00,
+                'total' => 696.00,
+                'abono' => 0.00,
+                'saldo' => 696.00,
+                'comentario' => 'Solo entrega / Venta directa'
             ],
             [
                 'folio' => 'PED-9083',
@@ -652,6 +883,7 @@ class PruebaSeeder extends Seeder
             '3Z - ORIENTE' => ['7853 - MIGUEL ANGEL'],
             '4Z - PONIENTE' => ['8364 - RUTA ZONA SUR', '9448 - URIEL'],
             '1Z - Zona 1' => ['3983 - RUTA01', '4682 - RUTA02', '4683 - RUTA03', '4684 - RUTA04', '4685 - RUTA05', '4686 - RUTA06'],
+            '12 - Zona 1' => ['4682 - RUTA02', '4683 - RUTA03'],
             '99-PRUEBA' => ['999001 - VENDEDOR PRUEBA'],
         ];
 
