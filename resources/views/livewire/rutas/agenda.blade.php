@@ -60,6 +60,14 @@ $clientesFiltrados = computed(function () {
         return stripos($c['id'] . ' ' . $c['nombre'], $this->search) !== false;
     });
 });
+$diasVisibles = computed(function () {
+    return match ($this->tipo_semana) {
+        'Lunes a Viernes' => array_filter($this->dias, fn($v, $k) => in_array($k, ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']), ARRAY_FILTER_USE_BOTH),
+        'Fin de semana' => array_filter($this->dias, fn($v, $k) => in_array($k, ['Sábado', 'Domingo']), ARRAY_FILTER_USE_BOTH),
+        default => $this->dias, // 'Semana' → todos los días
+    };
+});
+
 ?>
 <div>
     <div class="py-4">
@@ -144,7 +152,8 @@ $clientesFiltrados = computed(function () {
                     <div class="flex flex-1 overflow-x-auto overflow-y-hidden bg-[#f1f5f9] p-4 gap-4">
 
                         {{-- Panel Izquierdo: Lista de Clientes --}}
-                        <div class="flex-shrink-0 w-72 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col max-h-full z-10">
+                        <div
+                            class="flex-shrink-0 w-72 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col max-h-full z-10">
                             <div class="p-4 border-b border-gray-100 space-y-4 rounded-t-xl bg-white">
 
                                 {{-- Toggle: Agendar desde Panel --}}
@@ -194,11 +203,15 @@ $clientesFiltrados = computed(function () {
                                             {{ $cliente['id'] }} - {{ $cliente['nombre'] }}
                                         </p>
                                         <div class="flex gap-1 flex-wrap">
-                                            @foreach(['Lunes'=>'L', 'Martes'=>'M', 'Miércoles'=>'M', 'Jueves'=>'J', 'Viernes'=>'V', 'Sábado'=>'S', 'Domingo'=>'D'] as $nombreDia => $letra)
+                                            @foreach (['Lunes' => 'L', 'Martes' => 'M', 'Miércoles' => 'M', 'Jueves' => 'J', 'Viernes' => 'V', 'Sábado' => 'S', 'Domingo' => 'D'] as $nombreDia => $letra)
                                                 @php
-                                                    $estaEnDia = in_array($cliente['id'], array_column($dias[$nombreDia] ?? [], 'id'));
+                                                    $estaEnDia = in_array(
+                                                        $cliente['id'],
+                                                        array_column($dias[$nombreDia] ?? [], 'id'),
+                                                    );
                                                 @endphp
-                                                <button wire:click="toggleDiaCliente('{{ $nombreDia }}', '{{ $cliente['id'] }}')"
+                                                <button
+                                                    wire:click="toggleDiaCliente('{{ $nombreDia }}', '{{ $cliente['id'] }}')"
                                                     title="{{ $nombreDia }}"
                                                     class="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold transition focus:outline-none {{ $estaEnDia ? 'bg-[#003859] text-white border border-[#003859]' : 'bg-gray-100 text-gray-400 hover:bg-gray-200 border border-transparent' }}">
                                                     {{ $letra }}
@@ -211,44 +224,43 @@ $clientesFiltrados = computed(function () {
                         </div>
 
                         {{-- Columnas del Tablero (Días) --}}
-                            @foreach ($dias as $dia => $clientesDia)
+                        @foreach ($this->diasVisibles as $dia => $clientesDia)
+                            <div
+                                class="flex-shrink-0 w-64 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col max-h-full">
                                 <div
-                                    class="flex-shrink-0 w-64 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col max-h-full">
-                                    <div
-                                        class="p-3 border-b border-gray-100 flex items-center justify-between bg-white rounded-t-xl sticky top-0 z-10 shadow-sm">
-                                        <h3 class="font-bold text-sm text-[#003859]">{{ $dia }} <span
-                                                class="text-gray-500 font-semibold ml-1">({{ count($clientesDia) }})</span>
-                                        </h3>
-                                        <button class="text-gray-400 hover:text-gray-700 transition">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M19 9l-7 7-7-7">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                    </div>
-
-                                    <div class="flex-1 overflow-y-auto p-2 space-y-2 min-h-[150px] bg-[#f8fafc]">
-                                        @foreach ($clientesDia as $idx => $c)
-                                            <div
-                                                class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition group relative border-l-4 border-l-[#003859] cursor-pointer">
-                                                <p class="text-xs font-semibold text-gray-700 pr-5 leading-tight">
-                                                    {{ $c['id'] }} - {{ $c['nombre'] }}</p>
-                                                <button
-                                                    wire:click="removerCliente('{{ $dia }}', {{ $idx }})"
-                                                    class="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition bg-white rounded-full p-0.5">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                        stroke-width="2.5" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M6 18L18 6M6 6l12 12"></path>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                    class="p-3 border-b border-gray-100 flex items-center justify-between bg-white rounded-t-xl sticky top-0 z-10 shadow-sm">
+                                    <h3 class="font-bold text-sm text-[#003859]">{{ $dia }} <span
+                                            class="text-gray-500 font-semibold ml-1">({{ count($clientesDia) }})</span>
+                                    </h3>
+                                    <button class="text-gray-400 hover:text-gray-700 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7">
+                                            </path>
+                                        </svg>
+                                    </button>
                                 </div>
-                            @endforeach
+
+                                <div class="flex-1 overflow-y-auto p-2 space-y-2 min-h-[150px] bg-[#f8fafc]">
+                                    @foreach ($clientesDia as $idx => $c)
+                                        <div
+                                            class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition group relative border-l-4 border-l-[#003859] cursor-pointer">
+                                            <p class="text-xs font-semibold text-gray-700 pr-5 leading-tight">
+                                                {{ $c['id'] }} - {{ $c['nombre'] }}</p>
+                                            <button
+                                                wire:click="removerCliente('{{ $dia }}', {{ $idx }})"
+                                                class="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition bg-white rounded-full p-0.5">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    stroke-width="2.5" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 @else
                     {{-- Estado Vacío (cuando no hay ruta seleccionada) --}}
