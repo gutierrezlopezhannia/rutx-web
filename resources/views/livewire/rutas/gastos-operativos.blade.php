@@ -1,122 +1,196 @@
 <?php
 
-use function Livewire\Volt\{state, layout};
+use function Livewire\Volt\{state, layout, mount};
 
 layout('layouts.app');
 
+$mockZonas = [
+    ['id' => '1Z - Zona 1', 'name' => '1Z - Zona 1'],
+    ['id' => '2Z - Zona 2', 'name' => '2Z - Zona 2'],
+    ['id' => '3Z - Zona 3', 'name' => '3Z - Zona 3'],
+];
+
 $mockRutas = [
-    ['clave' => '3983', 'nombre' => 'RUTA01', 'estatus' => 'Activo', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4682', 'nombre' => 'RUTA02', 'estatus' => 'Activo', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4683', 'nombre' => 'RUTA03', 'estatus' => 'Activo', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4684', 'nombre' => 'RUTA04', 'estatus' => 'Activo', 'zona' => '2Z - Zona 2'],
-    ['clave' => '4685', 'nombre' => 'RUTA05', 'estatus' => 'Activo', 'zona' => '2Z - Zona 2'],
-    ['clave' => '4686', 'nombre' => 'RUTA06', 'estatus' => 'Activo', 'zona' => '3Z - Zona 3'],
+    ['clave' => '3983', 'nombre' => 'RUTA01', 'zona' => '1Z - Zona 1'],
+    ['clave' => '4682', 'nombre' => 'RUTA02', 'zona' => '1Z - Zona 1'],
+    ['clave' => '4683', 'nombre' => 'RUTA03', 'zona' => '1Z - Zona 1'],
+    ['clave' => '4684', 'nombre' => 'RUTA04', 'zona' => '2Z - Zona 2'],
+    ['clave' => '4685', 'nombre' => 'RUTA05', 'zona' => '2Z - Zona 2'],
+    ['clave' => '4686', 'nombre' => 'RUTA06', 'zona' => '3Z - Zona 3'],
+];
+
+$mockRubros = [
+    ['id' => 'Combustible', 'name' => '⛽ Combustible'],
+    ['id' => 'Casetas', 'name' => '🛣️ Casetas'],
+    ['id' => 'Estacionamiento', 'name' => '🅿️ Estacionamiento'],
+    ['id' => 'Viáticos', 'name' => '🍔 Viáticos / Alimentos'],
+    ['id' => 'Mantenimiento Menor', 'name' => '🔧 Mantenimiento Menor'],
+    ['id' => 'Otros', 'name' => '📦 Otros Gastos'],
 ];
 
 state([
-    // Catálogos y Datos base
+    // Datos base
+    'zonas' => $mockZonas,
     'rutas' => $mockRutas,
-    'rutasFiltradas' => $mockRutas,
-    
-    // Filtros
-    'filtro_zona' => '1Z - Zona 1',
-    'search' => '',
-
-    // Columnas visibles de la tabla
-    'col_acciones' => true,
-    'col_clave' => true,
-    'col_nombre' => true,
-    'col_estatus' => true,
-    'col_zona' => true,
-
-    // Modal
-    'showGastoModal' => false,
-    'selectedRuta' => null,
-
-    // Campos del Formulario
-    'formConcepto' => 'Combustible',
-    'formMonto' => '',
-    'formFecha' => fn() => date('Y-m-d'),
-    'formComprobante' => 'Factura',
-    'formReferencia' => '',
-    'formObservaciones' => '',
+    'rubros' => $mockRubros,
 
     // Historial
     'gastosRegistrados' => [],
+    'gastosFiltrados' => [],
 
-    // Notificaciones
+    // Filtros
+    'filtro_zona' => 'todos',
+    'filtro_ruta' => 'todos',
+    'filtro_concepto' => 'todos',
+    'search' => '',
+
+    // Listas dependientes para filtros
+    'rutasFiltradasPorZona' => [],
+
+    // Columnas visibles de la tabla
+    'col_fecha' => true,
+    'col_zona' => true,
+    'col_ruta' => true,
+    'col_concepto' => true,
+    'col_monto' => true,
+    'col_comprobante' => true,
+    'col_referencia' => true,
+    'col_observaciones' => true,
+    'col_acciones' => true,
+
+    // Notificaciones locales
     'notification' => '',
-    'notificationType' => 'success', // success, error, info, delete
+    'notificationType' => 'success',
+
+    // Agregados / Totales
+    'totalMonto' => 0,
+    'montoCombustible' => 0,
+    'montoCasetas' => 0,
+    'montoViaticos' => 0,
 ]);
 
-$init = function () {
-    // Si no existen gastos operativos en la sesión, inicializamos mock data realista
+mount(function () {
+    // Inicializar datos en la sesión si no existen
     if (!session()->has('gastos_operativos')) {
         $defaultGastos = [
             [
                 'ruta_clave' => '3983',
                 'ruta_nombre' => 'RUTA01',
-                'concepto' => 'Combustible',
+                'concepto' => '⛽ Combustible',
                 'monto' => 1250.00,
                 'fecha' => date('Y-m-d'),
                 'comprobante' => 'Factura',
                 'referencia' => 'TKT-38291',
-                'observaciones' => 'Carga de diesel para inicio de ruta'
+                'observaciones' => 'Carga de diesel para inicio de ruta',
+                'zona' => '1Z - Zona 1'
             ],
             [
                 'ruta_clave' => '4683',
                 'ruta_nombre' => 'RUTA03',
-                'concepto' => 'Casetas',
+                'concepto' => '🛣️ Casetas',
                 'monto' => 420.00,
                 'fecha' => date('Y-m-d', strtotime('-1 days')),
                 'comprobante' => 'Nota/Simplificado',
                 'referencia' => 'PEAJE-88273',
-                'observaciones' => 'Peaje autopista de cuota norte'
+                'observaciones' => 'Peaje autopista de cuota norte',
+                'zona' => '1Z - Zona 1'
             ],
             [
                 'ruta_clave' => '4682',
                 'ruta_nombre' => 'RUTA02',
-                'concepto' => 'Viáticos',
+                'concepto' => '🍔 Viáticos / Alimentos',
                 'monto' => 180.00,
                 'fecha' => date('Y-m-d'),
                 'comprobante' => 'Sin Comprobante',
                 'referencia' => 'ALIM-122',
-                'observaciones' => 'Almuerzo del chófer de reparto'
+                'observaciones' => 'Almuerzo del chófer de reparto',
+                'zona' => '1Z - Zona 1'
+            ],
+            [
+                'ruta_clave' => '4684',
+                'ruta_nombre' => 'RUTA04',
+                'concepto' => '⛽ Combustible',
+                'monto' => 950.00,
+                'fecha' => date('Y-m-d', strtotime('-2 days')),
+                'comprobante' => 'Factura',
+                'referencia' => 'TKT-9912',
+                'observaciones' => 'Gasolina Magna RUTA04',
+                'zona' => '2Z - Zona 2'
             ]
         ];
         session(['gastos_operativos' => $defaultGastos]);
     }
 
-    $this->gastosRegistrados = session('gastos_operativos');
+    // Si hay una alerta flash de éxito desde el formulario
+    if (session()->has('success_gasto')) {
+        $this->triggerNotification(session('success_gasto'), 'success');
+    }
+
+    $this->actualizarListasYFiltros();
+});
+
+$actualizarListasYFiltros = function () use ($mockRutas) {
+    $this->gastosRegistrados = session('gastos_operativos', []);
+    
+    // Cargar rutas disponibles según la zona seleccionada
+    if ($this->filtro_zona && $this->filtro_zona !== 'todos') {
+        $this->rutasFiltradasPorZona = collect($mockRutas)->where('zona', $this->filtro_zona)->values()->toArray();
+    } else {
+        $this->rutasFiltradasPorZona = $mockRutas;
+    }
+
     $this->aplicarFiltros();
 };
 
 $aplicarFiltros = function () {
-    $filtradas = collect($this->rutas);
+    $filtrados = collect($this->gastosRegistrados);
 
+    // Filtro por Zona
     if ($this->filtro_zona !== 'todos') {
-        $filtradas = $filtradas->where('zona', $this->filtro_zona);
+        $filtrados = $filtrados->where('zona', $this->filtro_zona);
     }
 
-    if (!empty($this->search)) {
-        $q = strtolower(trim($this->search));
-        $filtradas = $filtradas->filter(function ($r) use ($q) {
-            return str_contains(strtolower($r['clave']), $q) || 
-                   str_contains(strtolower($r['nombre']), $q) || 
-                   str_contains(strtolower($r['zona']), $q);
+    // Filtro por Ruta
+    if ($this->filtro_ruta !== 'todos') {
+        $filtrados = $filtrados->where('ruta_clave', $this->filtro_ruta);
+    }
+
+    // Filtro por Concepto/Rubro
+    if ($this->filtro_concepto !== 'todos') {
+        $filtrados = $filtrados->filter(function ($g) {
+            return str_contains(strtolower($g['concepto']), strtolower($this->filtro_concepto));
         });
     }
 
-    $this->rutasFiltradas = $filtradas->values()->toArray();
+    // Búsqueda de texto libre
+    if (!empty($this->search)) {
+        $q = strtolower(trim($this->search));
+        $filtrados = $filtrados->filter(function ($g) use ($q) {
+            return str_contains(strtolower($g['ruta_nombre']), $q) ||
+                   str_contains(strtolower($g['ruta_clave']), $q) ||
+                   str_contains(strtolower($g['concepto']), $q) ||
+                   str_contains(strtolower($g['referencia']), $q) ||
+                   str_contains(strtolower($g['observaciones']), $q);
+        });
+    }
+
+    $this->gastosFiltrados = $filtrados->values()->toArray();
+
+    // Calcular agregados
+    $this->totalMonto = $filtrados->sum('monto');
+    $this->montoCombustible = $filtrados->filter(fn($g) => str_contains($g['concepto'], 'Combustible'))->sum('monto');
+    $this->montoCasetas = $filtrados->filter(fn($g) => str_contains($g['concepto'], 'Casetas'))->sum('monto');
+    $this->montoViaticos = $filtrados->filter(fn($g) => str_contains($g['concepto'], 'Viáticos') || str_contains($g['concepto'], 'Alimentos'))->sum('monto');
 };
 
 $updatedFiltroZona = function () {
-    $this->aplicarFiltros();
+    $this->filtro_ruta = 'todos'; // Reset de la ruta elegida
+    $this->actualizarListasYFiltros();
 };
 
-$updatedSearch = function () {
-    $this->aplicarFiltros();
-};
+$updatedFiltroRuta = fn() => $this->aplicarFiltros();
+$updatedFiltroConcepto = fn() => $this->aplicarFiltros();
+$updatedSearch = fn() => $this->aplicarFiltros();
 
 $clearSearch = function () {
     $this->search = '';
@@ -124,72 +198,28 @@ $clearSearch = function () {
 };
 
 $actualizar = function () {
-    $this->aplicarFiltros();
-    $this->gastosRegistrados = session('gastos_operativos', []);
-    $this->triggerNotification('Tabla de rutas y gastos sincronizados.', 'info');
-};
-
-$abrirNuevoGasto = function ($clave) {
-    $ruta = collect($this->rutas)->firstWhere('clave', $clave);
-    if ($ruta) {
-        $this->selectedRuta = $ruta;
-        
-        // Reset form to defaults
-        $this->formConcepto = 'Combustible';
-        $this->formMonto = '';
-        $this->formFecha = date('Y-m-d');
-        $this->formComprobante = 'Factura';
-        $this->formReferencia = '';
-        $this->formObservaciones = '';
-
-        $this->showGastoModal = true;
-    }
-};
-
-$guardarGasto = function () {
-    // Validaciones básicas
-    if (empty($this->formMonto) || !is_numeric($this->formMonto) || floatval($this->formMonto) <= 0) {
-        $this->triggerNotification('El monto debe ser un número mayor a 0.', 'error');
-        return;
-    }
-
-    if (empty($this->formConcepto)) {
-        $this->triggerNotification('El concepto es obligatorio.', 'error');
-        return;
-    }
-
-    $nuevoGasto = [
-        'ruta_clave' => $this->selectedRuta['clave'],
-        'ruta_nombre' => $this->selectedRuta['nombre'],
-        'concepto' => $this->formConcepto,
-        'monto' => floatval($this->formMonto),
-        'fecha' => $this->formFecha ?: date('Y-m-d'),
-        'comprobante' => $this->formComprobante,
-        'referencia' => trim($this->formReferencia),
-        'observaciones' => trim($this->formObservaciones)
-    ];
-
-    // Obtener gastos de sesión y guardar el nuevo
-    $gastos = session('gastos_operativos', []);
-    array_unshift($gastos, $nuevoGasto); // Agrega al inicio
-    session(['gastos_operativos' => $gastos]);
-
-    $this->gastosRegistrados = $gastos;
-    $this->showGastoModal = false;
-    $this->triggerNotification('Gasto registrado con éxito en ' . $this->selectedRuta['nombre'] . '.', 'success');
+    $this->actualizarListasYFiltros();
+    $this->triggerNotification('Gastos operativos actualizados y sincronizados.', 'info');
 };
 
 $eliminarGasto = function ($index) {
     $gastos = session('gastos_operativos', []);
-    if (isset($gastos[$index])) {
-        $rutaNombre = $gastos[$index]['ruta_nombre'];
-        $monto = $gastos[$index]['monto'];
-        unset($gastos[$index]);
-        $gastos = array_values($gastos); // reindexar
+    
+    // El index que pasamos es el de la lista filtrada, debemos encontrarlo en la lista de sesión
+    $gastoAEliminar = $this->gastosFiltrados[$index] ?? null;
+    
+    if ($gastoAEliminar) {
+        foreach ($gastos as $sIdx => $g) {
+            if ($g['referencia'] === $gastoAEliminar['referencia'] && $g['monto'] == $gastoAEliminar['monto'] && $g['ruta_clave'] === $gastoAEliminar['ruta_clave']) {
+                unset($gastos[$sIdx]);
+                break;
+            }
+        }
+        $gastos = array_values($gastos); // Reindexar
         session(['gastos_operativos' => $gastos]);
         
-        $this->gastosRegistrados = $gastos;
-        $this->triggerNotification('Se eliminó el gasto de $' . number_format($monto, 2) . ' de la ' . $rutaNombre . '.', 'delete');
+        $this->actualizarListasYFiltros();
+        $this->triggerNotification('Gasto operativo eliminado correctamente.', 'delete');
     }
 };
 
@@ -200,23 +230,23 @@ $triggerNotification = function ($msg, $type = 'success') {
 
 ?>
 
-<div class="h-full bg-white dark:bg-gray-900 flex flex-col pt-4 overflow-y-auto">
+<div class="h-full bg-[#f4f6f8] dark:bg-gray-900 flex flex-col pt-4 overflow-y-auto">
     <div class="w-full px-6 flex flex-col flex-1 pb-10">
         
         {{-- Breadcrumb --}}
-        <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-4 px-1">
+        <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-4 px-1 select-none">
             <span>Cpanel</span>
             <span class="mx-2 text-gray-400">/</span>
             <span>Ruta</span>
             <span class="mx-2 text-gray-400">/</span>
-            <span class="text-[#003859] dark:text-blue-400 font-bold">Gastos Operativos</span>
+            <span class="text-[#003859] dark:text-blue-400 font-bold">Gastos Operativos (Concentrador)</span>
         </div>
 
-        {{-- Header & Toast --}}
+        {{-- Header & Notification --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div>
-                <h1 class="text-xl font-bold text-gray-800 dark:text-white">Gastos Operativos en Ruta</h1>
-                <p class="text-xs text-gray-450 dark:text-gray-400 mt-1">Registra y administra los egresos de combustible, casetas, y alimentos generados en tránsito.</p>
+                <h1 class="text-xl font-bold text-gray-800 dark:text-white">Concentrador de Gastos Operativos</h1>
+                <p class="text-xs text-gray-450 dark:text-gray-400 mt-1">Revisa, audita y filtra todos los egresos registrados en tránsito por zona y ruta.</p>
             </div>
             
             {{-- Toast Notification --}}
@@ -228,7 +258,7 @@ $triggerNotification = function ($msg, $type = 'success') {
                         'bg-blue-50 text-blue-800 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/30': '{{ $notificationType }}' === 'info',
                         'bg-orange-50 text-orange-800 border-orange-200 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/30': '{{ $notificationType }}' === 'delete',
                     }"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm shadow-sm transition-all duration-300 animate-fade-in">
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm shadow-sm transition-all duration-300 animate-fade-in z-30">
                     <span>
                         @if ($notificationType === 'success')
                             <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -245,49 +275,146 @@ $triggerNotification = function ($msg, $type = 'success') {
             @endif
         </div>
 
-        {{-- Dos columnas principales --}}
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+        {{-- KPI Widgets --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             
-            {{-- Columna 1 y 2: Unidades y registro (Tabla) --}}
-            <div class="xl:col-span-2 bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl shadow-sm overflow-hidden">
-                <div class="p-5 border-b border-gray-100 dark:border-gray-700/60 flex justify-between items-center">
-                    <h2 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider">Unidades de Reparto en Ruta</h2>
-                    <span class="text-[11px] bg-blue-50 dark:bg-blue-900/30 text-[#003859] dark:text-blue-400 px-2 py-0.5 rounded-full font-bold">
-                        {{ count($rutasFiltradas) }} Rutas
-                    </span>
+            {{-- KPI Total Gastado --}}
+            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Total Reportado</span>
+                    <span class="text-xl font-extrabold text-[#003859] dark:text-blue-400 mt-1 block">${{ number_format($totalMonto, 2) }}</span>
                 </div>
+                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                    <svg class="w-6 h-6 text-[#003859] dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
 
-                {{-- Toolbar: Filtros + Buscar + Iconos --}}
-                <div class="px-5 py-4 bg-gray-50/50 dark:bg-gray-800/40 flex flex-col lg:flex-row lg:items-center gap-3 border-b border-gray-100 dark:border-gray-700/50" x-data="{ showColumnas: false }">
-                    
-                    {{-- Filtro Zona --}}
-                    <div class="relative w-full lg:w-48">
-                        <label class="absolute -top-2 left-2 px-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 tracking-wider">ZONA</label>
-                        <select wire:model.live="filtro_zona"
-                            class="appearance-none border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-8 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 bg-white dark:bg-gray-800 text-gray-750 dark:text-gray-200 font-bold cursor-pointer w-full shadow-sm">
-                            <option value="1Z - Zona 1">1Z - Zona 1</option>
-                            <option value="2Z - Zona 2">2Z - Zona 2</option>
-                            <option value="3Z - Zona 3">3Z - Zona 3</option>
-                            <option value="todos">Todas las Zonas</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
+            {{-- KPI Combustible --}}
+            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">⛽ Combustible</span>
+                    <span class="text-xl font-extrabold text-orange-600 dark:text-orange-400 mt-1 block">${{ number_format($montoCombustible, 2) }}</span>
+                </div>
+                <div class="p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" />
+                    </svg>
+                </div>
+            </div>
+
+            {{-- KPI Casetas --}}
+            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">🛣️ Casetas</span>
+                    <span class="text-xl font-extrabold text-green-600 dark:text-green-400 mt-1 block">${{ number_format($montoCasetas, 2) }}</span>
+                </div>
+                <div class="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                </div>
+            </div>
+
+            {{-- KPI Viáticos --}}
+            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">🍔 Viáticos</span>
+                    <span class="text-xl font-extrabold text-purple-600 dark:text-purple-400 mt-1 block">${{ number_format($montoViaticos, 2) }}</span>
+                </div>
+                <div class="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- Main Table Section --}}
+        <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl shadow-sm overflow-hidden flex flex-col flex-1">
+            
+            {{-- Toolbar / Filters --}}
+            <div class="p-5 border-b border-gray-150 dark:border-gray-700/80 bg-gray-50/50 dark:bg-gray-800/40 flex flex-col gap-4" x-data="{ showColumnas: false }">
+                
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                        
+                        {{-- Filtro Zona --}}
+                        <div class="relative w-full sm:w-44">
+                            <label class="absolute -top-2 left-2 px-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-850 tracking-wider">ZONA</label>
+                            <select wire:model.live="filtro_zona"
+                                class="appearance-none border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-8 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 bg-white dark:bg-gray-800 text-gray-750 dark:text-gray-200 font-bold cursor-pointer w-full shadow-sm">
+                                <option value="todos">Todas las Zonas</option>
+                                @foreach($zonas as $z)
+                                    <option value="{{ $z['id'] }}">{{ $z['name'] }}</option>
+                                @endforeach
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
                         </div>
+
+                        {{-- Filtro Ruta --}}
+                        <div class="relative w-full sm:w-44">
+                            <label class="absolute -top-2 left-2 px-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-850 tracking-wider">RUTA / VENDEDOR</label>
+                            <select wire:model.live="filtro_ruta"
+                                class="appearance-none border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-8 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 bg-white dark:bg-gray-800 text-gray-750 dark:text-gray-200 font-bold cursor-pointer w-full shadow-sm">
+                                <option value="todos">Todas las Rutas</option>
+                                @foreach($rutasFiltradasPorZona as $r)
+                                    <option value="{{ $r['clave'] }}">{{ $r['clave'] }} - {{ $r['nombre'] }}</option>
+                                @endforeach
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {{-- Filtro Concepto --}}
+                        <div class="relative w-full sm:w-44">
+                            <label class="absolute -top-2 left-2 px-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-850 tracking-wider">RUBRO / CONCEPTO</label>
+                            <select wire:model.live="filtro_concepto"
+                                class="appearance-none border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-8 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 bg-white dark:bg-gray-800 text-gray-750 dark:text-gray-200 font-bold cursor-pointer w-full shadow-sm">
+                                <option value="todos">Todos los Rubros</option>
+                                @foreach($rubros as $rub)
+                                    <option value="{{ $rub['id'] }}">{{ $rub['name'] }}</option>
+                                @endforeach
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+
                     </div>
 
-                    {{-- Spacer --}}
-                    <div class="flex-grow"></div>
+                    {{-- Registrar Gasto Button --}}
+                    <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+                        <a href="{{ route('ventas.nuevo-gasto-op') }}" wire:navigate
+                            class="px-4 py-1.5 rounded-lg bg-[#003859] hover:bg-[#002d48] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold shadow-sm transition-all duration-155 text-xs flex items-center gap-1.5 cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Registrar Gasto
+                        </a>
+                    </div>
+                </div>
 
-                    {{-- Buscar --}}
-                    <div class="relative w-full lg:w-64">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+                    {{-- Search bar --}}
+                    <div class="relative w-full lg:w-72">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </span>
-                        <input type="text" wire:model.live="search" placeholder="Buscar ..."
+                        <input type="text" wire:model.live="search" placeholder="Buscar gasto por ref, obs, ruta..."
                             class="w-full pl-9 pr-9 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 focus:border-transparent bg-white dark:bg-gray-800 text-gray-750 dark:text-gray-200 font-medium placeholder-gray-400 shadow-sm" />
                         @if (!empty($search))
                             <button wire:click="clearSearch" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600">
@@ -298,22 +425,22 @@ $triggerNotification = function ($msg, $type = 'success') {
                         @endif
                     </div>
 
-                    {{-- Iconos de acción --}}
-                    <div class="flex items-center gap-2">
+                    {{-- Icons --}}
+                    <div class="flex items-center gap-2 justify-end">
                         
-                        {{-- Ver Columnas --}}
+                        {{-- Select Columnas --}}
                         <div class="relative">
                             <button @click="showColumnas = !showColumnas" title="Ver Columnas"
-                                class="p-1.5 border border-gray-255 dark:border-gray-700 rounded-lg text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#003859] dark:hover:text-blue-400 transition flex items-center justify-center bg-white dark:bg-gray-800 shadow-sm cursor-pointer">
+                                class="p-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#003859] dark:hover:text-blue-400 transition flex items-center justify-center bg-white dark:bg-gray-800 shadow-sm cursor-pointer">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M4 4h4v16H4V4zm6 0h4v16h-4V4zm6 0h4v16h-4V4z" />
                                 </svg>
                             </button>
                             <div x-show="showColumnas" @click.outside="showColumnas = false" x-cloak
-                                class="absolute right-0 top-10 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 w-44">
-                                <p class="text-[10px] font-bold text-gray-450 dark:text-gray-555 uppercase tracking-wider mb-2">Columnas</p>
+                                class="absolute right-0 top-10 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 w-44">
+                                <p class="text-[10px] font-bold text-gray-450 dark:text-gray-500 uppercase tracking-wider mb-2">Columnas</p>
                                 <div class="space-y-1.5">
-                                    @foreach ([['col_acciones', 'Acciones'], ['col_clave', 'Clave'], ['col_nombre', 'Nombre'], ['col_estatus', 'Estatus'], ['col_zona', 'Zona']] as [$field, $label])
+                                    @foreach ([['col_fecha', 'Fecha'], ['col_zona', 'Zona'], ['col_ruta', 'Ruta'], ['col_concepto', 'Rubro'], ['col_monto', 'Monto'], ['col_comprobante', 'Comprobante'], ['col_referencia', 'Referencia'], ['col_observaciones', 'Observaciones'], ['col_acciones', 'Acciones']] as [$field, $label])
                                         <label class="flex items-center gap-2 py-0.5 rounded cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 text-[11px] text-gray-700 dark:text-gray-300">
                                             <input type="checkbox" wire:model.live="{{ $field }}"
                                                 class="w-3.5 h-3.5 text-[#003859] dark:text-blue-600 rounded border-gray-300 dark:border-gray-700 focus:ring-[#003859]" />
@@ -324,17 +451,17 @@ $triggerNotification = function ($msg, $type = 'success') {
                             </div>
                         </div>
 
-                        {{-- Exportar mock --}}
-                        <button wire:click="triggerNotification('Exportación en formato CSV iniciada.', 'info')" title="Descargar reporte"
-                            class="p-1.5 border border-gray-255 dark:border-gray-700 rounded-lg text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#003859] dark:hover:text-blue-400 transition flex items-center justify-center bg-white dark:bg-gray-800 shadow-sm cursor-pointer">
+                        {{-- Exportar CSV --}}
+                        <button wire:click="triggerNotification('Exportación en formato CSV iniciada.', 'info')" title="Exportar CSV"
+                            class="p-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#003859] dark:hover:text-blue-400 transition flex items-center justify-center bg-white dark:bg-gray-800 shadow-sm cursor-pointer">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
                         </button>
 
-                        {{-- Actualizar --}}
+                        {{-- Refresh --}}
                         <button wire:click="actualizar" title="Actualizar"
-                            class="p-1.5 border border-gray-255 dark:border-gray-700 rounded-lg text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#003859] dark:hover:text-blue-400 transition flex items-center justify-center bg-white dark:bg-gray-800 shadow-sm cursor-pointer">
+                            class="p-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#003859] dark:hover:text-blue-400 transition flex items-center justify-center bg-white dark:bg-gray-800 shadow-sm cursor-pointer">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
@@ -343,296 +470,143 @@ $triggerNotification = function ($msg, $type = 'success') {
                     </div>
                 </div>
 
-                {{-- Table --}}
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700 text-left border-collapse">
-                        <thead class="bg-[#f8fafc] dark:bg-gray-800/80 text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider select-none">
-                            <tr>
-                                @if ($col_acciones)
-                                    <th scope="col" class="px-6 py-4 w-24">Acciones</th>
-                                @endif
-                                @if ($col_clave)
-                                    <th scope="col" class="px-6 py-4 w-32">Clave</th>
-                                @endif
-                                @if ($col_nombre)
-                                    <th scope="col" class="px-6 py-4">Nombre</th>
-                                @endif
-                                @if ($col_estatus)
-                                    <th scope="col" class="px-6 py-4 w-32">Estatus</th>
-                                @endif
-                                @if ($col_zona)
-                                    <th scope="col" class="px-6 py-4 w-44">Zona</th>
-                                @endif
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700 text-xs text-gray-700 dark:text-gray-300">
-                            @forelse($rutasFiltradas as $ruta)
-                                <tr class="hover:bg-gray-50/70 dark:hover:bg-gray-700/30 transition-colors duration-150">
-                                    @if ($col_acciones)
-                                        <td class="px-6 py-3.5 whitespace-nowrap">
-                                            <button wire:click="abrirNuevoGasto('{{ $ruta['clave'] }}')"
-                                                class="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all duration-150 cursor-pointer flex items-center justify-center"
-                                                title="Registrar nuevo gasto operativo">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                </svg>
-                                            </button>
-                                        </td>
-                                    @endif
-                                    @if ($col_clave)
-                                        <td class="px-6 py-3.5 whitespace-nowrap font-bold text-gray-850 dark:text-gray-200">
-                                            {{ $ruta['clave'] }}
-                                        </td>
-                                    @endif
-                                    @if ($col_nombre)
-                                        <td class="px-6 py-3.5 font-bold text-[#003859] dark:text-blue-400">
-                                            {{ $ruta['nombre'] }}
-                                        </td>
-                                    @endif
-                                    @if ($col_estatus)
-                                        <td class="px-6 py-3.5 whitespace-nowrap">
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-50 text-green-700 border border-green-150 dark:bg-green-950/20 dark:text-green-400 dark:border-green-900/30">
-                                                {{ $ruta['estatus'] }}
-                                            </span>
-                                        </td>
-                                    @endif
-                                    @if ($col_zona)
-                                        <td class="px-6 py-3.5 whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                            {{ $ruta['zona'] }}
-                                        </td>
-                                    @endif
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400 dark:text-gray-550 select-none">
-                                        No se encontraron rutas con los criterios de búsqueda especificados.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                {{-- Pagination Footer --}}
-                <div class="px-5 py-4 border-t border-gray-100 dark:border-gray-700/80 bg-[#f8fafc]/50 dark:bg-gray-800/40 flex justify-between items-center text-xs text-gray-500 dark:text-gray-450 select-none">
-                    <div class="flex items-center gap-1.5">
-                        <span>100 Filas por Página</span>
-                        <svg class="w-3.5 h-3.5 text-gray-400 cursor-pointer" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="font-medium">1-{{ count($rutasFiltradas) }} of {{ count($rutasFiltradas) }}</span>
-                        <div class="flex items-center gap-1">
-                            <button class="p-1 text-gray-300 dark:text-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-not-allowed" disabled>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                            </button>
-                            <button class="p-1 text-gray-300 dark:text-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-not-allowed" disabled>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            {{-- Columna 3: Historial y Sumario (Sidebar derecho / Historial) --}}
-            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl shadow-sm overflow-hidden flex flex-col">
-                <div class="p-5 border-b border-gray-100 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/40">
-                    <h2 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider">Historial de Gastos</h2>
-                    <p class="text-[11px] text-gray-400 dark:text-gray-400 mt-1">Historial del día en curso (persistencia temporal en sesión).</p>
-                    
-                    {{-- Total gastado del día --}}
-                    <div class="mt-4 bg-[#003859] dark:bg-blue-950/40 border border-[#002d48] dark:border-blue-900/30 p-4 rounded-xl text-white flex justify-between items-center shadow-inner">
-                        <div>
-                            <div class="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Total Reportado</div>
-                            <div class="text-2xl font-extrabold mt-0.5 tracking-tight text-white dark:text-blue-300">
-                                ${{ number_format(collect($gastosRegistrados)->sum('monto'), 2) }}
-                            </div>
-                        </div>
-                        <div class="p-2.5 bg-white/10 dark:bg-blue-800/30 rounded-lg">
-                            <svg class="w-6 h-6 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Listado de Gastos --}}
-                <div class="p-5 flex-1 max-h-[500px] overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700/80">
-                    @forelse($gastosRegistrados as $idx => $gasto)
-                        <div class="py-4 first:pt-0 last:pb-0 group">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-[11px] font-extrabold text-[#003859] dark:text-blue-400">
-                                            {{ $gasto['ruta_nombre'] }}
-                                        </span>
-                                        <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+            {{-- Table --}}
+            <div class="overflow-x-auto flex-1">
+                <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700 text-left border-collapse">
+                    <thead class="bg-[#f8fafc] dark:bg-gray-800/80 text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider select-none">
+                        <tr>
+                            @if ($col_fecha)
+                                <th scope="col" class="px-6 py-4 w-32">Fecha</th>
+                            @endif
+                            @if ($col_zona)
+                                <th scope="col" class="px-6 py-4 w-32">Zona</th>
+                            @endif
+                            @if ($col_ruta)
+                                <th scope="col" class="px-6 py-4">Ruta / Vendedor</th>
+                            @endif
+                            @if ($col_concepto)
+                                <th scope="col" class="px-6 py-4 w-44">Concepto / Rubro</th>
+                            @endif
+                            @if ($col_monto)
+                                <th scope="col" class="px-6 py-4 w-32 text-right">Monto</th>
+                            @endif
+                            @if ($col_comprobante)
+                                <th scope="col" class="px-6 py-4 w-36">Comprobante</th>
+                            @endif
+                            @if ($col_referencia)
+                                <th scope="col" class="px-6 py-4 w-36">Referencia</th>
+                            @endif
+                            @if ($col_observaciones)
+                                <th scope="col" class="px-6 py-4 max-w-xs">Observaciones</th>
+                            @endif
+                            @if ($col_acciones)
+                                <th scope="col" class="px-6 py-4 w-24 text-center">Acciones</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700 text-xs text-gray-700 dark:text-gray-300">
+                        @forelse($gastosFiltrados as $idx => $gasto)
+                            <tr class="hover:bg-gray-50/70 dark:hover:bg-gray-700/30 transition-colors duration-150">
+                                @if ($col_fecha)
+                                    <td class="px-6 py-3.5 whitespace-nowrap font-medium text-gray-500 dark:text-gray-400">
+                                        {{ date('d M, Y', strtotime($gasto['fecha'])) }}
+                                    </td>
+                                @endif
+                                @if ($col_zona)
+                                    <td class="px-6 py-3.5 whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                        {{ $gasto['zona'] ?? '1Z - Zona 1' }}
+                                    </td>
+                                @endif
+                                @if ($col_ruta)
+                                    <td class="px-6 py-3.5 font-bold text-[#003859] dark:text-blue-400">
+                                        {{ $gasto['ruta_clave'] }} - {{ $gasto['ruta_nombre'] }}
+                                    </td>
+                                @endif
+                                @if ($col_concepto)
+                                    <td class="px-6 py-3.5 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-150 dark:border-gray-600">
                                             {{ $gasto['concepto'] }}
                                         </span>
-                                    </div>
-                                    <div class="text-[10px] text-gray-400 mt-0.5 font-medium">
-                                        {{ date('d M, Y', strtotime($gasto['fecha'])) }} @if($gasto['referencia']) • Ref: {{ $gasto['referencia'] }} @endif
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <div class="text-right">
-                                        <span class="text-xs font-bold text-gray-800 dark:text-gray-100">
-                                            ${{ number_format($gasto['monto'], 2) }}
+                                    </td>
+                                @endif
+                                @if ($col_monto)
+                                    <td class="px-6 py-3.5 whitespace-nowrap font-extrabold text-right text-gray-800 dark:text-gray-100">
+                                        ${{ number_format($gasto['monto'], 2) }}
+                                    </td>
+                                @endif
+                                @if ($col_comprobante)
+                                    <td class="px-6 py-3.5 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider
+                                            {{ $gasto['comprobante'] === 'Factura' ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-950/20 dark:text-green-400 dark:border-green-900/30' : '' }}
+                                            {{ $gasto['comprobante'] === 'Nota/Simplificado' ? 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/30' : '' }}
+                                            {{ $gasto['comprobante'] === 'Sin Comprobante' ? 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/30' : '' }}
+                                        ">
+                                            {{ $gasto['comprobante'] }}
                                         </span>
-                                        <div class="text-[8px] text-gray-400 font-bold uppercase">{{ $gasto['comprobante'] }}</div>
-                                    </div>
-                                    <button wire:click="eliminarGasto({{ $idx }})"
-                                        class="p-1 text-gray-355 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded transition-all duration-150 cursor-pointer"
-                                        title="Eliminar gasto">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </td>
+                                @endif
+                                @if ($col_referencia)
+                                    <td class="px-6 py-3.5 whitespace-nowrap font-mono text-gray-500 dark:text-gray-400">
+                                        {{ $gasto['referencia'] ?: 'N/A' }}
+                                    </td>
+                                @endif
+                                @if ($col_observaciones)
+                                    <td class="px-6 py-3.5 max-w-xs truncate text-gray-500 dark:text-gray-400" title="{{ $gasto['observaciones'] }}">
+                                        {{ $gasto['observaciones'] }}
+                                    </td>
+                                @endif
+                                @if ($col_acciones)
+                                    <td class="px-6 py-3.5 whitespace-nowrap text-center">
+                                        <button wire:click="eliminarGasto({{ $idx }})"
+                                            class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-all duration-150 cursor-pointer inline-flex items-center justify-center"
+                                            title="Eliminar gasto operativo">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                @endif
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="px-6 py-12 text-center text-gray-450 dark:text-gray-550 select-none">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <svg class="w-8 h-8 text-gray-300 dark:text-gray-650" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
-                                    </button>
-                                </div>
-                            </div>
-                            @if($gasto['observaciones'])
-                                <div class="mt-1.5 text-[10px] text-gray-500 dark:text-gray-400 italic bg-gray-50/70 dark:bg-gray-900/40 p-1.5 rounded border border-gray-100 dark:border-gray-800/80">
-                                    "{{ $gasto['observaciones'] }}"
-                                </div>
-                            @endif
-                        </div>
-                    @empty
-                        <div class="py-8 text-center text-gray-400 dark:text-gray-550 select-none text-xs">
-                            No hay gastos operativos registrados para hoy.
-                        </div>
-                    @endforelse
+                                        <span>No hay gastos registrados que coincidan con los filtros seleccionados.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Table Footer / Pagination mock --}}
+            <div class="px-5 py-4 border-t border-gray-150 dark:border-gray-700 bg-[#f8fafc]/50 dark:bg-gray-800/40 flex justify-between items-center text-xs text-gray-500 dark:text-gray-450 select-none">
+                <div class="flex items-center gap-1.5">
+                    <span>100 Filas por Página</span>
+                    <svg class="w-3.5 h-3.5 text-gray-400 cursor-pointer animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-medium">1-{{ count($gastosFiltrados) }} of {{ count($gastosFiltrados) }}</span>
+                    <div class="flex items-center gap-1">
+                        <button class="p-1 text-gray-300 dark:text-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-not-allowed" disabled>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button class="p-1 text-gray-300 dark:text-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-not-allowed" disabled>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
         </div>
 
     </div>
-
-    {{-- Modal: Registro de Gasto Operativo --}}
-    @if ($showGastoModal && $selectedRuta)
-        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Backdrop -->
-            <div class="fixed inset-0 bg-gray-500/75 dark:bg-black/60 transition-opacity backdrop-blur-[2px]"></div>
-
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-md animate-scale-up border border-gray-100 dark:border-gray-700">
-                    
-                    {{-- Header Modal --}}
-                    <div class="bg-[#003859] dark:bg-gray-800 px-6 py-4 flex justify-between items-center text-white border-b border-[#002d48] dark:border-gray-700">
-                        <div>
-                            <h3 class="text-sm font-bold tracking-wide uppercase text-white" id="modal-title">
-                                Nuevo Gasto Operativo
-                            </h3>
-                            <div class="text-[10px] text-blue-200 dark:text-gray-450 mt-0.5">REGISTRO PARA {{ $selectedRuta['nombre'] }} ({{ $selectedRuta['clave'] }})</div>
-                        </div>
-                        <button wire:click="$set('showGastoModal', false)" class="text-blue-100 hover:text-white dark:text-gray-400 dark:hover:text-white transition cursor-pointer">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    {{-- Form body --}}
-                    <div class="px-6 py-5 space-y-4 text-xs">
-                        
-                        {{-- Concepto --}}
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-450 dark:text-gray-400 uppercase tracking-wider mb-1.5">Concepto / Categoría</label>
-                            <div class="relative">
-                                <select wire:model="formConcepto"
-                                    class="w-full appearance-none bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 focus:border-transparent text-gray-800 dark:text-gray-200 font-medium cursor-pointer">
-                                    <option value="Combustible">⛽ Combustible</option>
-                                    <option value="Casetas">🛣️ Casetas</option>
-                                    <option value="Estacionamiento">🅿️ Estacionamiento</option>
-                                    <option value="Viáticos">🍔 Viáticos / Alimentos</option>
-                                    <option value="Mantenimiento Menor">🔧 Mantenimiento Menor</option>
-                                    <option value="Otros">📦 Otros Gastos</option>
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Fila: Monto + Fecha --}}
-                        <div class="grid grid-cols-2 gap-4">
-                            
-                            {{-- Monto --}}
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-450 dark:text-gray-400 uppercase tracking-wider mb-1.5">Monto ($)</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-455 font-bold">$</span>
-                                    <input type="number" step="0.01" min="0.01" wire:model="formMonto" placeholder="0.00"
-                                        class="w-full pl-7 pr-3 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 focus:border-transparent font-bold text-gray-800 dark:text-gray-200" required />
-                                </div>
-                            </div>
-
-                            {{-- Fecha --}}
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-455 dark:text-gray-400 uppercase tracking-wider mb-1.5">Fecha del Gasto</label>
-                                <input type="date" wire:model="formFecha"
-                                    class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 focus:border-transparent font-semibold text-gray-800 dark:text-gray-200" />
-                            </div>
-
-                        </div>
-
-                        {{-- Fila: Referencia/Ticket + Comprobante --}}
-                        <div class="grid grid-cols-2 gap-4">
-                            
-                            {{-- Referencia --}}
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-455 dark:text-gray-400 uppercase tracking-wider mb-1.5">Ticket / Referencia</label>
-                                <input type="text" wire:model="formReferencia" placeholder="Opcional (Ej: TKT-102)"
-                                    class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 focus:border-transparent font-medium text-gray-800 dark:text-gray-200" />
-                            </div>
-
-                            {{-- Comprobante --}}
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-455 dark:text-gray-400 uppercase tracking-wider mb-1.5">Comprobante</label>
-                                <div class="relative">
-                                    <select wire:model="formComprobante"
-                                        class="w-full appearance-none bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 focus:border-transparent text-gray-800 dark:text-gray-200 font-medium cursor-pointer">
-                                        <option value="Factura">📄 Factura (XML/PDF)</option>
-                                        <option value="Nota/Simplificado">🧾 Nota / Simplificado</option>
-                                        <option value="Sin Comprobante">❌ Sin Comprobante</option>
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        {{-- Observaciones --}}
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-455 dark:text-gray-400 uppercase tracking-wider mb-1.5">Observaciones</label>
-                            <textarea wire:model="formObservaciones" rows="2" placeholder="Detalles adicionales del gasto (establecimiento, motivo, etc.)"
-                                class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003859] dark:focus:ring-blue-600 focus:border-transparent font-medium text-gray-800 dark:text-gray-200 resize-none"></textarea>
-                        </div>
-
-                    </div>
-
-                    {{-- Footer Modal --}}
-                    <div class="bg-gray-50 dark:bg-gray-800/80 px-6 py-4 flex justify-end gap-3 border-t border-gray-150 dark:border-gray-700/60 rounded-b-xl">
-                        <button wire:click="$set('showGastoModal', false)"
-                            class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 font-bold transition cursor-pointer">
-                            Cancelar
-                        </button>
-                        <button wire:click="guardarGasto"
-                            class="px-4 py-2 rounded-lg bg-[#003859] hover:bg-[#002d48] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold shadow-sm transition cursor-pointer">
-                            Guardar Gasto
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    @endif
-
 </div>
