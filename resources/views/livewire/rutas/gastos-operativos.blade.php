@@ -4,34 +4,19 @@ use function Livewire\Volt\{state, layout, mount};
 
 layout('layouts.app');
 
-$mockZonas = [
-    ['id' => '1Z - Zona 1', 'name' => '1Z - Zona 1'],
-    ['id' => '2Z - Zona 2', 'name' => '2Z - Zona 2'],
-    ['id' => '3Z - Zona 3', 'name' => '3Z - Zona 3'],
-];
-
-$mockRutas = [
-    ['clave' => '3983', 'nombre' => 'RUTA01', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4682', 'nombre' => 'RUTA02', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4683', 'nombre' => 'RUTA03', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4684', 'nombre' => 'RUTA04', 'zona' => '2Z - Zona 2'],
-    ['clave' => '4685', 'nombre' => 'RUTA05', 'zona' => '2Z - Zona 2'],
-    ['clave' => '4686', 'nombre' => 'RUTA06', 'zona' => '3Z - Zona 3'],
-];
-
 $mockRubros = [
-    ['id' => 'Combustible', 'name' => '⛽ Combustible'],
-    ['id' => 'Casetas', 'name' => '🛣️ Casetas'],
-    ['id' => 'Estacionamiento', 'name' => '🅿️ Estacionamiento'],
-    ['id' => 'Viáticos', 'name' => '🍔 Viáticos / Alimentos'],
-    ['id' => 'Mantenimiento Menor', 'name' => '🔧 Mantenimiento Menor'],
-    ['id' => 'Otros', 'name' => '📦 Otros Gastos'],
+    ['id' => 'Combustible', 'name' => 'Combustible'],
+    ['id' => 'Casetas', 'name' => 'Casetas'],
+    ['id' => 'Estacionamiento', 'name' => 'Estacionamiento'],
+    ['id' => 'Viáticos', 'name' => 'Viáticos / Alimentos'],
+    ['id' => 'Mantenimiento Menor', 'name' => 'Mantenimiento Menor'],
+    ['id' => 'Otros', 'name' => 'Otros Gastos'],
 ];
 
 state([
     // Datos base
-    'zonas' => $mockZonas,
-    'rutas' => $mockRutas,
+    'zonas' => [],
+    'rutas' => [],
     'rubros' => $mockRubros,
 
     // Historial
@@ -70,13 +55,40 @@ state([
 ]);
 
 mount(function () {
+    // Load Zones from DB
+    $this->zonas = \App\Models\Zone::orderBy('id')->get()->map(fn($z) => [
+        'id' => $z->id,
+        'name' => $z->id
+    ])->toArray();
+    
+    // Load Routes/Sellers from DB
+    $this->rutas = \App\Models\Seller::where('oculto', 'N')->get()->map(function ($s) {
+        if (str_contains($s->id, ' - ')) {
+            $parts = explode(' - ', $s->id);
+            $clave = trim($parts[0]);
+            $nombre = trim($parts[1]);
+        } else {
+            $clave = $s->id;
+            $nombre = $s->name;
+        }
+        
+        $invoice = \App\Models\Invoice::where('vendedor_id', $s->id)->first();
+        $zona = $invoice ? $invoice->zona_id : '1Z - Zona 1';
+        
+        return [
+            'clave' => $clave,
+            'nombre' => $nombre,
+            'zona' => $zona
+        ];
+    })->toArray();
+
     // Inicializar datos en la sesión si no existen
     if (!session()->has('gastos_operativos')) {
         $defaultGastos = [
             [
                 'ruta_clave' => '3983',
                 'ruta_nombre' => 'RUTA01',
-                'concepto' => '⛽ Combustible',
+                'concepto' => 'Combustible',
                 'monto' => 1250.00,
                 'fecha' => date('Y-m-d'),
                 'comprobante' => 'Factura',
@@ -87,7 +99,7 @@ mount(function () {
             [
                 'ruta_clave' => '4683',
                 'ruta_nombre' => 'RUTA03',
-                'concepto' => '🛣️ Casetas',
+                'concepto' => 'Casetas',
                 'monto' => 420.00,
                 'fecha' => date('Y-m-d', strtotime('-1 days')),
                 'comprobante' => 'Nota/Simplificado',
@@ -98,7 +110,7 @@ mount(function () {
             [
                 'ruta_clave' => '4682',
                 'ruta_nombre' => 'RUTA02',
-                'concepto' => '🍔 Viáticos / Alimentos',
+                'concepto' => 'Viáticos / Alimentos',
                 'monto' => 180.00,
                 'fecha' => date('Y-m-d'),
                 'comprobante' => 'Sin Comprobante',
@@ -109,7 +121,7 @@ mount(function () {
             [
                 'ruta_clave' => '4684',
                 'ruta_nombre' => 'RUTA04',
-                'concepto' => '⛽ Combustible',
+                'concepto' => 'Combustible',
                 'monto' => 950.00,
                 'fecha' => date('Y-m-d', strtotime('-2 days')),
                 'comprobante' => 'Factura',
@@ -129,14 +141,14 @@ mount(function () {
     $this->actualizarListasYFiltros();
 });
 
-$actualizarListasYFiltros = function () use ($mockRutas) {
+$actualizarListasYFiltros = function () {
     $this->gastosRegistrados = session('gastos_operativos', []);
     
     // Cargar rutas disponibles según la zona seleccionada
     if ($this->filtro_zona && $this->filtro_zona !== 'todos') {
-        $this->rutasFiltradasPorZona = collect($mockRutas)->where('zona', $this->filtro_zona)->values()->toArray();
+        $this->rutasFiltradasPorZona = collect($this->rutas)->where('zona', $this->filtro_zona)->values()->toArray();
     } else {
-        $this->rutasFiltradasPorZona = $mockRutas;
+        $this->rutasFiltradasPorZona = $this->rutas;
     }
 
     $this->aplicarFiltros();

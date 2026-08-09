@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Volt\Volt;
@@ -16,6 +14,13 @@ class GastosOperativosTest extends TestCase
         parent::setUp();
         // Limpiamos la sesión de gastos
         session()->forget('gastos_operativos');
+
+        // Crear zonas y vendedores para que los tests pasen con la base de datos real
+        \App\Models\Zone::create(['id' => '1Z - Zona 1', 'name' => 'ZONA 1']);
+        \App\Models\Zone::create(['id' => '2Z - Zona 2', 'name' => 'ZONA 2']);
+        
+        \App\Models\Seller::create(['id' => '3983 - RUTA01', 'name' => 'RUTA01', 'oculto' => 'N']);
+        \App\Models\Seller::create(['id' => '4684 - RUTA04', 'name' => 'RUTA04', 'oculto' => 'N']);
     }
 
     /**
@@ -120,7 +125,7 @@ class GastosOperativosTest extends TestCase
             [
                 'ruta_clave' => '4684',
                 'ruta_nombre' => 'RUTA04',
-                'concepto' => '⛽ Combustible',
+                'concepto' => 'Combustible',
                 'monto' => 950.00,
                 'fecha' => '2026-08-05',
                 'comprobante' => 'Factura',

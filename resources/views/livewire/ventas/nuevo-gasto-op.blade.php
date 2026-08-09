@@ -1,36 +1,21 @@
 <?php
 
-use function Livewire\Volt\{state, layout};
+use function Livewire\Volt\{state, layout, mount};
 
 layout('layouts.app');
 
-$mockZonas = [
-    ['id' => '1Z - Zona 1', 'name' => '1Z - Zona 1'],
-    ['id' => '2Z - Zona 2', 'name' => '2Z - Zona 2'],
-    ['id' => '3Z - Zona 3', 'name' => '3Z - Zona 3'],
-];
-
-$mockRutas = [
-    ['clave' => '3983', 'nombre' => 'RUTA01', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4682', 'nombre' => 'RUTA02', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4683', 'nombre' => 'RUTA03', 'zona' => '1Z - Zona 1'],
-    ['clave' => '4684', 'nombre' => 'RUTA04', 'zona' => '2Z - Zona 2'],
-    ['clave' => '4685', 'nombre' => 'RUTA05', 'zona' => '2Z - Zona 2'],
-    ['clave' => '4686', 'nombre' => 'RUTA06', 'zona' => '3Z - Zona 3'],
-];
-
 $mockRubros = [
-    ['id' => 'Combustible', 'name' => '⛽ Combustible'],
-    ['id' => 'Casetas', 'name' => '🛣️ Casetas'],
-    ['id' => 'Estacionamiento', 'name' => '🅿️ Estacionamiento'],
-    ['id' => 'Viáticos', 'name' => '🍔 Viáticos / Alimentos'],
-    ['id' => 'Mantenimiento Menor', 'name' => '🔧 Mantenimiento Menor'],
-    ['id' => 'Otros', 'name' => '📦 Otros Gastos'],
+    ['id' => 'Combustible', 'name' => 'Combustible'],
+    ['id' => 'Casetas', 'name' => 'Casetas'],
+    ['id' => 'Estacionamiento', 'name' => 'Estacionamiento'],
+    ['id' => 'Viáticos', 'name' => 'Viáticos / Alimentos'],
+    ['id' => 'Mantenimiento Menor', 'name' => 'Mantenimiento Menor'],
+    ['id' => 'Otros', 'name' => 'Otros Gastos'],
 ];
 
 state([
-    'zonas' => $mockZonas,
-    'rutas' => $mockRutas,
+    'zonas' => [],
+    'rutas' => [],
     'rubros' => $mockRubros,
 
     'zona' => '',
@@ -45,10 +30,39 @@ state([
     'submitted' => false,
 ]);
 
-$updatedZona = function ($value) use ($mockRutas) {
+mount(function () {
+    // Load Zones from DB
+    $this->zonas = \App\Models\Zone::orderBy('id')->get()->map(fn($z) => [
+        'id' => $z->id,
+        'name' => $z->id
+    ])->toArray();
+    
+    // Load Routes/Sellers from DB
+    $this->rutas = \App\Models\Seller::where('oculto', 'N')->get()->map(function ($s) {
+        if (str_contains($s->id, ' - ')) {
+            $parts = explode(' - ', $s->id);
+            $clave = trim($parts[0]);
+            $nombre = trim($parts[1]);
+        } else {
+            $clave = $s->id;
+            $nombre = $s->name;
+        }
+        
+        $invoice = \App\Models\Invoice::where('vendedor_id', $s->id)->first();
+        $zona = $invoice ? $invoice->zona_id : '1Z - Zona 1';
+        
+        return [
+            'clave' => $clave,
+            'nombre' => $nombre,
+            'zona' => $zona
+        ];
+    })->toArray();
+});
+
+$updatedZona = function ($value) {
     $this->vendedor = '';
     if ($value) {
-        $this->vendedoresFiltrados = collect($mockRutas)->where('zona', $value)->values()->toArray();
+        $this->vendedoresFiltrados = collect($this->rutas)->where('zona', $value)->values()->toArray();
     } else {
         $this->vendedoresFiltrados = [];
     }
@@ -88,7 +102,7 @@ $updatedComentario = fn() => $this->validateField('comentario');
 $updatedFecha = fn() => $this->validateField('fecha');
 $updatedCantidad = fn() => $this->validateField('cantidad');
 
-$guardar = function () use ($mockRutas, $mockRubros) {
+$guardar = function () use ($mockRubros) {
     $this->submitted = true;
     $this->errors = [];
 
@@ -107,7 +121,7 @@ $guardar = function () use ($mockRutas, $mockRubros) {
     }
 
     // Obtener ruta seleccionada
-    $ruta = collect($mockRutas)->firstWhere('clave', $this->vendedor);
+    $ruta = collect($this->rutas)->firstWhere('clave', $this->vendedor);
     $nombreRuta = $ruta['nombre'] ?? 'RUTA';
     $rubroSelected = collect($mockRubros)->firstWhere('id', $this->rubro_gasto);
     $concepto = $rubroSelected['name'] ?? $this->rubro_gasto;
@@ -281,11 +295,6 @@ $guardar = function () use ($mockRutas, $mockRubros) {
                     </div>
 
                 </form>
-            </div>
-            
-            {{-- Copyright --}}
-            <div class="text-center text-[10px] text-gray-400 dark:text-gray-500 mt-6 select-none">
-                Copyright © JB VEMOBILE SA DE CV 2026.
             </div>
         </div>
 
