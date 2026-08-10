@@ -150,9 +150,16 @@ $logout = function (Logout $logout) {
                 </a>
 
 
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
-                    <span x-show="!collapsed" class="pl-7" x-transition>Agenda de Entregas</span>
+                <a href="{{ route('ruta.agenda-entregas') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ruta.agenda-entregas') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ruta.agenda-entregas') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Agenda de Entregas</span>
+                </a>
+
                 </a>
                 <a href="#"
                     class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#002d48] rounded transition duration-150">
@@ -431,8 +438,8 @@ $logout = function (Logout $logout) {
                 <!-- Nuevo Gasto Operativo -->
                 <a href="{{ route('ventas.nuevo-gasto-op') }}" wire:navigate
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ventas.nuevo-gasto-op') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
-                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.nuevo-gasto-op') ? 'text-orange-400' : '' }}" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.nuevo-gasto-op') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l2-2 4 4m0-7v3h-3" />
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
