@@ -22,20 +22,22 @@ state([
     // Column Visibilities
     'col_clave' => true,
     'col_descripcion' => true,
+    'col_linea' => true,
+    'col_orden_linea' => true,
     'col_existencia_almacen' => true,
     'col_existencia_movil' => true,
     'col_cantidad' => true,
 
     // Static product list
     'productos' => [
-        ['clave' => 'AL-200', 'descripcion' => 'Galletas de Chocolate 120g', 'linea' => 'ALIMENTOS', 'existencia_almacen' => 850, 'existencia_movil' => 45, 'cantidad' => 60],
-        ['clave' => 'AL-201', 'descripcion' => 'Pan Integral 680g', 'linea' => 'ALIMENTOS', 'existencia_almacen' => 420, 'existencia_movil' => 20, 'cantidad' => 30],
-        ['clave' => 'AL-202', 'descripcion' => 'Mermelada de Fresa 270g', 'linea' => 'ALIMENTOS', 'existencia_almacen' => 610, 'existencia_movil' => 15, 'cantidad' => 20],
-        ['clave' => 'BEB-100', 'descripcion' => 'Bebida Energética 500ml', 'linea' => 'BEBIDAS', 'existencia_almacen' => 1500, 'existencia_movil' => 100, 'cantidad' => 120],
-        ['clave' => 'BEB-101', 'descripcion' => 'Agua Purificada 1L', 'linea' => 'BEBIDAS', 'existencia_almacen' => 3200, 'existencia_movil' => 250, 'cantidad' => 300],
-        ['clave' => 'BOT-300', 'descripcion' => 'Papas Fritas Clásicas 50g', 'linea' => 'BOTANAS', 'existencia_almacen' => 2100, 'existencia_movil' => 180, 'cantidad' => 200],
-        ['clave' => 'BOT-301', 'descripcion' => 'Cacahuate Japonés 100g', 'linea' => 'BOTANAS', 'existencia_almacen' => 5000, 'existencia_movil' => 320, 'cantidad' => 400],
-        ['clave' => 'ABA-400', 'descripcion' => 'Frijoles Refritos 400g', 'linea' => 'ABARROTES', 'existencia_almacen' => 1200, 'existencia_movil' => 90, 'cantidad' => 100],
+        ['clave' => 'AL-200', 'descripcion' => 'Galletas de Chocolate 120g', 'linea' => 'ALIMENTOS', 'orden_linea' => 1, 'existencia_almacen' => 850, 'existencia_movil' => 45, 'cantidad' => 60],
+        ['clave' => 'AL-201', 'descripcion' => 'Pan Integral 680g', 'linea' => 'ALIMENTOS', 'orden_linea' => 1, 'existencia_almacen' => 420, 'existencia_movil' => 20, 'cantidad' => 30],
+        ['clave' => 'AL-202', 'descripcion' => 'Mermelada de Fresa 270g', 'linea' => 'ALIMENTOS', 'orden_linea' => 1, 'existencia_almacen' => 610, 'existencia_movil' => 15, 'cantidad' => 20],
+        ['clave' => 'BEB-100', 'descripcion' => 'Bebida Energética 500ml', 'linea' => 'BEBIDAS', 'orden_linea' => 2, 'existencia_almacen' => 1500, 'existencia_movil' => 100, 'cantidad' => 120],
+        ['clave' => 'BEB-101', 'descripcion' => 'Agua Purificada 1L', 'linea' => 'BEBIDAS', 'orden_linea' => 2, 'existencia_almacen' => 3200, 'existencia_movil' => 250, 'cantidad' => 300],
+        ['clave' => 'BOT-300', 'descripcion' => 'Papas Fritas Clásicas 50g', 'linea' => 'BOTANAS', 'orden_linea' => 3, 'existencia_almacen' => 2100, 'existencia_movil' => 180, 'cantidad' => 200],
+        ['clave' => 'BOT-301', 'descripcion' => 'Cacahuate Japonés 100g', 'linea' => 'BOTANAS', 'orden_linea' => 3, 'existencia_almacen' => 5000, 'existencia_movil' => 320, 'cantidad' => 400],
+        ['clave' => 'ABA-400', 'descripcion' => 'Frijoles Refritos 400g', 'linea' => 'ABARROTES', 'orden_linea' => 4, 'existencia_almacen' => 1200, 'existencia_movil' => 90, 'cantidad' => 100],
     ],
 
     // Available categories
@@ -193,7 +195,7 @@ $consultar = function() {
             <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-6 px-1 no-print">
                 <span>Cpanel</span>
                 <span class="mx-2 text-gray-400">/</span>
-                <span>Venta</span>
+                <span>Inventario</span>
                 <span class="mx-2 text-gray-400">/</span>
                 <span class="text-[#003859] dark:text-orange-400 font-bold">Carga iMóvil Grid</span>
             </div>
@@ -273,7 +275,19 @@ $consultar = function() {
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-750 bg-gray-50/50 dark:bg-gray-900/10">
                     
                     {{-- Left side: Column selector --}}
-                    <div x-data="{ open: false }" class="relative inline-block text-left">
+                    <div x-data="{ 
+                            open: false, 
+                            searchCol: '', 
+                            toggleAll(val) { 
+                                $wire.set('col_clave', val); 
+                                $wire.set('col_descripcion', val); 
+                                $wire.set('col_linea', val); 
+                                $wire.set('col_orden_linea', val); 
+                                $wire.set('col_existencia_almacen', val); 
+                                $wire.set('col_existencia_movil', val); 
+                                $wire.set('col_cantidad', val); 
+                            } 
+                        }" class="relative inline-block text-left">
                         <button @click="open = !open" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-xs font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition duration-150 cursor-pointer shadow-sm">
                             <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
@@ -281,29 +295,76 @@ $consultar = function() {
                             Columnas
                         </button>
                         
-                        <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute left-0 mt-2 w-56 rounded shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-750 z-20 py-2" style="display: none;">
-                            <div class="px-4 py-1 text-xs font-bold text-gray-400 dark:text-gray-550 uppercase tracking-wider border-b border-gray-100 dark:border-gray-750 mb-2">Mostrar Columnas</div>
-                            <div class="space-y-2 px-4 py-1">
-                                <label class="flex items-center gap-2 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
-                                    <input type="checkbox" wire:model.live="col_clave" class="rounded border-gray-300 dark:border-gray-600 text-[#003859] focus:ring-[#003859] w-3.5 h-3.5" />
+                        <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute left-0 mt-2 w-64 rounded shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-750 z-20 py-2" style="display: none;">
+                            
+                            {{-- Find column input --}}
+                            <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-750 mb-2">
+                                <label class="text-[10px] text-blue-500 font-semibold uppercase tracking-wider mb-1 block">Find column</label>
+                                <input x-model="searchCol" type="text" placeholder="Column title" class="w-full border-0 border-b-2 border-blue-500 bg-transparent px-0 py-1 text-sm focus:ring-0 text-gray-700 dark:text-gray-200 placeholder-gray-400">
+                            </div>
+                            
+                            <div class="space-y-3 px-4 py-2 max-h-60 overflow-y-auto">
+                                <label x-show="'#'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" checked disabled class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-not-allowed border-blue-500 bg-blue-500 transform translate-x-4"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full bg-blue-200 cursor-not-allowed"></label>
+                                    </div>
+                                    #
+                                </label>
+                                <label x-show="'Clave'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" wire:model.live="col_clave" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" :class="$wire.col_clave ? 'border-blue-500 bg-blue-500 transform translate-x-4' : 'border-gray-300 bg-gray-300'"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full" :class="$wire.col_clave ? 'bg-blue-200' : 'bg-gray-200'"></label>
+                                    </div>
                                     Clave
                                 </label>
-                                <label class="flex items-center gap-2 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
-                                    <input type="checkbox" wire:model.live="col_descripcion" class="rounded border-gray-300 dark:border-gray-600 text-[#003859] focus:ring-[#003859] w-3.5 h-3.5" />
+                                <label x-show="'Descripción'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" wire:model.live="col_descripcion" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" :class="$wire.col_descripcion ? 'border-blue-500 bg-blue-500 transform translate-x-4' : 'border-gray-300 bg-gray-300'"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full" :class="$wire.col_descripcion ? 'bg-blue-200' : 'bg-gray-200'"></label>
+                                    </div>
                                     Descripción
                                 </label>
-                                <label class="flex items-center gap-2 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
-                                    <input type="checkbox" wire:model.live="col_existencia_almacen" class="rounded border-gray-300 dark:border-gray-600 text-[#003859] focus:ring-[#003859] w-3.5 h-3.5" />
+                                <label x-show="'Línea'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" wire:model.live="col_linea" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" :class="$wire.col_linea ? 'border-blue-500 bg-blue-500 transform translate-x-4' : 'border-gray-300 bg-gray-300'"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full" :class="$wire.col_linea ? 'bg-blue-200' : 'bg-gray-200'"></label>
+                                    </div>
+                                    Línea
+                                </label>
+                                <label x-show="'Orden de Línea'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" wire:model.live="col_orden_linea" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" :class="$wire.col_orden_linea ? 'border-blue-500 bg-blue-500 transform translate-x-4' : 'border-gray-300 bg-gray-300'"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full" :class="$wire.col_orden_linea ? 'bg-blue-200' : 'bg-gray-200'"></label>
+                                    </div>
+                                    Orden de Línea
+                                </label>
+                                <label x-show="'Existencia en Almacén'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" wire:model.live="col_existencia_almacen" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" :class="$wire.col_existencia_almacen ? 'border-blue-500 bg-blue-500 transform translate-x-4' : 'border-gray-300 bg-gray-300'"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full" :class="$wire.col_existencia_almacen ? 'bg-blue-200' : 'bg-gray-200'"></label>
+                                    </div>
                                     Existencia en Almacén
                                 </label>
-                                <label class="flex items-center gap-2 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
-                                    <input type="checkbox" wire:model.live="col_existencia_movil" class="rounded border-gray-300 dark:border-gray-600 text-[#003859] focus:ring-[#003859] w-3.5 h-3.5" />
+                                <label x-show="'Existencia en Inventario Móvil'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" wire:model.live="col_existencia_movil" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" :class="$wire.col_existencia_movil ? 'border-blue-500 bg-blue-500 transform translate-x-4' : 'border-gray-300 bg-gray-300'"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full" :class="$wire.col_existencia_movil ? 'bg-blue-200' : 'bg-gray-200'"></label>
+                                    </div>
                                     Existencia en Inventario Móvil
                                 </label>
-                                <label class="flex items-center gap-2 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
-                                    <input type="checkbox" wire:model.live="col_cantidad" class="rounded border-gray-300 dark:border-gray-600 text-[#003859] focus:ring-[#003859] w-3.5 h-3.5" />
+                                <label x-show="'Cantidad'.toLowerCase().includes(searchCol.toLowerCase())" class="flex items-center gap-3 text-xs text-gray-750 dark:text-gray-200 cursor-pointer select-none">
+                                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" wire:model.live="col_cantidad" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" :class="$wire.col_cantidad ? 'border-blue-500 bg-blue-500 transform translate-x-4' : 'border-gray-300 bg-gray-300'"/>
+                                        <label class="toggle-label block overflow-hidden h-4 rounded-full" :class="$wire.col_cantidad ? 'bg-blue-200' : 'bg-gray-200'"></label>
+                                    </div>
                                     Cantidad
                                 </label>
+                            </div>
+
+                            <div class="px-4 py-2 mt-2 border-t border-gray-100 dark:border-gray-750 flex justify-between">
+                                <button @click="toggleAll(false)" class="text-xs font-bold text-blue-500 hover:text-blue-700 uppercase">Hide All</button>
+                                <button @click="toggleAll(true)" class="text-xs font-bold text-blue-500 hover:text-blue-700 uppercase">Show All</button>
                             </div>
                         </div>
                     </div>
@@ -332,6 +393,14 @@ $consultar = function() {
                                 
                                 @if($col_descripcion)
                                     <th scope="col" class="text-left py-3 px-4 select-none">Descripción</th>
+                                @endif
+
+                                @if($col_linea)
+                                    <th scope="col" class="w-40 text-left py-3 px-4 select-none">Línea</th>
+                                @endif
+
+                                @if($col_orden_linea)
+                                    <th scope="col" class="w-32 text-center py-3 px-4 select-none">Orden de Línea</th>
                                 @endif
                                 
                                 @if($col_existencia_almacen)
@@ -365,6 +434,18 @@ $consultar = function() {
                                     @if($col_descripcion)
                                         <td class="py-3.5 px-4 text-sm text-gray-800 dark:text-gray-250 truncate">
                                             {{ $row['descripcion'] }}
+                                        </td>
+                                    @endif
+
+                                    @if($col_linea)
+                                        <td class="py-3.5 px-4 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ $row['linea'] }}
+                                        </td>
+                                    @endif
+
+                                    @if($col_orden_linea)
+                                        <td class="py-3.5 px-4 text-center text-sm font-semibold text-gray-600 dark:text-gray-400">
+                                            {{ $row['orden_linea'] }}
                                         </td>
                                     @endif
 

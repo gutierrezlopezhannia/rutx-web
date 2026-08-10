@@ -56,8 +56,5 @@ Volt::route('reporte-preventa-entrega', 'ventas.reporte-preventa-entrega')
     ->middleware(['auth'])
     ->name('ventas.preventa-entrega');
 
-Volt::route('carga-imovil-grid', 'ventas.carga-imovil-grid')
-    ->middleware(['auth'])
-    ->name('ventas.carga-imovil-grid');
 
 

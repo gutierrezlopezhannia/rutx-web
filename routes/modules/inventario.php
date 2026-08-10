@@ -13,4 +13,5 @@ Route::middleware(['auth', 'verified'])->prefix('inventario')->name('inventario.
     Volt::route('/existencias-globales', 'inventario.existencias-globales')->name('existencias-globales');
     Volt::route('/carga-entrega', 'inventario.carga-entrega')->name('carga-entrega');
     Volt::route('/historico', 'inventario.historico')->name('historico');
+    Volt::route('/carga-imovil-grid', 'inventario.carga-imovil-grid')->name('carga-imovil-grid');
 });

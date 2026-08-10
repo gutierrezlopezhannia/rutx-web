@@ -372,6 +372,17 @@ $logout = function (Logout $logout) {
                     </svg>
                     <span x-show="!collapsed" x-transition>Histórico</span>
                 </a>
+
+                <!-- Carga iMóvil Grid -->
+                <a href="{{ route('inventario.carga-imovil-grid') }}" wire:navigate
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('inventario.carga-imovil-grid') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('inventario.carga-imovil-grid') ? 'text-orange-400' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span x-show="!collapsed" x-transition>Carga iMóvil Grid</span>
+                </a>
             @else
                 <!-- Levantamiento -->
                 <a href="{{ route('ventas.levantamiento') }}" wire:navigate
@@ -493,15 +504,6 @@ $logout = function (Logout $logout) {
                     <span x-show="!collapsed" x-transition>Reporte Preventa Entrega</span>
                 </a>
 
-                <a href="{{ route('ventas.carga-imovil-grid') }}" wire:navigate
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded transition duration-150 {{ request()->routeIs('ventas.carga-imovil-grid') ? 'bg-[#004f7c] text-white border-l-4 border-orange-500 shadow-sm font-semibold' : 'font-medium text-gray-300 hover:text-white hover:bg-[#002d48]' }}">
-                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('ventas.carga-imovil-grid') ? 'text-orange-400' : '' }}"
-                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    <span x-show="!collapsed" x-transition>Carga iMóvil Grid</span>
-                </a>
 
                 <!-- Clientes Pendientes -->
                 <!-- Clientes Pendientes -->
