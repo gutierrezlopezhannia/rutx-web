@@ -27,3 +27,7 @@ Volt::route('/ruta/unidades-reparto', 'rutas.unidades-reparto')
 Volt::route('/ruta/log-sincronizacion', 'rutas.log-sincronizacion')
     ->middleware(['auth', 'verified'])
     ->name('ruta.log-sincronizacion');
+
+Volt::route('/ruta/agenda-entregas', 'rutas.agenda-entregas')
+    ->middleware(['auth', 'verified'])
+    ->name('ruta.agenda-entregas');
