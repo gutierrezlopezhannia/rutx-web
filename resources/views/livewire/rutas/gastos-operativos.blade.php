@@ -291,7 +291,7 @@ $triggerNotification = function ($msg, $type = 'success') {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             
             {{-- KPI Total Gastado --}}
-            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
                 <div>
                     <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Total Reportado</span>
                     <span class="text-xl font-extrabold text-[#003859] dark:text-blue-400 mt-1 block">${{ number_format($totalMonto, 2) }}</span>
@@ -304,9 +304,9 @@ $triggerNotification = function ($msg, $type = 'success') {
             </div>
 
             {{-- KPI Combustible --}}
-            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">⛽ Combustible</span>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Combustible</span>
                     <span class="text-xl font-extrabold text-orange-600 dark:text-orange-400 mt-1 block">${{ number_format($montoCombustible, 2) }}</span>
                 </div>
                 <div class="p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
@@ -317,9 +317,9 @@ $triggerNotification = function ($msg, $type = 'success') {
             </div>
 
             {{-- KPI Casetas --}}
-            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">🛣️ Casetas</span>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Casetas</span>
                     <span class="text-xl font-extrabold text-green-600 dark:text-green-400 mt-1 block">${{ number_format($montoCasetas, 2) }}</span>
                 </div>
                 <div class="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
@@ -330,9 +330,9 @@ $triggerNotification = function ($msg, $type = 'success') {
             </div>
 
             {{-- KPI Viáticos --}}
-            <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-xl p-4 shadow-sm flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">🍔 Viáticos</span>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Viáticos</span>
                     <span class="text-xl font-extrabold text-purple-600 dark:text-purple-400 mt-1 block">${{ number_format($montoViaticos, 2) }}</span>
                 </div>
                 <div class="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
@@ -345,10 +345,10 @@ $triggerNotification = function ($msg, $type = 'success') {
         </div>
 
         {{-- Main Table Section --}}
-        <div class="bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-700/80 rounded-xl shadow-sm overflow-hidden flex flex-col flex-1">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-xl shadow-sm overflow-hidden flex flex-col flex-1">
             
             {{-- Toolbar / Filters --}}
-            <div class="p-5 border-b border-gray-150 dark:border-gray-700/80 bg-gray-50/50 dark:bg-gray-800/40 flex flex-col gap-4" x-data="{ showColumnas: false }">
+            <div class="p-5 border-b border-gray-200 dark:border-gray-700/80 bg-gray-50/50 dark:bg-gray-800/40 flex flex-col gap-4" x-data="{ showColumnas: false }">
                 
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
@@ -538,7 +538,7 @@ $triggerNotification = function ($msg, $type = 'success') {
                                 @endif
                                 @if ($col_concepto)
                                     <td class="px-6 py-3.5 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-150 dark:border-gray-600">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
                                             {{ $gasto['concepto'] }}
                                         </span>
                                     </td>
@@ -598,7 +598,7 @@ $triggerNotification = function ($msg, $type = 'success') {
             </div>
 
             {{-- Table Footer / Pagination mock --}}
-            <div class="px-5 py-4 border-t border-gray-150 dark:border-gray-700 bg-[#f8fafc]/50 dark:bg-gray-800/40 flex justify-between items-center text-xs text-gray-500 dark:text-gray-450 select-none">
+            <div class="px-5 py-4 border-t border-gray-200 dark:border-gray-700 bg-[#f8fafc]/50 dark:bg-gray-800/40 flex justify-between items-center text-xs text-gray-500 dark:text-gray-450 select-none">
                 <div class="flex items-center gap-1.5">
                     <span>100 Filas por Página</span>
                     <svg class="w-3.5 h-3.5 text-gray-400 cursor-pointer animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

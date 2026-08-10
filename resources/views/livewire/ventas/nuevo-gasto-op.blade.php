@@ -163,7 +163,7 @@ $guardar = function () use ($mockRubros) {
 
         {{-- Form Container --}}
         <div class="flex flex-col items-center justify-center flex-1">
-            <div class="w-full max-w-md bg-white dark:bg-gray-800 border border-gray-150 dark:border-gray-750 rounded-xl shadow-sm overflow-hidden p-6">
+            <div class="w-full max-w-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden p-6">
                 
                 <h2 class="text-sm font-bold text-gray-800 dark:text-white mb-6 uppercase tracking-wider text-left border-b border-gray-100 dark:border-gray-700 pb-3">
                     Agregar nuevo Gasto Operativo
